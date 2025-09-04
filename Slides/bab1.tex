@@ -1,0 +1,83 @@
+% bab1.tex
+\section{Bab 1 : Pendahuluan}
+
+\subsection{Latar Belakang}
+\begin{frame}
+    \frametitle{Latar Belakang}
+    \begin{itemize}
+        \item Model Bahasa Besar (Large Language Models / LLM) telah menunjukkan kemampuan memadai dalam berbagai tugas bahasa alami, termasuk tanya jawab, summarization, dan penalaran.
+        \item Salah satu area penelitian penting adalah \textbf{penalaran logis} — kemampuan model untuk menarik kesimpulan yang konsisten dari premis berdasar aturan logika.
+        \item Kesenjangan riset: apakah LLM (termasuk versi open-source dan versi ringan) mempertahankan kemampuan penalaran ketika berhadapan dengan dataset berbahasa Indonesia yang mungkin berbeda struktur linguistik dan budaya?
+        \item Penelitian ini menguji dan membandingkan kemampuan penalaran logis beberapa LLM pada dataset berbahasa Indonesia, khususnya LLM yang dikembangkan di Indonesia itu sendiri, serta mengevaluasi efektivitas metode pipeline (mis. kerangka Aristotle) untuk meningkatkan hasil.
+    \end{itemize}
+\end{frame}
+
+\subsection{Rumusan Masalah}
+\begin{frame}
+    \frametitle{Rumusan Masalah}
+    Berdasarkan latar belakang di atas, rumusan masalah penelitian ini adalah:
+    \begin{enumerate}
+        \item Sejauh mana LLM berperforma dalam tugas penalaran logis pada dataset berbahasa Indonesia?
+        \item Bagaimana perbandingan performa antara model open-source berparameter rendah (low-resource) dengan model yang lebih besar dalam konteks penalaran logis Bahasa Indonesia?
+        \item Seberapa efektif implementasi pipeline \textit{logical reasoning framewrok} dalam meningkatkan kinerja penalaran pada dataset berbahasa Indonesia?
+        \item Apa tantangan utama (mis. tokenisasi, konteks budaya, format data) yang muncul ketika memindahkan dataset/pujian penalaran dari bahasa Inggris ke bahasa Indonesia?
+    \end{enumerate}
+\end{frame}
+
+\subsection{Tujuan Penelitian}
+\begin{frame}
+    \frametitle{Tujuan Penelitian}
+    \begin{itemize}
+        \item \textbf{Tujuan umum:} Mengevaluasi dan memahami kemampuan penalaran logis LLM pada dataset berbahasa Indonesia.
+        \item \textbf{Tujuan khusus:}
+              \begin{enumerate}
+                  \item Mengukur akurasi dan metrik terkait model-model terpilih pada tugas penalaran logis Bahasa Indonesia.
+                  \item Membandingkan performa antara model low-resource dan model yang lebih besar untuk tugas penalaran, juga membandingkan performa LLM khusus bahasa Indonesia dengan LLM \textit{general-purpose}.
+                  \item Menerapkan dan mengevaluasi pipeline penalaran (Aristotle framework) untuk melihat kontribusinya terhadap perbaikan hasil.
+                  \item Mengidentifikasi hambatan praktis dan rekomendasi pengolahan (preprocessing, tokenisasi, prompt design) untuk penelitian penalaran di Bahasa Indonesia.
+              \end{enumerate}
+    \end{itemize}
+\end{frame}
+
+\subsection{Batasan Penelitian}
+\begin{frame}
+    \frametitle{Batasan Penelitian}
+    \begin{itemize}
+        \item Dataset: fokus pada dataset penalaran / NLI / QA berbahasa Indonesia yang tersedia atau yang ditransformasikan dari dataset Inggris.
+        \item Model: membandingkan beberapa LLM open-source low-resource dan beberapa model yang lebih besar bila memungkinkan (tergantung sumber daya komputasi).
+        \item Metode: evaluasi difokuskan pada pipeline pemrosesan berbasis kerangka Aristotle (translasi, dekomposisi, pencarian komplement, penyelesaian logika).
+        \item Evaluasi: penekanan pada metrik kuantitatif (akurasi akhir) dan analisis kasus kesalahan (qualitative error analysis).
+    \end{itemize}
+\end{frame}
+
+\subsection{Manfaat Penelitian}
+\begin{frame}
+    \frametitle{Manfaat Penelitian}
+    \begin{itemize}
+        \item Menambah literatur evaluasi penalaran LLM pada bahasa selain bahasa Inggris, khususnya Bahasa Indonesia.
+        \item Memberikan \textit{insight} tentang kemampuan model low-resource dalam konteks penalaran logis
+    \end{itemize}
+\end{frame}
+
+% \subsection{Kontribusi Penelitian}
+% \begin{frame}
+%     \frametitle{Kontribusi Penelitian}
+%     \begin{itemize}
+%         \item Studi komparatif performa LLM pada tugas penalaran berbahasa Indonesia.
+%         \item Implementasi dan evaluasi pipeline Aristotle pada dataset Bahasa Indonesia.
+%         \item Kumpulan panduan praktis (best practices) untuk menjalankan eksperimen penalaran logis di lingkungan komputasi terbatas.
+%         \item Analisis kesalahan dan rekomendasi perbaikan untuk penelitian lanjutan.
+%     \end{itemize}
+% \end{frame}
+
+% \subsection{Sistematika Penulisan}
+% \begin{frame}
+%     \frametitle{Sistematika Penulisan}
+%     \begin{enumerate}
+%         \item \textbf{Bab 1} : Pendahuluan (latar belakang, rumusan masalah, tujuan, manfaat).
+%         \item \textbf{Bab 2} : Tinjauan Pustaka (teori LLM, penalaran logis, dataset terkait).
+%         \item \textbf{Bab 3} : Metodologi (desain eksperimen, dataset, model, pipeline).
+%         \item \textbf{Bab 4} : Hasil dan Analisis (evaluasi kuantitatif dan kualitatif).
+%         \item \textbf{Bab 5} : Kesimpulan dan Saran.
+%     \end{enumerate}
+% \end{frame}
