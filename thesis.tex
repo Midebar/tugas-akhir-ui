@@ -61,12 +61,12 @@
 % Halaman Orisinalitas
 %
 \strcompare{Laporan Kerja Praktik}{\type}{} {
-\strcompare{Kampus Merdeka}{\type}{} {
-	\addtocontents{toc}{\protect\addvspace{-1em}}
-    \addChapter{Halaman Orisinalitas}
-	\include{src/00-frontMatter/pernyataanOrisinalitas}
-	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
-}}
+	\strcompare{Kampus Merdeka}{\type}{} {
+		\addtocontents{toc}{\protect\addvspace{-1em}}
+		\addChapter{Halaman Orisinalitas}
+		\include{src/00-frontMatter/pernyataanOrisinalitas}
+		\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
+	}}
 
 % Memunculkan penomoran romawi untuk halaman-halaman awal
 \pagenumbering{roman}
@@ -90,41 +90,41 @@
 	\include{src/00-frontMatter/pengesahanKP}
 	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
 }{
-\strcompare{Kampus Merdeka}{\type}
-{
-	\addChapter{Lembar Pengesahan}
-	\include{src/00-frontMatter/pengesahanMBKM}
-	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
-}
-{
-	\addChapter{Lembar Pengesahan}
-	% Gunakan salah satu (comment atau hapus kode yang tidak perlu):
-	% Lembar Pengesahan Tugas Akhir dari LaTeX
-	\strcompare{Doktor}{\jenjang}
-	{\include{src/00-frontMatter/pengesahanSidangS3}}
-	{\include{src/00-frontMatter/pengesahanSidang}}
-	% Lembar Pengesahan dari PDF lain (misal: generated oleh SISIDANG [Fasilkom])
-	%\putpdf{assets/pdfs/pengesahanSidang.pdf}
-	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
-}}
+	\strcompare{Kampus Merdeka}{\type}
+	{
+		\addChapter{Lembar Pengesahan}
+		\include{src/00-frontMatter/pengesahanMBKM}
+		\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
+	}
+	{
+		\addChapter{Lembar Pengesahan}
+		% Gunakan salah satu (comment atau hapus kode yang tidak perlu):
+		% Lembar Pengesahan Tugas Akhir dari LaTeX
+		\strcompare{Doktor}{\jenjang}
+		{\include{src/00-frontMatter/pengesahanSidangS3}}
+		{\include{src/00-frontMatter/pengesahanSidang}}
+		% Lembar Pengesahan dari PDF lain (misal: generated oleh SISIDANG [Fasilkom])
+		%\putpdf{assets/pdfs/pengesahanSidang.pdf}
+		\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
+	}}
 
 
 \strcompare{Laporan Kerja Praktik}{\type}{} {
-\strcompare{Kampus Merdeka}{\type}{} {
-	%
-	% Kata Pengantar
-	%
-	\addChapter{\kataPengantar}
-	\include{src/00-frontMatter/kataPengantar}
-	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
-
-	%
-	% Lembar Persetujuan Publikasi Ilmiah
-	%
-	\addChapter{Lembar Persetujuan Karya Ilmiah}
-	\include{src/00-frontMatter/persetujuanPublikasi}
-	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
-}}
+	\strcompare{Kampus Merdeka}{\type}{} {
+		%
+		% Kata Pengantar
+		%
+		\addChapter{\kataPengantar}
+		\include{src/00-frontMatter/kataPengantar}
+		\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
+		
+		%
+		% Lembar Persetujuan Publikasi Ilmiah
+		%
+		\addChapter{Lembar Persetujuan Karya Ilmiah}
+		\include{src/00-frontMatter/persetujuanPublikasi}
+		\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
+	}}
 
 
 %

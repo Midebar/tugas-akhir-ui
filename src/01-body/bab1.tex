@@ -2,154 +2,121 @@
 \chapter{\babSatu}
 \label{bab:1}
 %-----------------------------------------------------------------------------%
-Pada bab ini, akan dijelaskan tentang latar belakang dan permasalahan yang diselesaikan pada penelitian ini.
+
+Bab ini menjelaskan latar belakang, rumusan masalah, tujuan penelitian, batasan, manfaat, tinjauan singkat metodologi, serta sistematika penulisan dari penelitian ini.
 
 
 %-----------------------------------------------------------------------------%
 \section{Latar Belakang}
-\label{sec:latarBelakang}
+\label{sec:latBel}
 %-----------------------------------------------------------------------------%
-\todo{Tentukan latar belakang dari penelitian Anda di sini (\f{background}).}
-
-Tugas Akhir merupakan salah satu kegiatan yang menjadi "penentu nasib" atas lulusnya seorang mahasiswa dari suatu universitas.
-Umumnya, mahasiswa yang mengerjakan Tugas Akhir diwajibkan untuk menuliskan sebuah laporan dengan tata bahasa ilmiah dan dengan ketentuan \f{format} tertentu.
-Laporan tersebut, memiliki struktur yang kurang lebih mirip, dari manapun fakultas asal seorang mahasiswa.
-
-Umumnya, mahasiswa Universitas Indonesia menggunakan Microsoft Word, OpenOffice, atau \f{rich-text editor} lainnya untuk menyusun laporan Tugas Akhir mereka.
-Akan tetapi, terkadang \f{template} yang dibuat untuk Microsoft Word memiliki beberapa keterbatasan dan inkonsistensi dalam pengaturan tata letak.
-Selain itu, terdapat beberapa hal yang sulit untuk diotomatisasi, contohnya adalah penggunaan sitasi dan pengaturan nomor halaman.
-Oleh karena itu, diperlukan alternatif lain untuk menyusun Tugas Akhir yang lebih nyaman.
-
-Beberapa mahasiswa Fakultas Ilmu Komputer Universitas Indonesia (Fasilkom UI) di tahun 2010-an mulai menggunakan \gls{latex} untuk menyusun Tugas Akhir.
-Sifat \gls{latex} yang berupa \f{mark up language}, memiliki cara pemakaian yang jauh berbeda dibandingkan \f{rich-text editor} seperti Microsoft Word.
-Awalnya, menyusun tata letak yang sesuai dengan persyaratan Tugas Akhir di UI cukup sulit, karena artinya harus membaca dokumentasi.
-Akan tetapi, dengan kemahiran mereka dalam menyusun kode yang mudah dibaca dan terstruktur, struktur yang mereka buat dapat dijadikan sebuah \f{template} yang konsisten tata letaknya hingga bertahun-tahun berikutnya.
-Dengan menggunakan sebuah \f{template}, mahasiswa cukup mengetikkan isi dari Tugas Akhir mereka tanpa harus repot mengatur ulang tata letak secara manual.
-Mahasiswa bisa menggunakan \f{macro} atau perintab yang sudah disediakan untuk \f{template}.
-
-Adanya perubahan pada peraturan Tugas Akhir yang ditentukan oleh \cite{ui:pedoman_ta}, memunculkan kebutuhan untuk perubahan \f{template} \gls{latex} ini secara signifikan.
-Perubahan pada \f{template} ini dilakukan pertama kali pada semester gasal tahun ajaran 2019/2020.
-Perubahan dilakukan mengingat adanya kebutuhan dari mahasiswa Lab \f{Reliable Software Engineering} (RSE), Fasilkom UI untuk menyusun Tugas Akhir menggunakan \gls{latex}.
-\f{Template} ini kemudian di-\f{maintain} secara berkala, mengikuti umpan balik dan pendapat pengguna \f{template} ini, tidak hanya dari Fasilkom UI, namun juga dari berbagai fakultas lain di UI.
-Dengan mulai meluasnya penggunaan \f{template} Tugas Akhir UI ini, diperlukan sebuah contoh penggunaan untuk memudahkan mahasiswa yang baru mulai melaksanakan Tugas Akhir mereka.
-Dokumen dan repositori ini, diharapkan selain menjadi repositori kode \f{template}, juga menjadi repositori contoh penggunaan \f{template} dan panduan penggunaan \f{template}.
-
-
+Perkembangan Model Bahasa Besar (Large Language Models, LLM) dalam beberapa tahun terakhir telah menunjukkan kemampuan mengesankan pada berbagai tugas pemrosesan bahasa alami seperti penerjemahan, ringkasan, dan tanya-jawab. 
+Salah satu aspek penting yang menjadi fokus kajian adalah kemampuan \emph{penalaran logis} — kemampuan menarik inferensi yang benar dari kumpulan premis dan aturan. 
+Sebagian besar benchmark penalaran dan reasoning (misalnya ProofWriter, LogicNLI, ProntoQA) ditujukan pada bahasa Inggris. Namun demikian, studi terhadap kemampuan penalaran LLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. 
+Perbedaan struktur linguistik, tanda baca, serta isu translasi otomatis dapat memengaruhi performa model ketika berpindah domain bahasa.
+Penelitian ini bertujuan untuk mengevaluasi kemampuan penalaran logis LLM pada dataset berbahasa Indonesia dan menguji efektivitas pipeline reasoning berbasis modul: translasi/normalisasi, dekomposisi aturan, pencarian klausa komplement, serta resolusi logika. 
+Fokus utama adalah mendapatkan gambaran secara kuantitatif maupun kualitatif tentang batas kemampuan LLM pada skenario berbahasa Indonesia dan menyajikan rekomendasi untuk eksperimen selanjutnya.
 
 %-----------------------------------------------------------------------------%
-\section{Permasalahan}
-\label{sec:masalah}
+\section{Rumusan Masalah}
+\label{sec:rumusan}
 %-----------------------------------------------------------------------------%
-\todo{Sebutkan permasalahan penelitian Anda dari latar belakang tersebut.}
-
-Latar belakang yang telah dijelaskan pada \sect~\ref{sec:latarBelakang}, menjelaskan bahwa diperlukan sebuah \f{template}~\gls{latex} Tugas Akhir UI yang konsisten dan bisa disesuaikan dengan peraturan terbaru dari universitas.
-Selain itu, diperlukan juga sebuah \f{tutorial} (panduan penggunaan) yang memudahkan pengguna \f{template} di masa yang akan datang.
-
-%-----------------------------------------------------------------------------%
-\subsection{Definisi Permasalahan}
-\label{sec:definisiMasalah}
-%-----------------------------------------------------------------------------%
-Berikut ini adalah rumusan permasalahan dari penelitian yang dilakukan:
+Berdasarkan latar belakang tersebut, rumusan masalah penelitian ini adalah sebagai berikut:
 \begin{enumerate}
-	\item Bagaimana cara menyusun \f{template}~\gls{latex} Tugas Akhir di Universitas Indonesia?
-	\item Bagaimana cara mengajarkan penggunaan \f{template} dan bahasa \gls{latex} secara umum ke mahasiswa yang akan menjalani Tugas Akhir?
+  \item Sejauh mana LLM berperforma dalam tugas penalaran logis pada dataset berbahasa Indonesia?
+  \item Bagaimana perbandingan performa antara model open-source berparameter rendah (low-resource) dengan model yang lebih besar dalam konteks penalaran logis Bahasa Indonesia?
+  \item Seberapa efektif implementasi pipeline \textit{logical reasoning framework} dalam meningkatkan kinerja penalaran pada dataset berbahasa Indonesia?
+  \item Apa tantangan utama (mis. tokenisasi, konteks budaya, format data) yang muncul ketika memindahkan dataset/pujian penalaran dari bahasa Inggris ke bahasa Indonesia?
 \end{enumerate}
-\todo{Tuliskan permasalahan yang ingin diselesaikan. Bisa juga berbentuk pertanyaan}
-
-%-----------------------------------------------------------------------------%
-\subsection{Batasan Permasalahan}
-\label{sec:batasanMasalah}
-%-----------------------------------------------------------------------------%
-Berikut ini adalah asumsi yang digunakan sebagai batasan penelitian ini:
-\begin{enumerate}
-	\item Salah satu batasannya adalah, ini hanya \f{template}.
-\end{enumerate}
-
-\todo{Umumnya ada asumsi atau batasan yang digunakan untuk menjawab pertanyaan-pertanyaan penelitian diatas.}
-
 
 %-----------------------------------------------------------------------------%
 \section{Tujuan Penelitian}
 \label{sec:tujuan}
 %-----------------------------------------------------------------------------%
-Berikut ini adalah tujuan penelitian yang dilakukan:
-\begin{enumerate}
-	\item Untuk memberikan \f{template} yang dapat mempermudah skripsi orang lain.
-\end{enumerate}
+Tujuan penelitian ini dibagi menjadi tujuan umum dan tujuan khusus:
+\begin{itemize}
+  \item \textbf{Tujuan umum:} Mengevaluasi kemampuan penalaran logis LLM pada dataset berbahasa Indonesia.
+  \item \textbf{Tujuan khusus:}
+        \begin{enumerate}
+          \item Mengukur performa beberapa model (lokal/kuantisasi vs. pembanding) pada tugas penalaran.
+          \item Mengevaluasi kontribusi pipeline \emph{translate $\rightarrow$ decompose $\rightarrow$ search $\rightarrow$ resolve}.
+          \item Mengidentifikasi sumber kesalahan (error analysis) dan memberikan rekomendasi.
+        \end{enumerate}
+\end{itemize}
 
-\todo{Tuliskan tujuan penelitian Anda di bagian ini.}
-
+%-----------------------------------------------------------------------------%
+\section{Batasan Penelitian}
+\label{sec:batasan}
+%-----------------------------------------------------------------------------%
+Agar ruang lingkup penelitian terukur, maka penelitian ini memiliki batasan:
+\begin{itemize}
+  \item Dataset: fokus pada dataset berformat proof-style / NLI yang tersedia untuk Bahasa Indonesia (adaptasi/terjemahan dari ProofWriter/LogicNLI serta korpus NLI lokal).
+  \item Model: fokus pada model open-source yang dapat dijalankan secara lokal (termasuk versi kuantisasi), dan bila perlu perbandingan terhadap model akses API.
+  \item Evaluasi: metrik utama adalah akurasi final, dan analisis kualitatif terhadap kasus salah.
+  \item Lingkup eksperimen dibatasi pada dev/test split dataset mulai dari 10\% hingga 100\% (tergantung sumber daya komputasi) dari datatset itu sendiri.
+\end{itemize}
 
 %-----------------------------------------------------------------------------%
 \section{Manfaat Penelitian}
 \label{sec:manfaat}
 %-----------------------------------------------------------------------------%
-Berikut ini adalah manfaat penelitian yang dilakukan:
+Hasil penelitian diharapkan memberikan:
+\begin{itemize}
+  \item Kontribusi ilmiah mengenai kemampuan penalaran LLM pada Bahasa Indonesia.
+  \item Panduan teknis untuk penelitian lanjutan dan praktisi (pemilihan model, pipeline).
+  \item Dataset dan skrip eksperimen yang dapat direplikasi.
+\end{itemize}
+
+%-----------------------------------------------------------------------------%
+\section{Metodologi Penelitian (Ringkas)}
+\label{sec:metodologi}
+%-----------------------------------------------------------------------------%
+Metodologi inti penelitian disusun sebagai pipeline modular yang terdiri dari langkah-langkah berikut:
 \begin{enumerate}
-	\item Penelitian ini memberikan \f{template} yang harapannya dapat mempermudah skripsi orang lain.
+  \item \textbf{Persiapan data:} Seleksi dan normalisasi dataset berbahasa Indonesia; jika perlu, terjemahan dan adaptasi dari dataset proof-style (format: premis, aturan, conjecture).
+  \item \textbf{Backend LLM:} Konfigurasi backend model (lokal / kuantisasi / API) dan tokenizers.
+  \item \textbf{Pipeline reasoning:} Implementasi modul:
+        \begin{itemize}
+          \item \texttt{translate\_decompose.py} — normalisasi + dekomposisi aturan,
+          \item \texttt{negate.py} — pembalikan label / penanganan negasi,
+          \item \texttt{search\_resolve.py} — pencarian klausa komplemen dan logic resolution,
+          \item \texttt{evaluate.py} — perhitungan akurasi dan laporan.
+        \end{itemize}
+  \item \textbf{Eksperimen:} Jalankan pengujian, ukur akurasi, performa (waktu, memori) per jumlah split dataset, dan analisis kesalahan.
+  \item \textbf{Analisis:} Klasifikasi kesalahan, bandingkan per-model, serta tarik rekomendasi.
 \end{enumerate}
-
-\todo{Tuliskan tujuan penelitian Anda di bagian ini.}
-
-
-%-----------------------------------------------------------------------------%
-\section{Posisi Penelitian}
-\label{sec:posisiPenelitian}
-%-----------------------------------------------------------------------------%
-\todo{
-	Sebutkan posisi penelitian Anda. Ada baiknya jika Anda menggunakan gambar atau diagram.
-	Template ini telah menyediakan contoh cara memasukkan gambar.
-}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.4\textwidth]{assets/pics/makara.png}
-	\caption{Penjelasan singkat terkait gambar.}
-	\label{fig:research_position}
-\end{figure}
-
-\todo{
-	Jelaskan \pic~\ref{fig:research_position} di sini.
-	Setiap gambar yang dimasukkan ke tugas akhir \bo{WAJIB} untuk dijelaskan oleh minimal satu paragraf.
-}
-
-
-%-----------------------------------------------------------------------------%
-\section{Langkah Penelitian}
-\label{sec:langkahPenelitian}
-%-----------------------------------------------------------------------------%
-\todo{
-	Subbab ini umumnya menjelaskan metode penelitian, jika metode yang digunakan cukup sederhana.
-	Jika metode yang digunakan cukup kompleks atau ada kewajiban dari fakultas Anda untuk menjelaskan metode secara rinci, gunakan Bab 3 untuk menjelaskan Metodologi Penelitian.
-}
-Berikut ini adalah langkah penelitian yang telah dilakukan:
-\begin{enumerate}
-	\item Tinjauan literatur \\
-	Pada tahap ini, dipelajari teori-teori yang terkait dengan penelitian ini untuk mendapatkan konsep dasar yang dibutuhkan dalam mencapai tujuan penelitian.
-	\item Analisis implementasi dan kesimpulan \\
-	Pada tahap ini, digunakan studi kasus untuk analisis terkait kegunaan \f{template}.
-	Setelah melakukan analisis tersebut, ditarik kesimpulan keseluruhan dari penelitian ini.
-\end{enumerate}
-
 
 %-----------------------------------------------------------------------------%
 \section{Sistematika Penulisan}
-\label{sec:sistematikaPenulisan}
+\label{sec:sistematika}
 %-----------------------------------------------------------------------------%
-Sistematika penulisan laporan adalah sebagai berikut:
+Susunan laporan ini adalah sebagai berikut:
 \begin{itemize}
-	\item Bab 1 \babSatu \\
-	    Bab ini mencakup latar belakang, cakupan penelitian, dan pendefinisian masalah.
-	\item Bab 2 \babDua \\
-	    Bab ini mencakup pemaparan terminologi dan teori yang terkait dengan penelitian berdasarkan hasil tinjauan pustaka yang telah digunakan, sekaligus memperlihatkan kaitan teori dengan penelitian.
-	\item Bab 3 \babTiga \\
-	    Apa itu Bab 3?
-	\item Bab 4 \babEmpat \\
-		Apa itu Bab 4?
-	\item Bab 5 \babLima \\
-	    Apa itu Bab 5?
-	\item Bab 6 \kesimpulan \\
-	    Bab ini mencakup kesimpulan akhir penelitian dan saran untuk pengembangan berikutnya.
+  \item \textbf{Bab 1} -- Pendahuluan (latar belakang, rumusan masalah, tujuan, metodologi singkat).
+  \item \textbf{Bab 2} -- Tinjauan Pustaka (teori terkait LLM, penalaran logis, dataset).
+  \item \textbf{Bab 3} -- Metodologi Eksperimen (desain eksperimen dan implementasi pipeline).
+  \item \textbf{Bab 4} -- Hasil dan Analisis.
+  \item \textbf{Bab 5} -- Kesimpulan dan Saran.
 \end{itemize}
 
-\todo{Anda bisa mengubah atau menambahkan penjelasan singkat mengenai isi masing-masing bab. Setiap tugas akhir pasti ada yang berbeda pada bagian ini.}
+%-----------------------------------------------------------------------------%
+\section{Panduan Singkat: Sitasi dan Cross-Reference}
+\label{sec:guide_citation}
+%-----------------------------------------------------------------------------%
+Untuk sitasi gunakan BibTeX seperti pada template; contoh pemanggilan:
+\begin{itemize}
+  \item Sitasi di dalam kalimat: \verb|Menurut \cite{author:year} ...|
+  \item Sitasi di akhir kalimat: \verb|... sesuai kajian sebelumnya \citep{author:year}.|
+\end{itemize}
+Contoh cross-reference:
+\begin{itemize}
+  \item Referensi ke Bab: \verb|\label{bab:1}| kemudian \verb|\ref{bab:1}| (contoh: Bab~\ref{bab:1}).
+  \item Referensi ke Sub-bab: \verb|\label{sec:metodologi}| lalu \verb|Section~\ref{sec:metodologi}|.
+\end{itemize}
+
+% Jika Anda ingin menandai bagian yang belum lengkap:
+\todo{Lengkapi bagian dataset dan konfigurasi backend pada Bab 3.}
+
+%-----------------------------------------------------------------------------%
+% Akhir Bab 1
+%-----------------------------------------------------------------------------%
