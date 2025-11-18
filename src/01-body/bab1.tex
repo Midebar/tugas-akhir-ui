@@ -1,102 +1,114 @@
 %-----------------------------------------------------------------------------%
-\chapter{\babSatu}
+\chapter{Pendahuluan}
 \label{bab:1}
 %-----------------------------------------------------------------------------%
 
-Bab ini menjelaskan latar belakang, rumusan masalah, tujuan penelitian, batasan, manfaat, tinjauan singkat metodologi, serta sistematika penulisan dari penelitian ini.
+Bab ini memaparkan latar belakang, permasalahan, tujuan, batasan, manfaat, ringkasan metodologi, serta sistematika penulisan penelitian ini. Penelitian berfokus pada evaluasi kemampuan penalaran logis oleh Model Bahasa Besar (Large Language Models, LLM) ketika bekerja pada dataset berbahasa Indonesia.
 
-
-%-----------------------------------------------------------------------------%
 \section{Latar Belakang}
 \label{sec:latBel}
-%-----------------------------------------------------------------------------%
-Perkembangan Model Bahasa Besar (Large Language Models, LLM) dalam beberapa tahun terakhir telah menunjukkan kemampuan mengesankan pada berbagai tugas pemrosesan bahasa alami seperti penerjemahan, ringkasan, dan tanya-jawab. 
-Salah satu aspek penting yang menjadi fokus kajian adalah kemampuan \emph{penalaran logis}, kemampuan menarik inferensi yang benar dari kumpulan premis dan aturan. 
-Sebagian besar benchmark penalaran dan reasoning (misalnya ProofWriter, LogicNLI, ProntoQA) ditujukan pada bahasa Inggris. Namun demikian, studi terhadap kemampuan penalaran LLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. 
-Perbedaan struktur linguistik, tanda baca, serta isu translasi otomatis dapat memengaruhi performa model ketika berpindah domain bahasa.
-Penelitian ini bertujuan untuk mengevaluasi kemampuan penalaran logis LLM pada dataset berbahasa Indonesia dan menguji efektivitas pipeline reasoning berbasis modul: translasi/normalisasi, dekomposisi aturan, pencarian klausa komplement, serta resolusi logika. 
-Fokus utama adalah mendapatkan gambaran secara kuantitatif maupun kualitatif tentang batas kemampuan LLM pada skenario berbahasa Indonesia dan menyajikan rekomendasi untuk eksperimen selanjutnya.
 
-%-----------------------------------------------------------------------------%
+Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa alami seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu menarik inferensi yang benar dari himpunan premis dan aturan formal, masih menghadapi kendala baik pada akurasi maupun keandalan, terutama di kasus yang memerlukan normalisasi, dekomposisi, dan pencarian bukti yang kompleks, serta resolusi logika.
+
+Sebagian besar dataset penalaran dibuat dalam bahasa Inggris, sehingga studi terhadap kemampuan penalaran LLM pada bahasa lain, termasuk Bahasa Indonesia, relatif terbatas. Perbedaan struktur linguistik, idiom, dan masalah tokenisasi serta kualitas terjemahan dapat memengaruhi performa model setelah adaptasi lintas bahasa. Oleh karena itu, diperlukan adaptasi dan evaluasi sistematis pada dataset berbahasa Indonesia serta investigasi pipeline yang menggabungkan modul terjemahan/normalisasi, dekomposisi aturan, mekanisme pencarian bukti, dan resolusi logika.
+
 \section{Rumusan Masalah}
 \label{sec:rumusan}
-%-----------------------------------------------------------------------------%
-Berdasarkan latar belakang tersebut, rumusan masalah penelitian ini adalah sebagai berikut:
+
+Berdasarkan latar belakang di atas, rumusan masalah penelitian ini adalah:
 \begin{enumerate}
-  \item Sejauh mana LLM berperforma dalam tugas penalaran logis pada dataset berbahasa Indonesia?
-  \item Bagaimana perbandingan performa antara model open-source berparameter rendah (low-resource) dengan model yang lebih besar dalam konteks penalaran logis Bahasa Indonesia?
-  \item Seberapa efektif implementasi pipeline \textit{logical reasoning framework} dalam meningkatkan kinerja penalaran pada dataset berbahasa Indonesia?
-  \item Apa tantangan utama (mis. tokenisasi, konteks budaya, format data) yang muncul ketika memindahkan dataset/pujian penalaran dari bahasa Inggris ke bahasa Indonesia?
+  \item Sejauh mana LLM mampu melakukan penalaran logis pada dataset berbahasa Indonesia?
+  \item Bagaimana perbandingan performa antara model open-source berparameter rendah dalam inferensi dataset?
+  \item Seberapa efektif pipeline \emph{translate $\rightarrow$ decompose $\rightarrow$ search $\rightarrow$ resolve} dalam meningkatkan akurasi inferensi pada data Bahasa Indonesia dibading dengan penalaran secara langsung secara naive?
+  \item Apa saja sumber utama kegagalan (kesalahan translasi, tokenisasi, ambiguitas budaya/linguistik, format data) ketika memindahkan benchmark penalaran dari Bahasa Inggris ke Bahasa Indonesia?
 \end{enumerate}
 
-%-----------------------------------------------------------------------------%
 \section{Tujuan Penelitian}
 \label{sec:tujuan}
-%-----------------------------------------------------------------------------%
-Tujuan penelitian ini dibagi menjadi tujuan umum dan tujuan khusus:
-\begin{itemize}
-  \item \textbf{Tujuan umum:} Mengevaluasi kemampuan penalaran logis LLM pada dataset berbahasa Indonesia.
-  \item \textbf{Tujuan khusus:}
-        \begin{enumerate}
-          \item Mengukur performa beberapa model (lokal/kuantisasi vs. pembanding) pada tugas penalaran.
-          \item Mengevaluasi kontribusi pipeline \emph{translate $\rightarrow$ decompose $\rightarrow$ search $\rightarrow$ resolve}.
-          \item Mengidentifikasi sumber kesalahan (error analysis) dan memberikan rekomendasi.
-        \end{enumerate}
-\end{itemize}
 
-%-----------------------------------------------------------------------------%
+\textbf{Tujuan umum:} Mengevaluasi dan memperbaiki kemampuan penalaran logis LLM pada dataset berbahasa Indonesia menggunakan pipeline.
+
+\textbf{Tujuan khusus:}
+\begin{enumerate}
+  \item Mengukur performa beberapa model pada tugas penalaran menggunakan metrik akurasi dan analisis kesalahan.
+  \item Mengidentifikasi dan mengkategorikan sumber kesalahan serta memberikan rekomendasi praktis untuk pengolahan data dan desain eksperimen berbahasa Indonesia.
+  \item Menyediakan dataset terjemahan, skrip eksperimen, dan laporan replikasi yang dapat digunakan peneliti lain.
+\end{enumerate}
+
 \section{Batasan Penelitian}
 \label{sec:batasan}
-%-----------------------------------------------------------------------------%
-Agar ruang lingkup penelitian terukur, maka penelitian ini memiliki batasan:
+
+Agar fokus dan ruang lingkup terukur, penelitian ini dibatasi sebagai berikut:
 \begin{itemize}
-  \item Dataset: fokus pada dataset berformat proof-style / NLI yang tersedia untuk Bahasa Indonesia (adaptasi/terjemahan dari ProofWriter/LogicNLI serta korpus NLI lokal).
-  \item Model: fokus pada model open-source yang dapat dijalankan secara lokal (termasuk versi kuantisasi), dan bila perlu perbandingan terhadap model akses API.
-  \item Evaluasi: metrik utama adalah akurasi final, dan analisis kualitatif terhadap kasus salah.
-  \item Lingkup eksperimen dibatasi pada dev/test split dataset mulai dari 10\% hingga 100\% (tergantung sumber daya komputasi) dari datatset itu sendiri.
+  \item \textbf{Dataset:} Fokus pada dataset \textit{proof-style} yang telah diterjemahkan ke Bahasa Indonesia, yaitu ProntoQA saja
+  \item \textbf{Model:} Eksperimen menggunakan model open-source yang dapat dijalankan lokal maupun server, khususnya dengan kuantisasi.
+  \item \textbf{Evaluasi:} Metrik utama adalah akurasi jawaban akhir terhadap ground truth.
+  \item \textbf{Sumber daya:} Eksperimen disesuaikan dengan kapasitas komputasi, sampling dev/test split dimulai pada 10\% hingga 100\% tergantung ketersediaan.
 \end{itemize}
 
-%-----------------------------------------------------------------------------%
+Referensi dari pipeline dan metoode, termasuk skrip seperti \texttt{translate\_decompose.py}, \texttt{negate.py}, dan \texttt{search\_resolve.py}, serta utilitas evaluasi tersedia pada repositori eksperimen yang menjadi inspirasi implementasi ini, yaitu pada repositori Aristotle LaTeX.
+
 \section{Manfaat Penelitian}
 \label{sec:manfaat}
-%-----------------------------------------------------------------------------%
-Hasil penelitian diharapkan memberikan:
+
+Hasil penelitian ini diharapkan memberi manfaat:
 \begin{itemize}
-  \item Kontribusi ilmiah mengenai kemampuan penalaran LLM pada Bahasa Indonesia.
-  \item Panduan teknis untuk penelitian lanjutan dan praktisi (pemilihan model, pipeline).
-  \item Dataset dan skrip eksperimen yang dapat direplikasi.
+  \item Bagi akademik: memperkaya literatur penalaran LLM pada bahasa Indonesia.
+  \item Bagi praktisi: panduan pemilihan model dan desain pipeline untuk tugas inferensi logis berbahasa lokal.
+  \item Bagi komunitas open-source: dataset dan skrip replikasi yang dapat mempercepat penelitian lanjutan.
 \end{itemize}
 
 %-----------------------------------------------------------------------------%
-\section{Metodologi Penelitian (Ringkas)}
-\label{sec:metodologi}
+\section{Posisi Penelitian}
+\label{sec:posisiPenelitian}
 %-----------------------------------------------------------------------------%
-Metodologi inti penelitian disusun sebagai pipeline modular yang terdiri dari langkah-langkah berikut:
+\todo{
+  Sebutkan posisi penelitian Anda. Ada baiknya jika Anda menggunakan gambar atau diagram.
+  Template ini telah menyediakan contoh cara memasukkan gambar.
+}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{assets/pics/makara.png}
+  \caption{Penjelasan singkat terkait gambar.}
+  \label{fig:research_position}
+\end{figure}
+
+\todo{
+  Jelaskan \pic~\ref{fig:research_position} di sini.
+  Setiap gambar yang dimasukkan ke tugas akhir \bo{WAJIB} untuk dijelaskan oleh minimal satu paragraf.
+}
+
+\section{Metodologi Singkat}
+\label{sec:metodologi}
+
+Pendekatan penelitian dirancang sebagai pipeline yang memadukan teknik pemrosesan teks dan mekanisme reasoning simbolik:
 \begin{enumerate}
-  \item \textbf{Persiapan data:} Seleksi dan normalisasi dataset berbahasa Indonesia; jika perlu, terjemahan dan adaptasi dari dataset proof-style (format: premis, aturan, conjecture).
-  \item \textbf{Backend LLM:} Konfigurasi backend model (lokal / kuantisasi / API) dan tokenizers.
-  \item \textbf{Pipeline reasoning:} Implementasi modul:
-        \begin{itemize}
-          \item \texttt{translate\_decompose.py} — normalisasi + dekomposisi aturan,
-          \item \texttt{negate.py} — pembalikan label / penanganan negasi,
-          \item \texttt{search\_resolve.py} — pencarian klausa komplemen dan logic resolution,
-          \item \texttt{evaluate.py} — perhitungan akurasi dan laporan.
-        \end{itemize}
-  \item \textbf{Eksperimen:} Jalankan pengujian, ukur akurasi, performa (waktu, memori) per jumlah split dataset, dan analisis kesalahan.
-  \item \textbf{Analisis:} Klasifikasi kesalahan, bandingkan per-model, serta tarik rekomendasi.
+  \item \textbf{Persiapan Data:} Dataset yang ada di translasikan ke Bahasa Indonesia menggunakan model open-source
+  \item \textbf{Dekomposisi Logis:} Mengurai aturan kompleks menjadi bentuk yang lebih sederhana ke dalam First Order Logic (FOL) dan menormalisasi ke Prenex Normal Form (PNF) atau Conjunctive Normal Form (CNF).
+  \item \textbf{Inisialisasi Dua Jalur Pencarian:} Menegasikan konjektur atau pertanyaan untuk membentuk klausa komplemen yang akan dicari.
+  \item \textbf{Search \& Resolve:} Melakukan pencarian klausa komplemen dan resolusi logika untuk menyimpulkan kebenaran atau identifikasi kontradiksi.
+  \item \textbf{Evaluasi:} Mengevaluasi hasil akhir dengan menggabungkan jawaban dari dua jalur tersebut dan membandingkannya dengan ground truth dan di aggregasi menggunakan metrik akurasi.
 \end{enumerate}
 
 %-----------------------------------------------------------------------------%
 \section{Sistematika Penulisan}
-\label{sec:sistematika}
+\label{sec:sistematikaPenulisan}
 %-----------------------------------------------------------------------------%
-Susunan laporan ini adalah sebagai berikut:
+Sistematika penulisan laporan adalah sebagai berikut:
 \begin{itemize}
-  \item \textbf{Bab 1} -- Pendahuluan (latar belakang, rumusan masalah, tujuan, metodologi singkat).
-  \item \textbf{Bab 2} -- Tinjauan Pustaka (teori terkait LLM, penalaran logis, dataset).
-  \item \textbf{Bab 3} -- Metodologi Eksperimen (desain eksperimen dan implementasi pipeline).
-  \item \textbf{Bab 4} -- Hasil dan Analisis.
-  \item \textbf{Bab 5} -- Kesimpulan dan Saran.
+  \item Bab 1 \babSatu \\
+        Bab ini mencakup latar belakang, cakupan penelitian, dan pendefinisian masalah.
+  \item Bab 2 \babDua \\
+        Bab ini mencakup pemaparan terminologi dan teori yang terkait dengan penelitian berdasarkan hasil tinjauan pustaka yang telah digunakan, sekaligus memperlihatkan kaitan teori dengan penelitian.
+  \item Bab 3 \babTiga \\
+        Apa itu Bab 3?
+  \item Bab 4 \babEmpat \\
+        Apa itu Bab 4?
+  \item Bab 5 \babLima \\
+        Apa itu Bab 5?
+  \item Bab 6 \kesimpulan \\
+        Bab ini mencakup kesimpulan akhir penelitian dan saran untuk pengembangan berikutnya.
 \end{itemize}
 
 %-----------------------------------------------------------------------------%
