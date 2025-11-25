@@ -1,6 +1,6 @@
 # Judul Tugas Akhir Anda
 
-Nama Anda - Nomor (NPM) Anda - Jurusan Anda Universitas Indonesia (Tingkatan, Tahun)
+Mikhael Deo Barli - 1906350572 - Ilmu Komputer Universitas Indonesia (Tingkatan, 2025)
 
 ----------
 
@@ -22,7 +22,7 @@ Berikut ini kumpulan *softcopy* referensi yang saya gunakan untuk tugas akhir (l
 
 Daftar referensi yang tersedia (akan diperbaharui hingga akhir pengerjaan):
 
-1. Judul (Tahun)
+1. Kemampuan LLM dalam Logical Inference pada Dataset Berbahasa Indonesia (2025)
 
 Disclaimer: Konten referensi yang diberikan melalui link tersebut adalah apa adanya tanpa ada perubahan apapun. Saya hanya membagikan referensi tersebut jika tidak ada lisensi yang melarang saya untuk membagikannya secara luas.
 
