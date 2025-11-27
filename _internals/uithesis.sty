@@ -60,7 +60,7 @@
 % end with a backslash, you can use the command in the argument to another
 % command.
 \usepackage{url}
-  \urlstyle{same}
+\urlstyle{same}
 
 % Agar tabel bisa menggunakan rowspan atau colspan.
 \usepackage{multirow}
@@ -72,9 +72,9 @@
 % Digunakan untuk mengantur line spacing pada laporan. Umumnya spacing yang
 % digunakan adalah 1.5.
 \usepackage{setspace}
-  \setstretch{1.4}
-  %\doublespacing
-  %\singlespacing
+\setstretch{1.4}
+%\doublespacing
+%\singlespacing
 
 % From Rforge:
 % The geometry package controls the overall margins and text area of the
@@ -161,6 +161,8 @@
 \usepackage{glossaries}
 \usepackage[automake]{glossaries-extra}
 
+\usepackage{tabularx} % Required for auto-width columns
+
 
 %-----------------------------------------------------------------------------%
 % Konfigurasi
@@ -174,10 +176,10 @@
 % Konfigurasi untuk input PDF
 \newif\ifpdf
 \ifx\pdfoutput\undefined
-   \pdffalse
+	\pdffalse
 \else
-   \pdfoutput=1
-   \pdftrue
+	\pdfoutput=1
+	\pdftrue
 \fi
 
 % Konfigurasi hyperref
@@ -196,18 +198,18 @@
 % Link setiap item daftar isi (ToC) ke halaman terkait
 \makeatletter
 \def\contentsline#1#2#3#4{%
-  \ifx\\#4\\%
-	\csname l@#1\endcsname{#2}{#3}%
-  \else
-	\csname l@#1\endcsname{%
-	  \hyper@linkstart{link}{#4}{#2}\hyper@linkend
-	}{%
-	  % same link destination for the page:
-	  \hyper@linkstart{link}{#4}{#3}\hyper@linkend
-	  % link destination is the page itself:
-	  % \hyperpage{#3}%
-	}%
-  \fi
+	\ifx\\#4\\%
+		\csname l@#1\endcsname{#2}{#3}%
+	\else
+		\csname l@#1\endcsname{%
+			\hyper@linkstart{link}{#4}{#2}\hyper@linkend
+		}{%
+			% same link destination for the page:
+			\hyper@linkstart{link}{#4}{#3}\hyper@linkend
+			% link destination is the page itself:
+			% \hyperpage{#3}%
+		}%
+	\fi
 }
 
 % Pengaturan paragraf
@@ -220,9 +222,9 @@
 
 % Atur formatting subbab, subsubbab, dst.
 \renewcommand\section{\@startsection {section}{1}{\z@}%
-	{0pt}%
-	{1pt \@plus -1pt \@minus 1pt}%
-	{\normalfont\fontsize{12}{15}\bfseries}}
+  {0pt}%
+  {1pt \@plus -1pt \@minus 1pt}%
+  {\normalfont\fontsize{12}{15}\bfseries}}
 \renewcommand\subsection{\@startsection {subsection}{2}{\z@}%
 	{0pt}%
 	{1pt \@plus -1pt \@minus 1pt}%
@@ -445,11 +447,11 @@
 		\rowcolor[rgb]{.9,.6,.6}
 		\bo{@todo} \\
 		\rowcolor[gray]{1.}
-		 #1 \\
-		 \\
+		#1         \\
+		\\
 		\hline
 	\end{tabular}
-	}
+}
 
 % Buat catatan untuk menambahkan referensi.
 \newcommand{\todoCite}{
@@ -457,11 +459,11 @@
 		\rowcolor[rgb]{.6,.9,.6}
 		\bo{@todo} \\
 		\rowcolor[gray]{1.}
-		 Referensi \\
-		 \\
+		Referensi  \\
+		\\
 		\hline
 	\end{tabular}
-	}
+}
 
 % Tambahkan berkas PDF ke dalam laporan dan gunakan style laporan
 % terhadap berkas ini.
@@ -496,14 +498,14 @@
 
 % Untuk menyalakan dan mematikan kalimat bold di table of content
 \newcommand*{\enableboldchapterintoc}{%
-  \addtocontents{toc}{\string\renewcommand{\protect\cftchapfont}{\protect\normalfont\protect\bfseries}}
-  \addtocontents{toc}{\string\renewcommand{\protect\cftchappagefont}{\protect\normalfont\protect\bfseries}}
-  \addtocontents{toc}{\string\renewcommand{\protect\cftchapleader}{\protect\bfseries\protect\cftdotfill{\protect\cftsecdotsep}}}% dot leaders in bold
+	\addtocontents{toc}{\string\renewcommand{\protect\cftchapfont}{\protect\normalfont\protect\bfseries}}
+	\addtocontents{toc}{\string\renewcommand{\protect\cftchappagefont}{\protect\normalfont\protect\bfseries}}
+	\addtocontents{toc}{\string\renewcommand{\protect\cftchapleader}{\protect\bfseries\protect\cftdotfill{\protect\cftsecdotsep}}}% dot leaders in bold
 }
 \newcommand*{\disableboldchapterintoc}{%
-  \addtocontents{toc}{\string\renewcommand{\protect\cftchappagefont}{\protect\normalfont}}
-  \addtocontents{toc}{\string\renewcommand{\protect\cftchapfont}{\protect\normalfont}}
-  \addtocontents{toc}{\string\renewcommand{\protect\cftchapleader}{\protect\normalfont\protect\cftdotfill{\protect\cftsecdotsep}}}%
+	\addtocontents{toc}{\string\renewcommand{\protect\cftchappagefont}{\protect\normalfont}}
+	\addtocontents{toc}{\string\renewcommand{\protect\cftchapfont}{\protect\normalfont}}
+	\addtocontents{toc}{\string\renewcommand{\protect\cftchapleader}{\protect\normalfont\protect\cftdotfill{\protect\cftsecdotsep}}}%
 }
 
 % Alias untuk menambahkan halaman baru setiap akhir bab
@@ -540,6 +542,7 @@
 		\fancyhead[RO,LE]{\thepage}
 	\else
 		\fancyhead[LO,RE]{\thepage}
+
 	\fi
 }
 \newcommand{\setoddevenfooter}{
@@ -548,6 +551,7 @@
 		\fancyfoot[RO,LE]{\footnotesize \fontfamily{phv} \selectfont \bo{Universitas Indonesia}}
 	\else
 		\fancyfoot[LO,RE]{\footnotesize \fontfamily{phv} \selectfont \bo{Universitas Indonesia}}
+
 	\fi
 }
 
@@ -568,8 +572,8 @@
 
 % Caption sumber untuk gambar/tabel lintas halaman
 \newcommand*{\captionsourcecont}[2]{
-\caption[]{#1 (sambungan)\par
-	\footnotesize\textbf{Sumber:} #2\par}
+	\caption[]{#1 (sambungan)\par
+		\footnotesize\textbf{Sumber:} #2\par}
 }
 
 
@@ -703,13 +707,13 @@
 	\renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}}
 	\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
 	\renewcommand{\cftchapaftersnum}{.}
-
+	
 	% Pengaturan Daftar Gambar
 	\renewcommand{\cftfigindent}{0pt}
 	\renewcommand{\cftfignumwidth}{70pt}
 	\renewcommand{\cftfigaftersnum}{.}
 	\renewcommand{\cftfigpresnum}{\pic~}
-
+	
 	% Pengaturan Daftar Tabel
 	\renewcommand{\cfttabindent}{0pt}
 	\renewcommand{\cfttabnumwidth}{60pt}
