@@ -3,36 +3,37 @@
 \label{bab:1}
 %-----------------------------------------------------------------------------%
 
-Bab ini memaparkan latar belakang, permasalahan, tujuan, batasan, manfaat, ringkasan metodologi, serta sistematika penulisan penelitian ini. Penelitian berfokus pada evaluasi kemampuan penalaran logis oleh Model Bahasa Besar (Large Language Models, LLM) ketika bekerja pada dataset berbahasa Indonesia.
+Bab ini memaparkan latar belakang, permasalahan, tujuan, batasan, manfaat, ringkasan metodologi, serta sistematika penulisan penelitian ini. Penelitian ini berfokus pada evaluasi kemampuan penalaran logis oleh \textit{Large Language Models} (LLM) yang bersifat \textit{open-weight} ketika bekerja pada dataset berbahasa Indonesia dengan \textit{framework translation-decomposition-searchresolve} juga perbandingannya dengan \textit{naive prompting}
 
 \section{Latar Belakang}
 \label{sec:latBel}
 
-Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa natural seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu menarik inferensi yang benar dari himpunan premis dan aturan formal, masih menghadapi kendala pada akurasi dan kebenaran dari hasil inferensi, terutama di kasus yang memerlukan normalisasi, dekomposisi, pencarian bukti, dan resolusi logika.
+Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa natural seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu melakukan inferensi yang benar dari himpunan premis dan aturan formal, masih menghadapi kendala pada akurasi dari hasil inferensi, terutama di kasus yang memerlukan normalisasi, dekomposisi, pencarian bukti, dan resolusi logika.
 
-Sebagian besar dataset penalaran dibuat dalam bahasa Inggris, sehingga studi terhadap kemampuan penalaran LLM pada bahasa lain, termasuk Bahasa Indonesia, relatif terbatas. Perbedaan struktur linguistik, idiom, dan masalah tokenisasi serta kualitas terjemahan dapat memengaruhi performa model setelah adaptasi lintas bahasa. Oleh karena itu, diperlukan adaptasi dan evaluasi sistematis pada dataset berbahasa Indonesia serta investigasi textit{pipeline} yang menggabungkan modul terjemahan/normalisasi, dekomposisi aturan, mekanisme pencarian bukti, dan resolusi logika.
+Penelitian sebelumnya sudah dilakukan pada berbagai dataset menggunakan framework yang sama. Dataset yang digunakan sebagian besar dalam bahasa Inggris, sehingga studi terhadap kemampuan penalaran LLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. Perbedaan struktur linguistik, idiom, dan masalah tokenisasi serta kualitas terjemahan dapat memengaruhi performa model setelah adaptasi lintas bahasa.
+Penelitian sebelumnya juga menggunakan \textit{proprietary} LLM yang bukan \textit{open-weight}, sehingga untuk mencari perbedaan dan perbandingan performa \textit{apple-to-apple} tidak memungkinkan.
+
+Dari \textit{gap} penelitian yang sudah disebutkan, belum ada kajian untuk meneliti efektivitas \textit{framework} pada dataset berbahasa Indonesia. Penelitian ini menjadi penting untuk mengevaluasi kemampuan LLM dalam inferensi pada dataset berbahasa Indonesia dan mengeksplorasi sebuah \textit{framework} yang mengintegrasikan modul terjemahan dan normalisasi, dekomposisi logis, mekanisme pencarian bukti, serta resolusi logika. Diharapkan bahwa pendekatan terintegrasi ini dapat secara signifikan meningkatkan kemampuan penalaran LLM pada bahasa Indonesia.
 
 \section{Rumusan Masalah}
 \label{sec:rumusan}
 
 Berdasarkan latar belakang di atas, rumusan masalah penelitian ini adalah:
 \begin{enumerate}
-      \item Sejauh mana LLM mampu melakukan penalaran logis pada dataset berbahasa Indonesia?
-      \item Bagaimana perbandingan performa antara model open-source berparameter rendah dalam inferensi dataset?
-      \item Seberapa efektif pipeline \emph{translate $\rightarrow$ decompose $\rightarrow$ search $\rightarrow$ resolve} dalam meningkatkan akurasi inferensi pada data Bahasa Indonesia dibading dengan penalaran secara langsung secara naive?
-      \item Apa saja sumber utama kegagalan (kesalahan translasi, tokenisasi, ambiguitas budaya/linguistik, format data) ketika memindahkan benchmark penalaran dari Bahasa Inggris ke Bahasa Indonesia?
+      \item Bagaimana perbandingan performa antara model open-weight berparameter rendah dalam inferensi dataset berbahasa Indonesia?
+      \item bagaimana efektivitas \textit{framework} \emph{translate $\rightarrow$ decompose $\rightarrow$ search $\rightarrow$ resolve} dalam meningkatkan akurasi inferensi pada data Bahasa Indonesia dibanding dengan penalaran secara langsung secara naive?
 \end{enumerate}
 
 \section{Tujuan Penelitian}
 \label{sec:tujuan}
 
-\textbf{Tujuan umum:} Mengevaluasi dan memperbaiki kemampuan penalaran logis LLM pada dataset berbahasa Indonesia menggunakan pipeline.
+Berikut adalah tujuan dari penelitian sesuai dengan latar belakang dan rumusan masalah
 
-\textbf{Tujuan khusus:}
+\textbf{Tujuan:}
 \begin{enumerate}
-      \item Mengukur performa beberapa model pada tugas penalaran menggunakan metrik akurasi dan analisis kesalahan.
-      \item Mengidentifikasi dan mengkategorikan sumber kesalahan serta memberikan rekomendasi praktis untuk pengolahan data dan desain eksperimen berbahasa Indonesia.
-      \item Menyediakan dataset terjemahan, skrip eksperimen, dan laporan replikasi yang dapat digunakan peneliti lain.
+      \item Mengukur performa beberapa model pada tugas penalaran menggunakan metrik akurasi.
+      \item Mengevaluasi kemampuan penalaran logika LLM pada dataset berbahasa Indonesia menggunakan \textit{framework} dan tanpa \textit{framework}, seperti \textit{naive prompting}
+      \item Menyediakan dataset terjemahan, skrip eksperimen, dan laporan yang dapat digunakan penelitian selanjutnya.
 \end{enumerate}
 
 \section{Batasan Penelitian}
@@ -40,37 +41,36 @@ Berdasarkan latar belakang di atas, rumusan masalah penelitian ini adalah:
 
 Agar fokus dan ruang lingkup terukur, penelitian ini dibatasi sebagai berikut:
 \begin{itemize}
-      \item \textbf{Dataset:} Fokus pada dataset \textit{proof-style} yang telah diterjemahkan ke Bahasa Indonesia, yaitu ProntoQA saja
-      \item \textbf{Model:} Eksperimen menggunakan model open-source yang dapat dijalankan lokal maupun server, khususnya dengan kuantisasi.
+      \item \textbf{Dataset:} Fokus pada dataset diterjemahkan ke Bahasa Indonesia, yaitu ProntoQA saja
+      \item \textbf{Model:} Eksperimen menggunakan model open-weight yang dapat dijalankan lokal maupun server, khususnya dengan kuantisasi.
       \item \textbf{Evaluasi:} Metrik utama adalah akurasi jawaban akhir terhadap ground truth.
-      \item \textbf{Sumber daya:} Eksperimen disesuaikan dengan kapasitas komputasi, sampling dev/test split dimulai pada 10\% hingga 100\% tergantung ketersediaan.
+            % \item \textbf{Sumber daya:} Eksperimen disesuaikan dengan kapasitas komputasi dan biaya, sampling dimulai pada 10\% hingga 100\%.
 \end{itemize}
 
-Referensi dari pipeline dan metoode, termasuk skrip seperti \texttt{translate\_decompose.py}, \texttt{negate.py}, dan \texttt{search\_resolve.py}, serta utilitas evaluasi tersedia pada repositori eksperimen yang menjadi inspirasi implementasi ini, yaitu pada repositori Aristotle LaTeX.
+Referensi dari framework dan metode, termasuk skrip seperti \texttt{translate\_decompose.py}, \texttt{negate.py}, dan \texttt{search\_resolve.py}, serta utilitas evaluasi tersedia pada repositori eksperimen yang menjadi inspirasi implementasi ini, yaitu pada repositori Aristotle.
 
 \section{Manfaat Penelitian}
 \label{sec:manfaat}
 
-Hasil penelitian ini diharapkan memberi manfaat:
+Penelitian ini diharapkan memberikan kontribusi yang bermakna bagi berbagai pihak:
+
 \begin{itemize}
-      \item Bagi akademik: memperkaya literatur penalaran LLM pada bahasa Indonesia.
-      \item Bagi praktisi: panduan pemilihan model dan desain pipeline untuk tugas inferensi logis berbahasa lokal.
-      \item Bagi komunitas open-source: dataset dan skrip replikasi yang dapat mempercepat penelitian lanjutan.
+      \item \textbf{Bagi pengembangan ilmu pengetahuan:} Penelitian ini dapat menambah pemahaman tentang kemampuan penalaran logis LLM pada bahasa Indonesia, sebuah aspek yang masih jarang dikaji. Temuan ini dapat menjadi fondasi bagi penelitian lanjutan dalam evaluasi model bahasa pada tugas-tugas inferensi kompleks dalam bahasa lokal.
+            
+      \item \textbf{Bagi praktisi dan pengembang:} Hasil analisis perbandingan model dan efektivitas framework dapat menjadi panduan dalam memilih model open-weight yang tepat dan merancang pipeline pemrosesan bahasa untuk tugas inferensi logis berbahasa Indonesia, terutama dengan sumber daya komputasi terbatas.
+            
+      \item \textbf{Bagi komunitas penelitian terbuka:} Dataset ProntoQA yang diterjemahkan ke bahasa Indonesia, skrip eksperimen, serta laporan hasil penelitian akan dibagikan kepada publik. Kontribusi ini memungkinkan peneliti lain untuk mereplikasi, memvalidasi, dan melanjutkan penelitian dalam domain yang sama tanpa perlu melakukan terjemahan dan persiapan data dari awal.
 \end{itemize}
 
 %-----------------------------------------------------------------------------%
 \section{Posisi Penelitian}
 \label{sec:posisiPenelitian}
 %-----------------------------------------------------------------------------%
-\todo{
-      Sebutkan posisi penelitian Anda. Ada baiknya jika Anda menggunakan gambar atau diagram.
-      Template ini telah menyediakan contoh cara memasukkan gambar.
-}
 
 \begin{figure}
       \centering
-      \includegraphics[width=0.4\textwidth]{assets/pics/makara.png}
-      \caption{Penjelasan singkat terkait gambar.}
+      \includegraphics[width=0.7\textwidth]{assets/pics/posisi_penelitian.png}
+      \caption{Diagram posisi penelitian yang dilakukan}
       \label{fig:research_position}
 \end{figure}
 
@@ -78,18 +78,6 @@ Hasil penelitian ini diharapkan memberi manfaat:
       Jelaskan \pic~\ref{fig:research_position} di sini.
       Setiap gambar yang dimasukkan ke tugas akhir \bo{WAJIB} untuk dijelaskan oleh minimal satu paragraf.
 }
-
-\section{Metodologi Singkat}
-\label{sec:metodologi}
-
-Pendekatan penelitian dirancang sebagai pipeline yang memadukan teknik pemrosesan teks dan mekanisme reasoning simbolik:
-\begin{enumerate}
-      \item \textbf{Persiapan Data:} Dataset yang ada di translasikan ke Bahasa Indonesia menggunakan model open-source
-      \item \textbf{Dekomposisi Logis:} Mengurai aturan kompleks menjadi bentuk yang lebih sederhana ke dalam First Order Logic (FOL) dan menormalisasi ke Prenex Normal Form (PNF) atau Conjunctive Normal Form (CNF).
-      \item \textbf{Inisialisasi Dua Jalur Pencarian:} Menegasikan konjektur atau pertanyaan untuk membentuk klausa komplemen yang akan dicari.
-      \item \textbf{Search \& Resolve:} Melakukan pencarian klausa komplemen dan resolusi logika untuk menyimpulkan kebenaran atau identifikasi kontradiksi.
-      \item \textbf{Evaluasi:} Mengevaluasi hasil akhir dengan menggabungkan jawaban dari dua jalur tersebut dan membandingkannya dengan ground truth dan di aggregasi menggunakan metrik akurasi.
-\end{enumerate}
 
 %-----------------------------------------------------------------------------%
 \section{Sistematika Penulisan}
@@ -104,269 +92,7 @@ Sistematika penulisan laporan adalah sebagai berikut:
       \item Bab 3 \babTiga \\
             Bab ini mencakup metodologi atau langkah-langkah yang digunakan untuk melakukan penelitian ini.
       \item Bab 4 \babEmpat \\
-            Bab ini mencakup eksperimen dan hasil eksperimen penelitian
-      \item Bab 5 \babLima \\
-            Bab ini mencakup analisis dari hasil eksperimen yang sudah dilakukan
-      \item Bab 6 \kesimpulan \\
+            Bab ini mencakup eksperimen dan hasil eksperimen penelitian serta analisis dari hasil eksperimen tersebut
+      \item \kesimpulan \\
             Bab ini mencakup kesimpulan akhir penelitian dan saran untuk pengembangan berikutnya.
 \end{itemize}
-
-% %-----------------------------------------------------------------------------%
-% \section{Melakukan \f{Cross-Reference} ke Suatu Bagian dalam Laporan}
-% \label{sec:crossReference}
-% %-----------------------------------------------------------------------------%
-% Dengan menggunakan \gls{latex}, Anda tidak perlu lagi melakukan referensi ke suatu bagian atau objek dalam laporan secara manual.
-% Anda cukup melakukan referensi ke bagian/gambar/kode/persamaan yang Anda inginkan dengan menggunakan perintah \code{\bslash{}ref}.
-% Anda tidak perlu lagi mengubah referensi secara manual setiap kali ada perubahan letak pada bagian tersebut, karena \gls{latex}~akan melakukannya secara otomatis.
-% Selain itu, pada berkas \acrfull{pdf} yang dihasilkan oleh \gls{latex}, referensi tersebut akan memiliki \f{link} yang langsung mengarahkan pembaca ke posisi objek atau bagian yang direferensikan.
-% Untuk melakukan \f{cross-reference}, pertama kali tandai bagian yang ingin Anda referensikan dengan menggunakan suatu label, melalui perintah \code{\bslash{}label\{...:.....\}}.
-% Label tidak boleh mengandung spasi. Berikut ini adalah konvensi penamaan label dan cara melakukan referensi yang digunakan dalam \f{template} ini:
-% \begin{itemize}
-%       \item \code{\bslash{}label\{bab:[nomorBab]\}} untuk sebuah bab. \\
-%             Contoh: \code{\bslash{}label\{bab:3\}} \\
-%             Cara referensi: \code{\bslash{}bab\~\bslash{}ref\{bab:3\}} \\
-%             Hasil referensi: \bab~\ref{bab:3}.
-%       \item \code{\bslash{}label\{sec:[....]\}} untuk sebuah subbab. \\
-%             Contoh: \code{\bslash{}label\{sec:crossReference\}} \\
-%             Cara referensi: \code{\bslash{}sect\~\bslash{}ref\{sec:crossReference\}} \\
-%             Hasil referensi: \sect~\ref{sec:crossReference}.
-%       \item \code{\bslash{}label\{appendix:[....]\}} untuk sebuah bab/subbab lampiran. \\
-%             Contoh: \code{\bslash{}label\{appendix:changelog\}} \\
-%             Cara referensi: \code{\bslash{}apdx\~\bslash{}ref\{appendix:changelog\}} \\	Hasil referensi: \apdx~\ref{appendix:changelog}.
-%       \item \code{\bslash{}label\{equ:[....]\}} untuk sebuah persamaan matematis. \\
-%             Contoh: \code{\bslash{}label\{equ:matriks\}} \\
-%             Cara referensi: \code{\bslash{}equ\~\bslash{}ref\{equ:matriks\}} \\
-%             Hasil referensi: \equ~\ref{equ:matriks}.
-%       \item \code{\bslash{}label\{fig:[....]\}} untuk sebuah gambar. \\
-%             Contoh: \code{\bslash{}label\{fig:testGambar\}} \\
-%             Cara referensi: \code{\bslash{}pic\~\bslash{}ref\{fig:testGambar\}} \\
-%             Hasil referensi: \pic~\ref{fig:testGambar}.
-%       \item \code{\bslash{}label\{tab:[....]\}} untuk sebuah tabel. \\
-%             Contoh: \code{\bslash{}label\{tab:\tab1\}} \\
-%             Cara referensi: \code{\bslash{}tab\~\bslash{}ref\{tab:tab1\}} \\
-%             Hasil referensi: \tab~\ref{tab:long}.
-%       \item Untuk sebuah kode sumber, label diletakkan sebagai argumen dari \code{\bslash{}lstinputlisting} seperti: \code{\bslash{}lstinputlisting[..., label=code:...]}. \\
-%             Contoh: \code{\bslash{}lstinputlisting[language=Java, caption=Kode sampel Java, label=code:java]} \\
-%             Cara referensi: \code{\bslash{}lst\~\bslash{}ref\{code:java\}} \\
-%             Hasil referensi: \lst~\ref{code:java}.
-% \end{itemize}
-
-% %-----------------------------------------------------------------------------%
-% \section{Menambahkan Kode Program}
-% \label{sec:codeListing}
-% % Hal baru di template 2017
-% %-----------------------------------------------------------------------------%
-% % v2.2.1: tutorial dipindah dari Bab 3 ke Bab 2
-% Pada \gls{latex}, kode program seringkali disebut \f{listing}.
-% \f{Syntax highlighting} kini sudah bisa dilakukan secara otomatis oleh \f{library} yang ada di \gls{latex}.
-% Sudah tidak perlu lagi membuat skrip manual untuk menambahkan \f{syntax highlighting} sendiri.
-% \lst~\ref{code:java} adalah contoh kode program (\f{listing}) Java yang dicetak oleh \gls{latex}.
-
-% \lstinputlisting[language=Java, caption=Kode sampel Java yang cukup panjang, label=code:java]{assets/codes/2-sample.java}
-
-% Sintaks untuk memasukkan kode program ke dalam dokumen \gls{latex}~adalah sebagai berikut:
-
-% \begin{lstlisting}[language={[latex]tex}, caption=Meng]
-% \lstinputlisting[language=Java, caption=Kode sampel Java yang cukup panjang, label=code:java]{assets/codes/2-sample.java}
-% \end{lstlisting}
-
-% Terdapat tiga argumen yang digunakan pada perintah \code{\bslash{}lstinputlisting}:
-% \begin{itemize}
-%       \item \code{language} digunakan untuk menentukan bahasa pemrograman yang digunakan.
-%             Untuk menggunakan suatu dialek bahasa pemrograman yang berbeda dari \f{default},
-%             misalkan versi Python3 dari Python,
-%             gunakan perintah \code{language=\{[3]Python\}}.
-%       \item \code{caption} digunakan untuk memberikan \f{caption} pada kode program.
-%             Argumen ini sifatnya opsional, jika ada, maka \f{caption} akan ditampilkan di bawah kode program.
-%             Jika argumen ini tidak ada, maka \f{caption} tidak akan ditampilkan dan kode tidak bisa masuk ke daftar kode program.
-%       \item \code{label} digunakan untuk memberikan label pada kode program untuk rujukan di dalam dokumen (\f{cross-reference}).
-%             Argumen ini tidak boleh didefinisikan jika argumen \code{caption} tidak didefinisikan.
-% \end{itemize}
-
-% Terdapat empat kelompok bahasa pemrograman (dan dialek) yang didukung oleh implementasi \code{listings} pada \f{template} ini, yaitu:
-
-% \begin{itemize}
-%       \item \bo{Bahasa pemrograman yang didukung secara \f{default} oleh \code{listings}} (menurut \cite{latex:source_code_listings}): \\
-%             \code{ABAP}, \code{ACSL}, \code{Ada}, \code{Algol}, \code{Ant}, \code{Awk}, \code{bash}, \code{Basic}, \code{C++}, \code{C}, \code{Caml},
-%             \code{Clean}, \code{Cobol}, \code{Comal}, \code{command.com} (Windows Batch), \code{csh}, \code{Delphi}, \code{Eiffel}, \code{Elan},
-%             \code{erlang}, \code{Euphoria}, \code{Fortran}, \code{GCL}, \code{Go} (golang), \code{Gnuplot}, \code{Haskell}, \code{HTML}, \code{IDL},
-%             \code{inform}, \code{Java}, \code{JVMIS}, \code{ksh}, \code{Lisp}, \code{Logo}, \code{Lua}, \code{make}, \code{Mathematica}, \code{Matlab},
-%             \code{Mercury}, \code{MetaPost}, \code{Miranda}, \code{Mizar}, \code{ML}, \code{Modelica}, \code{Modula-2}, \code{MuPAD}, \code{NASTRAN},
-%             \code{Oberon-2}, \code{OCL}, \code{Octave}, \code{Oz}, \code{Pascal}, \code{Perl}, \code{PHP}, \code{PL/I}, \code{Plasm}, \code{POV},
-%             \code{Prolog}, \code{Promela}, \code{PSTricks}, \code{Python}, \code{R}, \code{Reduce}, \code{Rexx}, \code{RSL}, \code{Ruby}, \code{S},
-%             \code{SAS}, \code{Scilab}, \code{sh}, \code{SHELXL}, \code{Simula}, \code{SQL}, \code{tcl}, \code{TeX}, \code{VBScript}, \code{Verilog},
-%             \code{VHDL}, \code{VRML}, \code{XML}, dan \code{XSLT}.
-%       \item \bo{Dialek yang didukung secara \f{default} oleh \code{listings}} (menurut \cite{latex:source_code_listings}, diambil beberapa contoh):
-%             \begin{itemize}
-%                   \item Dialek Assembly: \code{[Motorola68k]\{Assembler\}}, \code{[x86masm]\{Assembler\}},
-%                   \item Dialek Awk: \code{[gnu]\{Awk\}} (GNU Awk), \code{[POSIX]\{Awk\}},
-%                   \item Dialek C: \code{[ANSI]\{C\}} (default), \code{[Handel]\{C\}}, \code{[Objective]\{C\}} (Objective-C), \code{[Sharp]\{C\}} (C\#),
-%                   \item Dialek Caml: \code{[Objective]\{Caml\}} (OCaml), \code{[light]\{Caml\}} (default),
-%                   \item Dialek C++: \code{[11]\{C++\}}, \code{[ANSI]\{C++\}}, \code{[GNU]\{C++\}}, \code{[Visual]\{C++\}} (Visual C++),
-%                         \code{[ISO]\{C++\}} (default),
-%                   \item Dialek Java: \code{[]\{Java\}} (default), \code{[AspectJ]\{Java\}},
-%                   \item Dialek Pascal: \code{[Borland6]\{Pascal\}}, \code{[XSC]\{Pascal\}}, \code{[Standard]\{Pascal\}} (default),
-%                   \item Dialek Python: \code{[2]\{Python\}} (default, Python 2), \code{[3]\{Python\}} (Python 3),
-%                   \item Dialek TeX: \code{[LaTeX]\{TeX\}} (LaTeX), \code{[AlLaTeX]\{TeX\}}, \code{[plain]\{TeX\}} (plain TeX, default),
-%                   \item Dialek tcl: \code{[]\{Tcl\}} (default Tcl), \code{[tk]\{Tcl\}} (Tcl/Tk).
-%             \end{itemize}
-%       \item \bo{Bahasa pemrograman yang ditambahkan pada \f{template} ini}: \\
-%             \code{ABS}, \code{Acceleo}, \code{Batch}, \code{Clojure}, \code{CSS}, \code{D}, \code{Dart}, \code{Docker}, \code{F\#} (FSharp),
-%             \code{GDScript} (Godot), \code{GLSL}, \code{Groovy}, \code{HLSL}, \code{JavaScript}, \code{Julia}, \code{Kotlin}, \code{Markdown},
-%             \code{PowerShell}, \code{Rust}, \code{Scala}, \code{Scheme}, \code{Solidity}, \code{Swift}, \code{TOML}, \code{TypeScript}, dan \code{YAML}.
-%       \item \bo{Dialek yang ditambahkan pada \f{template} ini}:
-%             \begin{itemize}
-%                   \item Dialek HTML: \code{[v5]\{HTML\}} (HTML5),
-%                   \item Dialek Java: \code{[v9]\{Java\}} (Java 9 Modules), \code{[ContextJ]\{Java\}}, \code{[DeltaJ]\{Java\}}, dan \code{[FOP]\{Java\}}.
-%             \end{itemize}
-% \end{itemize}
-
-% Berikut adalah contoh penggunaan dialek bahasa pemrograman dalam menuliskan kode program.
-% Dalam kasus ini, \lst~\ref{code:python2} merupakan kode Python versi 2.
-% Sedangkan, \lst~\ref{code:python3} merupakan kode Python versi 3.
-% Perbedaan antara kedua versi tersebut cukup signifikan, salah satunya adalah pada perintah \code{print}.
-% Pada Python 2, perintah \code{print} tidak memerlukan tanda kurung karena merupakan sebuah \f{keyword},
-% sedangkan pada Python 3, perintah \code{print} memerlukan tanda kurung karena merupakan sebuah \f{function}.
-
-% \lstinputlisting[language=Python, caption=Kode Python 2, label=code:python2]{assets/codes/2-sample-python2.py}
-
-% % \lstinputlisting[language={[3]Python}, caption=Kode Python 3, label=code:python3]{assets/codes/2-sample-python3.py}
-
-% Kode yang mencetak \lst~\ref{code:python2} dan \lst~\ref{code:python3} adalah sebagai berikut:
-
-% \begin{lstlisting}[language={[latex]tex}]
-% \lstinputlisting[language=Python, caption=Kode Python 2, label=code:python2]{assets/codes/2-sample-python2.py}
-% \lstinputlisting[language={[3]Python}, caption=Kode Python 3, label=code:python3]{assets/codes/2-sample-python3.py}
-% \end{lstlisting}
-
-% Secara \f{default}, dialek yang digunakan untuk Python pada \f{library} \code{listings} adalah Python 2.
-% Sehingga untuk mencetak kode Python 3, perlu digunakan dialek Python 3 (\code{\{[3]Python\}}).
-
-% Kode program yang dicetak oleh \gls{latex} bersifat \f{auto-wrapped}.
-% Jika suatu baris kode program melebihi batas lebar halaman,
-% maka kode program tersebut akan dipindahkan ke baris berikutnya.
-% \f{Auto-wrapped} ini berguna agar Anda tidak perlu memberikan \f{line break} manual pada kode Anda,
-% Anda bisa menyampaikan kode program Anda apa adanya.
-
-% \bo{Catatan}: Jangan lupa untuk menjelaskan kode melalui paragraf,
-% terutama pada bagian-bagian yang perlu penjelasan lebih.
-% Setiap kode perlu dijelaskan, kalau bisa rujuk ke setiap baris, karena belum tentu pembaca mau membaca kode Anda.
-% Tetapi, pembaca tetap perlu mengetahui ide di balik kode yang Anda buat, dan mengapa kode tersebut dibuat.
-
-
-% %-----------------------------------------------------------------------------%
-% \section{\code{thesis.tex}}
-% \label{sec:thesis-tex}
-% %-----------------------------------------------------------------------------%
-% Berkas \code{thesis.tex} berisi seluruh berkas \gls{latex} yang dibaca, jadi bisa dikatakan sebagai berkas utama.
-% Dari berkas ini kita dapat mengatur bab apa saja yang ingin kita tampilkan dalam dokumen.
-
-
-% %-----------------------------------------------------------------------------%
-% \section{Direktori \code{config}}
-% \label{sec:config-dir}
-% %-----------------------------------------------------------------------------%
-% Direktori \code{config} berisi berkas-berkas yang menyimpan konfigurasi variabel dan istilah-istilah yang bisa dimodifikasi sesuai dengan kebutuhan tugas akhir.
-
-% %-----------------------------------------------------------------------------%
-% \subsection{\code{settings.tex}}
-% \label{sec:settings-tex}
-% %-----------------------------------------------------------------------------%
-% Berkas \code{settings.tex} berguna untuk mempermudah pembuatan beberapa template standar.
-% Anda diminta untuk menuliskan judul laporan, nama, NPM, dan hal-hal lain yang dibutuhkan untuk pembuatan template.
-
-% %-----------------------------------------------------------------------------%
-% \subsection{\code{istilah.tex}}
-% \label{sec:istilah-tex}
-% %-----------------------------------------------------------------------------%
-% Berkas \code{istilah.tex} digunakan untuk mencatat istilah-istilah yang digunakan.
-% Fungsinya hanya untuk memudahkan penulisan.
-% Pada beberapa kasus, ada kata-kata yang harus selalu muncul dengan tercetak miring atau tercetak tebal.
-% Anda juga bisa menggunakan berkas ini untuk mencatat istilah atau akronim khusus yang perlu dimunculkan di Daftar Istilah.
-% Penggunaan lebih lanjut terkait berkas \code{\_internals/istilah.tex} untuk menyimpan istilah atau akronim ada di \sect~\ref{sec:glossary}.
-% Dengan menjadikan kata-kata tersebut sebagai sebuah perintah \gls{latex}~tentu akan mempercepat dan mempermudah pengerjaan laporan.
-
-% %-----------------------------------------------------------------------------%
-% \subsection{\code{references.bib}}
-% \label{sec:references-bib}
-% %-----------------------------------------------------------------------------%
-% Berkas \code{references.bib} berisi seluruh daftar referensi yang digunakan dalam
-% laporan.
-% Anda bisa membuat model daftar referensi lain dengan menggunakan BibTeX.
-% Untuk menambahkan referensi dengan format BibTeX, Anda bisa mengisi berkas \code{references.bib}.
-% Untuk merujuk pada salah satu referensi yang ada, gunakan perintah \code{\bslash{}cite},
-% e.g. \code{\bslash{}cite\{book:sample\}} yang akan akan memunculkan \cite{book:sample}.
-% Informasi lebih lanjut mengenai referensi bisa dilihat di \sect~\ref{sec:references-bib}.
-% Untuk mempelajari bibtex lebih lanjut, silahkan buka \url{http://www.bibtex.org/Format}.
-
-
-% %-----------------------------------------------------------------------------%
-% \section{Direktori \code{\_internals}}
-% \label{sec:internals}
-% %-----------------------------------------------------------------------------%
-% Direktori \code{\_internals} berisi halaman-halaman dan \f{styling} yang tidak perlu diubah untuk penggunaan normal dari template ini.
-% \f{Styling} bisa diubah jika diperlukan untuk menyesuaikan beberapa fitur template dengan kebutuhan tugas akhir, atau untuk menyesuaikan dengan aturan terbaru yang dirilis oleh Universitas Indonesia.
-
-% %-----------------------------------------------------------------------------%
-% \subsection{\code{hype.indonesia.tex}}
-% \label{sec:hype-indonesia-tex}
-% %-----------------------------------------------------------------------------%
-% Berkas \code{hype.indonesia.tex} berisi cara pemenggalan beberapa kata dalam bahasa Indonesia.
-% \gls{latex}~memiliki algoritma untuk memenggal kata-kata sendiri, namun untuk beberapa kasus algoritma ini memenggal dengan cara yang salah.
-% Untuk memperbaiki pemenggalan yang salah inilah cara pemenggalan yang benar ditulis dalam berkas \f{hype.indonesia.tex}.
-
-% %-----------------------------------------------------------------------------%
-% \subsection{\code{uithesis.sty}}
-% \label{sec:uithesis.sty}
-% %-----------------------------------------------------------------------------%
-% Berkas \code{uithesis.sty} berisi konfigurasi inti dari \f{layoutting} untuk \f{template} ini.
-% Secara umum, Anda tidak perlu mengubah apapun pada berkas ini.
-% Akan tetapi, untuk kasus-kasus lanjutan, seperti menambahkan daftar konten \f{custom} atau menyalakan dukungan terhadap \f{multi-language}, Anda bisa mengubahnya secara langsung pada \code{uithesis.sty}.
-% Salah satu contohnya adalah ketika Anda ingin mendefinisikan daftar suatu jenis objek baru, seperti yang dicontohkan pada \sect~\ref{sec:addCustomContentList}.
-% Atau bisia juga ketika Anda ingin mengganti tipe referensi, seperti yang dicontohkan pada \sect~\ref{sec:bibtexChangeFormat}.
-% Jika Anda memiliki feedback maupun ingin berkontribusi terhadap perbaikan \f{layout}, selama ke arah yang sesuai dengan ketentuan Peraturan Rektor UI terkait format Tugas Akhir, Anda bisa mengubah berkas ini dan berkas lainnya yang terkait lalu membuat Merge Request di repositori.
-% Keterangan lebih lanjut terkait cara kontribusi dapat dilihat di berkas \code{README.md} dan \code{CONTRIBUTING}.
-
-
-% %-----------------------------------------------------------------------------%
-% \section{Direktori \code{src/00-frontMatter}}
-% \label{sec:frontMatter-backMatter-tex}
-% %-----------------------------------------------------------------------------%
-% Direktori \code{src/00-frontMatter} berisi bagian depan yang memuat halaman-halaman administratif untuk laporan ilmiah Anda.
-% Sedangkan direktori \code{src/99-backMatter} berisikan berkas-berkas lampiran.
-% Berikut adalah daftar berkas yang tersedia di \code{src/00-frontMatter}:
-% \begin{enumerate}
-% 	\item \code{pernyataanOrisinalitas.tex} untuk halaman pernyataan orisinalitas.
-% 	      Berlaku untuk semua tipe dokumen kecuali Laporan Kerja Praktik dan Kampus Merdeka.
-% 	\item \code{pengesahanKP.tex} untuk halaman pengesahan spesifik tipe dokumen Laporan Kerja Praktik.
-% 	\item \code{pengesahanMBKM.tex} untuk halaman pengesahan spesifik tipe dokumen Kampus Merdeka.
-% 	\item \code{pengesahanSidang.tex} untuk halaman pengesahan sidang.
-% 	      Berlaku untuk semua tipe dokumen kecuali laporan ilmiah mahasiswa S3 (Disertasi), Laporan Kerja Praktik, dan Kampus Merdeka.
-% 	\item \code{pengesahanSidangS3.tex} untuk halaman pengesahan sidang khusus mahasiswa S3.
-% 	\item \code{kataPengantar.tex} untuk kata pengantar.
-% 	      Berlaku untuk semua tipe dokumen kecuali Laporan Kerja Praktik dan Kampus Merdeka.
-% 	\item \code{persetujuanPublikasi.tex} untuk halaman persetujuan publikasi karya intelektual.
-% 	      Berlaku untuk semua tipe dokumen kecuali Laporan Kerja Praktik dan Kampus Merdeka.
-% 	\item \code{abstrak.tex} untuk halaman abstrak berbahasa Indonesia.
-% 	\item \code{abstract.tex} untuk halaman abstrak berbahasa Inggris.
-% \end{enumerate}
-% Umumnya, Anda hanya perlu mengisi bagian-bagian seperti Abstrak dan Kata Pengantar.
-% Berkas sisanya berisi kode yang akan menghasilkan halaman-halaman terkait secara otomatis, sehingga hanya bisa diubah jika diperlukan penyesuaian, misal ukuran \f{line spacing}.
-
-
-% %-----------------------------------------------------------------------------%
-% \section{Direktori \code{src/01-body}}
-% \label{sec:bab-tex}
-% %-----------------------------------------------------------------------------%
-% Direktori ini berisi isi laporan yang Anda tulis.
-% Setiap nama berkas e.g. bab1.tex merepresentasikan bab dimana tulisan tersebut akan muncul.
-% Sebagai contoh, kode dimana tulisan ini dibaut berada dalam berkas dengan nama \code{bab4.tex}.
-% Ada enam buah berkas yang telah disiapkan untuk mengakomodir enam bab dari laporan Anda, diluar bab kesimpulan dan saran.
-% Jika Anda tidak membutuhkan sebanyak itu, silahkan hapus kode dalam berkas \code{thesis.tex} yang memasukan berkas \gls{latex}~yang tidak dibutuhkan;
-% contohnya perintah \code{\bslash{}include\{bab6.tex\}} merupakan kode untuk memasukan berkas \code{bab6.tex} kedalam laporan.
-
-
-
-%-----------------------------------------------------------------------------%
-% Akhir Bab 1
-%-----------------------------------------------------------------------------%
