@@ -3,89 +3,156 @@
 \label{bab:2}
 %-----------------------------------------------------------------------------%
 
-Bab ini merupakan kerangka teoretis yang mendasari analisis kemampuan LLM dalam melakukan inferensi logika, khususnya dalam konteks Bahasa Indonesia. Pembahasan mencakup arsitektur kognitif model bahasa, batasan deterministik dari model probabilistik, pendekatan \textit{neuro-symbolic}, serta kendala linguistik dan komputasi yang memengaruhi performa model pada sumber daya rendah (\textit{low-resource setting}).
+Bab ini membangun kerangka teoretis yang mendasari analisis kemampuan \textit{Large Language Models} (LLM) dalam melakukan inferensi logika, khususnya dalam konteks Bahasa Indonesia. Pembahasan mencakup prinsip formal dari (\textit{First-Order Logic}), transformasi bentuk normal (PNF, Skolemisasi, CNF), serta arsitektur \textit{Neuro-Symbolic} "Aristotle".
 
 %-----------------------------------------------------------------------------%
-\section{Inferensi Logika pada Model Bahasa Besar}
-\label{sec:logicInference}
+\section{Aturan Inferensi dan Resolusi}
+\label{sec:inferenceRules}
 %-----------------------------------------------------------------------------%
 
-\subsection{Pergeseran Paradigma: Dari Pengenalan Pola ke Penalaran}
-Perkembangan LLM telah menggeser fokus penelitian \textit{Natural Language Processing} (NLP) dari sekadar pengenalan pola statistik menjadi proses kognitif yang kompleks, termasuk penalaran (\textit{reasoning}). Dalam konteks ini, inferensi logika didefinisikan sebagai kemampuan model untuk menarik kesimpulan yang valid dari serangkaian premis yang diberikan, mengikuti aturan logika formal seperti deduksi, induksi, atau abduksi \cite{saparov2023languagemodelsgreedyreasoners}.
-
-Namun, berbeda dengan sistem logika simbolik tradisional yang bersifat deterministik, LLM beroperasi berdasarkan probabilitas statistik. Hal ini menimbulkan pertanyaan mendasar mengenai apakah LLM benar-benar "bernalar" atau hanya melakukan peniruan pola argumen yang meyakinkan secara statistik.
-
-\subsection{Hipotesis \textit{Greedy Reasoner}}
-Salah satu kritik utama terhadap kemampuan penalaran LLM diajukan oleh Saparov dan He (2023) melalui hipotesis "Greedy Reasoner". Riset mereka menunjukkan bahwa model berbasis arsitektur Transformer cenderung menggunakan strategi pencarian (\textit{greedy search}) saat menyelesaikan rantai logika \cite{saparov2023languagemodelsgreedyreasoners}.
-
+\subsection{Aturan Inferensi Klasik}
+Sistem ini secara implisit mencakup aturan-aturan logika klasik:
 \begin{itemize}
-	\item \textbf{Sifat Probabilistik Lokal:} Pada setiap langkah inferensi, model memprediksi token selanjutnya $P(w_t | w_{1:t-1})$ yang memiliki probabilitas tertinggi berdasarkan konteks lokal, tanpa mempertimbangkan validitas logika global dari keseluruhan argumen.
-	\item \textbf{Ketidakmampuan \textit{Backtracking}:} Jika model mengambil langkah logika yang salah di awal, model cenderung "berhalusinasi" untuk membenarkan kesimpulan tersebut daripada kembali dan memperbaiki premis sebelumnya.
+	\item \textbf{Modus Ponens:} Jika $P \rightarrow Q$ dan $P$, maka $Q$.
+	\item \textbf{Modus Tollens:} Jika $P \rightarrow Q$ dan $\neg Q$, maka $\neg P$.
+	\item \textbf{Silogisme Hipotetis:} Jika $P \rightarrow Q$ dan $Q \rightarrow R$, maka $P \rightarrow R$.
+	\item \textbf{Silogisme Disjungtif:} Jika $P \lor Q$ dan $\neg P$, maka $Q$.
 \end{itemize}
 
-Keterbatasan ini sangat penting dalam konteks Bahasa Indonesia, di mana data pelatihan yang lebih sedikit dapat menyebabkan distribusi probabilitas token logika (seperti "jika", "maka", "kecuali") menjadi kurang \textit{robust} dibandingkan Bahasa Inggris.
+\subsection{Prinsip Resolusi dan Unifikasi}
+Dalam pembuktian teorema aturan inferensi, aturan-aturan di atas dapat digeneralisasi menjadi satu aturan tunggal yang disebut \textbf{Resolusi}.
 
-%-----------------------------------------------------------------------------%
-\section{Arsitektur \textit{Neuro-Symbolic}}
-\label{sec:neuroSymbolic}
-%-----------------------------------------------------------------------------%
+Untuk resolusi memerlukan proses \textbf{Unifikasi}. Unifikasi adalah proses mencari substitusi $\theta$ (pemetaan variabel ke term) sehingga dua literal menjadi identik.
+\begin{equation}
+	\frac{L_1 \lor A, \quad \neg L_2 \lor B}{(A \lor B)\theta}
+\end{equation}
+Dimana $\theta$ adalah \textit{Most General Unifier} (MGU) dari $L_1$ dan $L_2$.
 
-Untuk mengatasi kelemahan penalaran probabilistik murni, pendekatan terkini mulai mengadopsi arsitektur \textit{Neuro-Symbolic} yang menggabungkan fleksibilitas semantik LLM dengan ketepatan logika simbolik. Salah satu kerangka kerja yang relevan adalah \textbf{Aristotle} yang diperkenalkan oleh Xu et al. (2025).
-
-\subsection{Kerangka Kerja \textit{Translation - Decomposition - Search Resolver - Logic Resolution}}
-Berdasarkan \cite{Aristotle25}, kerangka kerja Aristotle memisahkan proses pemahaman bahasa dari proses pembuktian logika melalui tiga modul utama:
-
-\begin{enumerate}
-	\item \textbf{Translation:} Menggunakan LLM untuk menerjemahkan premis bahasa natural menjadi bentuk logika standar atau \textit{First Order Logic} (FOL). Dalam konteks penelitian ini, modul ini berfungsi mengubah / mentranslasikan premis-premis yang ada menjadi representasi formal terstruktur, termasuk predikat / argumen, operator logika, dan kuantor, serta mengubah subjek yang dalam bentuk \textit{plural} menjadi bentuk \textit{singular}-nya.
-	\item \textbf{Decomposition:} Dari hasil translasi pada tahap sebelumnya, premis-premis tersebut di dekomposisi ke dalam \textit{Prenex Normal Form} (PNF) dan \textit{Conjunctive Normal Form}(CNF). Lalu jika ada kuantor eksistensial, maka hasil dari dekomposisi CNF akan di dekomposisi dengan Skolemisasi untuk menghilangkan kuantor eksistensial tersebut.
-	\item \textbf{Search Resolver:} Melakukan pencarian jalur pembuktian secara sistematis. Berbeda dengan model generatif biasa yang hanya memprediksi kata berikutnya, modul ini mencari klausa pelengkap untuk membuktikan kontradiksi (\textit{Proof by Contradiction}).
-	\item \textbf{Logical Resolution:} Menyelesaikan konflik logika secara deterministik untuk menghasilkan keluaran biner (Benar/Salah), status "Tidak Diketahui" / \textit{Unknown}, dan status \textit{Self-Contradictory}, yang memberikan kepastian lebih tinggi dibandingkan teks generatif biasa.
-\end{enumerate}
-
-
-%-----------------------------------------------------------------------------%
-\section{Tinjauan Model Terkini}
-\label{sec:models}
-%-----------------------------------------------------------------------------%
-
-\subsection{Qwen2.5: Generalist Multilingual}
-Qwen2.5 merupakan model mutakhir yang dilatih pada korpus masif (hingga 18 triliun token). Keunggulan utamanya terletak pada kemampuan generalisasi logika matematika dan pemrograman yang kuat \cite{qwen2.5, qwen2}. Meskipun bukan model khusus Bahasa Indonesia, skala pelatihannya yang masif memungkinkan munculnya kemampuan penalaran (\textit{emergent reasoning capabilities}) yang sering kali melampaui model yang lebih kecil namun spesifik.
-
-\subsection{SEA-LION: Spesialis Regional}
-SEA-LION (\textit{Southeast Asian Languages in One Network}) adalah inisiatif untuk membangun model yang selaras secara budaya dan linguistik untuk Asia Tenggara. Model ini dilatih ulang (\textit{continued pre-training}) dengan data bahasa yang digunakan pada Asia Tenggara, termasuk bahasa Indonesia, yang signifikan \cite{sea_lion_2024}. Secara teoretis, SEA-LION diharapkan memiliki pemahaman nuansa linguistik yang lebih baik, yang penting untuk tahap \textit{Logical Decomposer} dalam mendeteksi premis implisit dalam teks Bahasa Indonesia.
-
-%-----------------------------------------------------------------------------%
-\section{Evaluasi dan Benchmark}
-\label{sec:benchmark}
-%-----------------------------------------------------------------------------%
-
-\subsection{IndoMMLU dan Keterbatasannya}
-Benchmark standar untuk evaluasi LLM dalam Bahasa Indonesia saat ini adalah \textbf{IndoMMLU} \cite{koto-etal-2023-indommlu}. Dataset ini terdiri dari soal-soal ujian dari tingkat SD hingga Universitas.
-
-Meskipun komprehensif, IndoMMLU memiliki keterbatasan fundamental untuk penelitian inferensi logika murni:
+Contoh implementasi:
 \begin{itemize}
-	\item \textbf{Absennya Matematika Simbolik:} Koto et al. (2023) secara eksplisit mengecualikan soal matematika simbolik karena sudah terdapat dataset untuk soal tersebut, seperti GSM-8K \cite{cobbe2021trainingverifierssolvemath} dan NumGLUE \cite{mishra2022numgluesuitefundamentalchallenging}
-	\item \textbf{\textit{Focus on Knowledge Crystallization}:} Sebagian besar tugas menguji ingatan akan fakta (\textit{crystallized knowledge}) seperti Sejarah atau Geografi, bukan kemampuan memanipulasi aturan logika (\textit{fluid reasoning}).
+	\item Premis: "Semua orang menyukai Budi" ($\forall x Loves$($x, Budi$)).
+	\item Query: "Apakah Ali menyukai Budi?" ($\neg Loves$($Ali, Budi$)).
+	\item Unifikasi: Substitusi $\{x$ / $Ali\}$ membuat $Loves$($x, Budi$) berlawanan langsung dengan $\neg Loves$($Ali, Budi$).
+	\item Hasil: Klausa kosong ($\perp$), yang berarti terbukti terjadi kontradiksi, sehingga Ali menyukai Budi.
 \end{itemize}
 
-Oleh karena itu, penelitian ini perlu mengadaptasi benchmark logika formal (seperti ProntoQA) ke dalam Bahasa Indonesia untuk pengukuran yang lebih akurat.
-
 %-----------------------------------------------------------------------------%
-\section{Dampak Kuantisasi pada Inferensi}
-\label{sec:quantization}
+\section{(\textit{First-Order Logic})}
+\label{sec:FOL}
 %-----------------------------------------------------------------------------%
 
-Dalam skenario penggunaan praktis dengan sumber daya komputasi terbatas, sering kali penelitian menggunakan model yang sudah dikuantisasi (misalnya menggunakan format GGUF via \texttt{llama.cpp}) untuk mengurangi kebutuhan memori \cite{llama.cpp} ataupun mengurangi kebutuhan \textit{processing power}, khususnya untuk dataset yang besar.
+FOL atau sering disebut Kalkulus Predikat, berfungsi sebagai fondasi untuk merepresentasikan pengetahuan secara tidak ambigu. Berbeda dengan Logika Proposisi yang memperlakukan pernyataan sebagai objek yang tak terbagi, FOL memodelkan dunia sebagai domain objek, properti, dan hubungan antar objek tersebut.
 
-Secara teoretis, kuantisasi (misalnya dari 16-bit ke 4-bit) berdampak non-linear terhadap kemampuan model:
+\subsection{Definisi dan Sintaks}
+Secara formal, FOL adalah sistem logika deduktif yang memperluas logika proposisi dengan memperkenalkan:
+\begin{itemize}
+	\item \textbf{Variabel ($x, y, z$):} Simbol yang mewakili objek dalam suatu domain.
+	\item \textbf{Predikat ($P$($x,y$)):} Fungsi yang memetakan objek ke nilai kebenaran (\textit{True/False}).
+	\item \textbf{Kuantor ($\forall, \exists$):} Operator yang menentukan \textit{range} variabel terhadap domain.
+\end{itemize}
+
+Alfabet dari FOL ($\Sigma$) terdiri dari:
 \begin{enumerate}
-	\item \textbf{Ketahanan Bahasa:} Kemampuan menghasilkan teks yang lancar (\textit{fluency}) relatif baik terhadap kuantisasi.
-	\item \textbf{\textit{Logical Fragility}:} Inferensi logika sangat sensitif terhadap presisi numerik. Kesalahan pembulatan kecil pada bobot \textit{attention} dapat mengubah probabilitas operator negasi ("tidak") atau implikasi, yang berakibat fatal pada validitas rantai logika.
+	\item \textbf{Simbol Logika:}
+	      \begin{itemize}
+		      \item Konektif: $\neg$ (Negasi), $\land$ (Konjungsi), $\lor$ (Disjungsi), $\rightarrow$ (Implikasi).
+		      \item Kuantor Universal ($\forall$): Dibaca "Untuk semua".
+		      \item Kuantor Eksistensial ($\exists$): Dibaca "Terdapat".
+	      \end{itemize}
+	\item \textbf{Simbol Non-Logika:} Konstanta (objek spesifik seperti "Wumpus", "Merah") dan Predikat
 \end{enumerate}
 
+\subsection{Semantik dan Interpretasi}
+Validitas dalam FOL ditentukan oleh sebuah \textbf{Model} $\mathcal{M} = \langle \mathcal{D}, \mathcal{I} \rangle$, di mana:
+\begin{itemize}
+	\item $\mathcal{D}$ adalah \textbf{Domain} (misalnya, himpunan semua entitas dalam basis data kependudukan).
+	\item $\mathcal{I}$ adalah \textbf{Interpretasi} yang memetakan simbol konstanta ke elemen di $\mathcal{D}$ dan simbol predikat ke relasi di $\mathcal{D}$.
+\end{itemize}
+
+Dalam konteks Bahasa Indonesia, struktur kalimat \textit{Subjek-Predikat-Objek} dapat dipetakan ke dalam FOL, namun tantangan muncul pada ambiguitas konteks. Misalnya, kalimat "Gajah itu besar" bisa berarti konstanta ($Big(\text{gajah}_1)$) atau aturan universal ($\forall x (Elephant(x) \rightarrow Big(x))$), juga misalnya subjek plural dan singular yang perlu di normalisasi. Modul dekomposisi dalam penelitian ini bertugas menyelesaikan ambiguitas ini menjadi representasi FOL yang benar.
+
 %-----------------------------------------------------------------------------%
-\section{Rangkuman}
-\label{sec:summary}
+\section{Bentuk Normal: Standardisasi untuk Algoritma}
+\label{sec:normalForms}
 %-----------------------------------------------------------------------------%
 
-Berdasarkan tinjauan pustaka di atas, dapat disimpulkan bahwa kemampuan inferensi logika LLM pada Bahasa Indonesia bukan hanya fungsi dari ukuran model, tetapi merupakan interaksi kompleks antara arsitektur penalaran (Neuro-Symbolic vs Greedy). Kerangka pemikiran ini menjadi landasan bagi eksperimen yang akan dilakukan dalam penelitian ini.
+Algoritma penalaran, khususnya resolusi, tidak dapat bekerja secara efisien pada formula FOL yang tidak terstruktur atau tidak \textit{strict}. Formula harus dikonversi ke dalam bentuk standar atau \textit{Normal Forms}.
+
+\subsection{Bentuk Normal Prenex (PNF)}
+Langkah pertama standardisasi adalah \textit{Prenex Normal Form} (PNF). Sebuah formula dikatakan dalam bentuk PNF jika seluruh kuantor ditarik ke depan (prefix), meninggalkan bagian bebas-kuantor (matriks) di belakangnya.
+
+Bentuk umum:
+\begin{equation}
+	Q_1 x_1 Q_2 x_2 \dots Q_n x_n \; \mathcal{M}
+\end{equation}
+Dimana $Q_i \in \{ \forall, \exists \}$ dan $\mathcal{M}$ adalah matriks tanpa kuantor. Contoh transformasi dalam Bahasa Indonesia:
+\begin{itemize}
+	\item \textit{Asli:} "Tidak benar bahwa semua orang menyukai durian." ($\neg \forall x Likes(x, Durian)$).
+	\item \textit{PNF:} "Terdapat seseorang yang tidak menyukai durian." ($\exists x \neg Likes(x, Durian)$).
+\end{itemize}
+
+\subsection{Skolemisasi (Skolemization)}
+Skolemisasi adalah proses menghilangkan \textbf{Kuantor Eksistensial} ($\exists$) untuk menghasilkan formula yang \textit{equisatisfiable} (memiliki keterpenuhan yang setara). Kuantor eksistensial digantikan oleh \textbf{Konstanta Skolem} atau \textbf{Fungsi Skolem}.
+
+\textbf{Algoritma:}
+\begin{enumerate}
+	\item Jika $\exists y$ tidak berada dalam lingkup $\forall$, ganti $y$ dengan konstanta baru $c$.
+	\item Jika $\exists y$ berada dalam lingkup $\forall x_1, \dots, \forall x_k$, ganti $y$ dengan fungsi $f(x_1, \dots, x_k)$.
+\end{enumerate}
+
+Contoh kasus:
+\begin{quote}
+	"Setiap warga negara memiliki sebuah NIK." \\
+	FOL: $\forall x$ ($Citizen$($x$) $\rightarrow \exists y$ ($NIK$($y$) $\land Has$($x, y$))) \\
+	Skolemisasi: $\forall x$ ($Citizen$($x$) $\rightarrow$ ($NIK$(nikOf($x$)) $\land Has$($x$, nikOf($x$))))
+\end{quote}
+Di sini, nikOf($x$) adalah fungsi Skolem yang memetakan setiap warga ke NIK spesifik mereka.
+
+\subsection{Bentuk Normal Konjungtif (CNF)}
+\textit{Conjunctive Normal Form} (CNF) adalah representasi akhir yang dibutuhkan oleh mesin inferensi. CNF adalah konjungsi dari klausa-klausa, di mana setiap klausa adalah disjungsi dari literal.
+\begin{equation}
+	(L_{1,1} \lor \dots \lor L_{1,n}) \land (L_{2,1} \lor \dots \lor L_{2,m})
+\end{equation}
+
+%-----------------------------------------------------------------------------%
+\section{Paradigma Neuro-Symbolic}
+\label{sec:neuroSymbolicIntro}
+%-----------------------------------------------------------------------------%
+
+Integrasi LLM dengan penalaran logika formal, sering disebut juga sebagai \textit{Neuro-Symbolic AI}, merupakan pergeseran penting dalam riset \textit{artificial intelligence}. Komponen "neuro" (model \textit{deep learning} seperti Qwen atau Llama) unggul dalam pengenalan pola, namun memiliki keterbatasan dalam melakukan inferensi multi-langkah yang \textit{strict} dan deterministik (\cite{saparov2023languagemodelsgreedyreasoners}). Keterbatasan ini menjadi poin penting pada bahasa dengan sumber daya rendah hingga menengah seperti Bahasa Indonesia, di mana korpus pelatihan untuk penalaran kompleks jauh lebih sedikit dibandingkan Bahasa Inggris.
+
+Penelitian ini mengadopsi kerangka kerja yang tidak hanya mengandalkan prediksi token probabilitas, melainkan memisahkan proses menjadi translasi simbolik, pencarian terstruktur, dan resolusi formal, sebagaimana diusulkan dalam arsitektur \textbf{Aristotle} (\cite{Aristotle25}).
+%-----------------------------------------------------------------------------%
+\section{Kerangka Kerja Aristotle}
+\label{sec:aristotleFramework}
+%-----------------------------------------------------------------------------%
+
+Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama:
+
+\subsection{Logika Translasi (\textit{Logical Translation})}
+Modul ini menggunakan LLM \textit{open-weight} untuk menerjemahkan premis bahasa natural menjadi FOL
+\begin{itemize}
+	\item \textbf{Input:} Data poin dalam bahasa Indonesia
+	\item \textbf{Proses:} Menerjemahkan data poin menjadi 3 bagian, sesuai dengan formula, yaitu premis dari konteks $\rightarrow$ fakta dan aturan, pertanyaan dari konteks $\rightarrow$ konjektur
+\end{itemize}
+
+\subsection{Dekomposer (\textit{Decomposer})}
+Modul ini menggunakan LLM \textit{open-weight} untuk dekomposisi aturan yang sudha berbentuk FOL ke dalam PNF, CNF, dan Skolemisasi
+\begin{itemize}
+	\item \textbf{Input:} data poin yang sudah melewati Logical Translation dalam bentuk FOL
+	\item \textbf{Proses:} Dekomposisi data poin yang sudha menjadi FOL ke dalam bentuk NF, lalu Skolemisasi, dan terakhir CNF.
+\end{itemize}
+
+\subsection{Penyelesai Pencarian (\textit{Search Router})}
+Mesin inti inferensi terdiri dari dua sub-komponen:
+\begin{enumerate}
+	\item \textbf{\textit{Logical Search Router}:} Memilih klausa mana yang relevan untuk diproses. Hal ini mencegah terjadinya ledakan kombinatorial yang mengakibatkan proses komputasi yang lama dan pencarian bukti yang sesuai dengan pembuatan set untuk menyimpan premis yang sudah ditelusuri dan memberi batasan banyaknya ronde dalam pencarian bukti
+	\item \textbf{\textit{Logical Resolver}:} Menerapkan aturan resolusi secara iteratif hingga ditemukan kontradiksi (untuk pembuktian salah) atau hingga ruang pencarian habis.
+\end{enumerate}
+
+\subsection{Resolusi (\textit{Resolver})}
+Sistem memverifikasi sebuah hipotesis $S$ melalui dua jalur paralel dengan menerapkan pembuktian dengan kontradiksi (\textit{Proof By Contradiction})
+\begin{itemize}
+	\item \textbf{Jalur 1 :} Asumsikan $S$. Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
+	\item \textbf{Jalur 2 :} Asumsikan $\neg S$ (Negasi S). Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
+\end{itemize}
