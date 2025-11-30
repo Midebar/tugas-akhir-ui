@@ -12,11 +12,11 @@ Bab ini menjelaskan tentang eksperimen dan hasil eksperimen dari penelitian
 	% >{\centering\arraybackslash} centers the text inside the X column.
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
-		                         & \textbf{Qwen2.5 7B-Instruct} & \textbf{SEA-LION v3-Llama-8B} & \textbf{SahabatAI v1-Llama-8B} \\
+		                         & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEA-LION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
 		\midrule
-		\textbf{Naive Prompting} &                              &                               &                                \\
-		\quad After Answer       & 61.40\%                      & 51.40\%                       & 56.20\%                        \\
-		\quad Before Answer      & 67.80\%                      & 81.00\%                       & 76.80\%                        \\
+		\textbf{Naive Prompting} &                                   &                                    &                                     \\
+		\quad After Answer       & 51.40\%                           & 56.20\%                            & 61.40\%                             \\
+		\quad Before Answer      & 81.00\%                           & 76.80\%                            & 67.80\%                             \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
@@ -28,9 +28,9 @@ Bab ini menjelaskan tentang eksperimen dan hasil eksperimen dari penelitian
 	\caption{Hasil Eksperimen dengan Aristotle Framework}
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
-		                   & \textbf{Qwen2.5 7B-Instruct} & \textbf{SEA-LION v3-Llama-8B} & \textbf{SahabatAI v1-Llama-8B} \\
+		                   & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEA-LION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
 		\midrule
-		\textbf{Aristotle} & NA\%                         & NA\%                          & 61.20\%                        \\
+		\textbf{Aristotle} & 14.00\%                           & 81.60\%                            & 61.20\%                             \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
