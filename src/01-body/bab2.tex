@@ -3,156 +3,76 @@
 \label{bab:2}
 %-----------------------------------------------------------------------------%
 
-Bab ini membangun kerangka teoretis yang mendasari analisis kemampuan \textit{Large Language Models} (LLM) dalam melakukan inferensi logika, khususnya dalam konteks Bahasa Indonesia. Pembahasan mencakup prinsip formal dari (\textit{First-Order Logic}), transformasi bentuk normal (PNF, Skolemisasi, CNF), serta arsitektur \textit{Neuro-Symbolic} "Aristotle".
+Bab ini membangun kerangka teoretis yang mendasari analisis kemampuan \textit{Large Language Models} (LLM) dalam melakukan penalaran logika. Pembahasan mencakup prinsip formal dari \textit{First-Order Logic} (FOL), prosedur konversi ke \textit{Conjunctive Normal Form} (CNF), serta algoritma Resolusi yang menjadi mesin utama dalam \textit{framework} Aristotle.
 
 %-----------------------------------------------------------------------------%
-\section{Aturan Inferensi dan Resolusi}
-\label{sec:inferenceRules}
+\section{\textit{First-Order Logic} (FOL)}
+\label{sec:fol}
 %-----------------------------------------------------------------------------%
+First-Order Logic (FOL), atau Kalkulus Predikat, adalah sistem formal yang memperluas logika proposisi dengan memperkenalkan variabel, fungsi, dan kuantor untuk merepresentasikan objek dan relasi di dunia nyata.
 
-\subsection{Aturan Inferensi Klasik}
-Sistem ini secara implisit mencakup aturan-aturan logika klasik:
+\subsection{Sintaks: Alfabet dan Aturan Pembentukan}
+Mengacu pada definisi standar dalam buku Discrete Mathematics and Its Applications karya Kenneth H. Rosen \cite{rosen-discrete}, sintaks FOL dibangun dari komponen-komponen berikut:
 \begin{itemize}
-	\item \textbf{Modus Ponens:} Jika $P \rightarrow Q$ dan $P$, maka $Q$.
-	\item \textbf{Modus Tollens:} Jika $P \rightarrow Q$ dan $\neg Q$, maka $\neg P$.
-	\item \textbf{Silogisme Hipotetis:} Jika $P \rightarrow Q$ dan $Q \rightarrow R$, maka $P \rightarrow R$.
-	\item \textbf{Silogisme Disjungtif:} Jika $P \lor Q$ dan $\neg P$, maka $Q$.
+	\item Simbol Logis:
+	      \begin{itemize}
+		      \item Konektif: $\neg$ (Negasi), $\land$ (Konjungsi), $\lor$ (Disjungsi), $\rightarrow$ (Implikasi), $\leftrightarrow$ (Bikondisional).
+		      \item Kuantor: $\forall$ (Universal), $\exists$ (Eksistensial).
+		      \item Variabel: $x, y, z, \dots$
+	      \end{itemize}
+	\item Simbol Non-Logis:
+	      \begin{itemize}
+		      \item Konstanta: Simbol yang merepresentasikan objek spesifik (misalnya, "Alice", "42").
+		      \item Fungsi ($f$($x_1$, $\dots$, $x_n$)): Memetakan objek ke objek lain. Contoh: $AyahDari$($Budi$).
+		      \item Predikat ($P$($x_1$, $\dots$, $x_n$)): Fungsi yang memetakan tuple objek ke nilai kebenaran (True/False). Contoh: $Suka$($Budi, Apel$).
+	      \end{itemize}
+	\item Grammar (Tata Bahasa):
+	      \begin{itemize}
+		      \item Term: Sebuah variabel, konstanta, atau fungsi yang diterapkan pada term lain.
+		      \item Formula Atomik: Predikat yang diterapkan pada term. Ini adalah unit terkecil yang memiliki nilai kebenaran.
+		      \item \textit{Well-Formed Formulas} (WFFs): Formula yang disusun secara rekursif dari formula atomik menggunakan konektif dan kuantor. Rosen menekankan pentingnya cakupan kuantor (scope), di mana variabel dalam cakupan kuantor disebut bound variable (terikat), sedangkan yang di luar adalah free variable (bebas).
+	      \end{itemize}
 \end{itemize}
 
-\subsection{Prinsip Resolusi dan Unifikasi}
-Dalam pembuktian teorema aturan inferensi, aturan-aturan di atas dapat digeneralisasi menjadi satu aturan tunggal yang disebut \textbf{Resolusi}.
-
-Untuk resolusi memerlukan proses \textbf{Unifikasi}. Unifikasi adalah proses mencari substitusi $\theta$ (pemetaan variabel ke term) sehingga dua literal menjadi identik.
-\begin{equation}
-	\frac{L_1 \lor A, \quad \neg L_2 \lor B}{(A \lor B)\theta}
-\end{equation}
-Dimana $\theta$ adalah \textit{Most General Unifier} (MGU) dari $L_1$ dan $L_2$.
-
-Contoh implementasi:
+\subsection{Semantik: Interpretasi dan Kebenaran}
+Kebenaran sebuah kalimat FOL ditentukan oleh sebuah Interpretasi ($\mathcal{I}$) atas Domain ($\mathcal{D}$) yang tidak kosong. Interpretasi memetakan:
 \begin{itemize}
-	\item Premis: "Semua orang menyukai Budi" ($\forall x Loves$($x, Budi$)).
-	\item Query: "Apakah Ali menyukai Budi?" ($\neg Loves$($Ali, Budi$)).
-	\item Unifikasi: Substitusi $\{x$ / $Ali\}$ membuat $Loves$($x, Budi$) berlawanan langsung dengan $\neg Loves$($Ali, Budi$).
-	\item Hasil: Klausa kosong ($\perp$), yang berarti terbukti terjadi kontradiksi, sehingga Ali menyukai Budi.
+	\item Konstanta ke elemen di $\mathcal{D}$.
+	\item Memetakan predikat $n$-ary ke relasi $n$-ary di $\mathcal{D}$.
+	\item Sebuah formula $\alpha$ dikatakan Benar di bawah interpretasi $\mathcal{I}$ (ditulis $\mathcal{I} \models \alpha$) jika fakta di dunia nyata sesuai dengan struktur kalimat tersebut.
 \end{itemize}
 
 %-----------------------------------------------------------------------------%
-\section{(\textit{First-Order Logic})}
+\section{(Konsekuensi Logis \textit{(Entailment)})}
 \label{sec:FOL}
 %-----------------------------------------------------------------------------%
-
-FOL atau sering disebut Kalkulus Predikat, berfungsi sebagai fondasi untuk merepresentasikan pengetahuan secara tidak ambigu. Berbeda dengan Logika Proposisi yang memperlakukan pernyataan sebagai objek yang tak terbagi, FOL memodelkan dunia sebagai domain objek, properti, dan hubungan antar objek tersebut.
-
-\subsection{Definisi dan Sintaks}
-Secara formal, FOL adalah sistem logika deduktif yang memperluas logika proposisi dengan memperkenalkan:
-\begin{itemize}
-	\item \textbf{Variabel ($x, y, z$):} Simbol yang mewakili objek dalam suatu domain.
-	\item \textbf{Predikat ($P$($x,y$)):} Fungsi yang memetakan objek ke nilai kebenaran (\textit{True/False}).
-	\item \textbf{Kuantor ($\forall, \exists$):} Operator yang menentukan \textit{range} variabel terhadap domain.
-\end{itemize}
-
-Alfabet dari FOL ($\Sigma$) terdiri dari:
-\begin{enumerate}
-	\item \textbf{Simbol Logika:}
-	      \begin{itemize}
-		      \item Konektif: $\neg$ (Negasi), $\land$ (Konjungsi), $\lor$ (Disjungsi), $\rightarrow$ (Implikasi).
-		      \item Kuantor Universal ($\forall$): Dibaca "Untuk semua".
-		      \item Kuantor Eksistensial ($\exists$): Dibaca "Terdapat".
-	      \end{itemize}
-	\item \textbf{Simbol Non-Logika:} Konstanta (objek spesifik seperti "Wumpus", "Merah") dan Predikat
-\end{enumerate}
-
-\subsection{Semantik dan Interpretasi}
-Validitas dalam FOL ditentukan oleh sebuah \textbf{Model} $\mathcal{M} = \langle \mathcal{D}, \mathcal{I} \rangle$, di mana:
-\begin{itemize}
-	\item $\mathcal{D}$ adalah \textbf{Domain} (misalnya, himpunan semua entitas dalam basis data kependudukan).
-	\item $\mathcal{I}$ adalah \textbf{Interpretasi} yang memetakan simbol konstanta ke elemen di $\mathcal{D}$ dan simbol predikat ke relasi di $\mathcal{D}$.
-\end{itemize}
-
-Dalam konteks Bahasa Indonesia, struktur kalimat \textit{Subjek-Predikat-Objek} dapat dipetakan ke dalam FOL, namun tantangan muncul pada ambiguitas konteks. Misalnya, kalimat "Gajah itu besar" bisa berarti konstanta ($Big(\text{gajah}_1)$) atau aturan universal ($\forall x (Elephant(x) \rightarrow Big(x))$), juga misalnya subjek plural dan singular yang perlu di normalisasi. Modul dekomposisi dalam penelitian ini bertugas menyelesaikan ambiguitas ini menjadi representasi FOL yang benar.
+Tujuan utama sistem berbasis pengetahuan adalah menarik kesimpulan baru dari premis yang ada. Konsep ini diformalkan sebagai Entailment ($KB \models \alpha$). Menurut \cite{huth-ryan-lics2}, $KB \models \alpha$ berlaku jika dan hanya jika untuk setiap interpretasi di mana $KB$ bernilai benar, $\alpha$ juga pasti bernilai benar.Dalam konteks komputasi, memeriksa semua interpretasi adalah mustahil. Oleh karena itu, kita menggunakan Inference Rules (aturan inferensi) sintaksis untuk membuktikan validitas tanpa memeriksa semantik satu per satu.
 
 %-----------------------------------------------------------------------------%
-\section{Bentuk Normal: Standardisasi untuk Algoritma}
+\section{Resolusi dan Unifikasi}
 \label{sec:normalForms}
 %-----------------------------------------------------------------------------%
+Metode inferensi utama yang digunakan dalam modul "Resolver" Aristotle adalah Resolusi. Teknik ini diperkenalkan oleh J.A. Robinson pada tahun 1965 dalam makalah seminalnya "A Machine-Oriented Logic Based on the Resolution Principle".\cite{DBLP:journals/jacm/Robinson65}
 
-Algoritma penalaran, khususnya resolusi, tidak dapat bekerja secara efisien pada formula FOL yang tidak terstruktur atau tidak \textit{strict}. Formula harus dikonversi ke dalam bentuk standar atau \textit{Normal Forms}.
+\subsection{\textit{Proof by Refutation} (Pembuktian Kontradiksi)}
+Robinson membuktikan bahwa untuk menguji $KB \models \alpha$, kita cukup membuktikan bahwa himpunan $KB \cup \{\neg \alpha\}$ adalah Unsatisfiable (tidak mungkin benar bersamaan). Jika kita dapat menurunkan klausa kosong ($\square$ atau False) dari himpunan tersebut, maka $\alpha$ terbukti benar.\cite{DBLP:journals/jacm/Robinson65}
 
-\subsection{Bentuk Normal Prenex (PNF)}
-Langkah pertama standardisasi adalah \textit{Prenex Normal Form} (PNF). Sebuah formula dikatakan dalam bentuk PNF jika seluruh kuantor ditarik ke depan (prefix), meninggalkan bagian bebas-kuantor (matriks) di belakangnya.
+\subsection{Konversi ke \textit{Conjunctive Normal Form} (CNF)}
+Agar aturan resolusi dapat diterapkan, formula logika harus diubah ke bentuk standar yang disebut \textit{Conjunctive Normal Form} (CNF). Menurut \cite{fitting-fol-atp} merinci langkah-langkah algoritma konversi ini sebagai berikut:
 
-Bentuk umum:
-\begin{equation}
-	Q_1 x_1 Q_2 x_2 \dots Q_n x_n \; \mathcal{M}
-\end{equation}
-Dimana $Q_i \in \{ \forall, \exists \}$ dan $\mathcal{M}$ adalah matriks tanpa kuantor. Contoh transformasi dalam Bahasa Indonesia:
-\begin{itemize}
-	\item \textit{Asli:} "Tidak benar bahwa semua orang menyukai durian." ($\neg \forall x Likes(x, Durian)$).
-	\item \textit{PNF:} "Terdapat seseorang yang tidak menyukai durian." ($\exists x \neg Likes(x, Durian)$).
-\end{itemize}
-
-\subsection{Skolemisasi (Skolemization)}
-Skolemisasi adalah proses menghilangkan \textbf{Kuantor Eksistensial} ($\exists$) untuk menghasilkan formula yang \textit{equisatisfiable} (memiliki keterpenuhan yang setara). Kuantor eksistensial digantikan oleh \textbf{Konstanta Skolem} atau \textbf{Fungsi Skolem}.
-
-\textbf{Algoritma:}
 \begin{enumerate}
-	\item Jika $\exists y$ tidak berada dalam lingkup $\forall$, ganti $y$ dengan konstanta baru $c$.
-	\item Jika $\exists y$ berada dalam lingkup $\forall x_1, \dots, \forall x_k$, ganti $y$ dengan fungsi $f(x_1, \dots, x_k)$.
+	\item Eliminasi Implikasi: Ubah $A \rightarrow B$ menjadi $\neg A \lor B$.
+	\item Geser Negasi ke Dalam: Gunakan hukum De Morgan dan aturan $\neg \forall x P \equiv \exists x \neg P$.
+	\item Standardisasi Variabel: Ubah nama variabel agar unik untuk setiap kuantor (misal: $\forall x P(x) \lor \forall x Q(x)$ menjadi $\forall x P(x) \lor \forall y Q(y)$).
+	\item Prenex Normal Form: Pindahkan semua kuantor universal ($\forall$) ke depan formula.
+	\item Skolemisasi: Menghilangkan kuantor eksistensial ($\exists$). Variabel $y$ yang terikat oleh $\exists$ diganti dengan Fungsi Skolem $f(x)$ yang bergantung pada variabel universal sebelumnya.Contoh: $\forall x \exists y (Parent(x, y))$ menjadi $\forall x (Parent(x, f(x)))$.
+	\item Distribusi \& CNF: Gunakan aturan distributif untuk mendapatkan bentuk konjungsi dari klausa (AND of ORs).
 \end{enumerate}
 
-Contoh kasus:
-\begin{quote}
-	"Setiap warga negara memiliki sebuah NIK." \\
-	FOL: $\forall x$ ($Citizen$($x$) $\rightarrow \exists y$ ($NIK$($y$) $\land Has$($x, y$))) \\
-	Skolemisasi: $\forall x$ ($Citizen$($x$) $\rightarrow$ ($NIK$(nikOf($x$)) $\land Has$($x$, nikOf($x$))))
-\end{quote}
-Di sini, nikOf($x$) adalah fungsi Skolem yang memetakan setiap warga ke NIK spesifik mereka.
+\subsection{Aturan Resolusi Robinson dan Unifikasi}
+Prinsip Resolusi Robinson menyederhanakan berbagai aturan inferensi klasik (seperti Modus Ponens dan Modus Tollens) menjadi satu aturan tunggal:
+$$\frac{C_1 \lor L_1, \quad C_2 \lor L_2}{(C_1 \lor C_2)\theta}$$
+Di mana: $L_1$ dan $L_2$ adalah literal yang dapat dibuat saling berlawanan (komplemen). $\theta$ adalah substitusi variabel yang dihasilkan oleh algoritma Unifikasi.
 
-\subsection{Bentuk Normal Konjungtif (CNF)}
-\textit{Conjunctive Normal Form} (CNF) adalah representasi akhir yang dibutuhkan oleh mesin inferensi. CNF adalah konjungsi dari klausa-klausa, di mana setiap klausa adalah disjungsi dari literal.
-\begin{equation}
-	(L_{1,1} \lor \dots \lor L_{1,n}) \land (L_{2,1} \lor \dots \lor L_{2,m})
-\end{equation}
-
-%-----------------------------------------------------------------------------%
-\section{Paradigma Neuro-Symbolic}
-\label{sec:neuroSymbolicIntro}
-%-----------------------------------------------------------------------------%
-
-Integrasi LLM dengan penalaran logika formal, sering disebut juga sebagai \textit{Neuro-Symbolic AI}, merupakan pergeseran penting dalam riset \textit{artificial intelligence}. Komponen "neuro" (model \textit{deep learning} seperti Qwen atau Llama) unggul dalam pengenalan pola, namun memiliki keterbatasan dalam melakukan inferensi multi-langkah yang \textit{strict} dan deterministik (\cite{saparov2023languagemodelsgreedyreasoners}). Keterbatasan ini menjadi poin penting pada bahasa dengan sumber daya rendah hingga menengah seperti Bahasa Indonesia, di mana korpus pelatihan untuk penalaran kompleks jauh lebih sedikit dibandingkan Bahasa Inggris.
-
-Penelitian ini mengadopsi kerangka kerja yang tidak hanya mengandalkan prediksi token probabilitas, melainkan memisahkan proses menjadi translasi simbolik, pencarian terstruktur, dan resolusi formal, sebagaimana diusulkan dalam arsitektur \textbf{Aristotle} (\cite{Aristotle25}).
-%-----------------------------------------------------------------------------%
-\section{Kerangka Kerja Aristotle}
-\label{sec:aristotleFramework}
-%-----------------------------------------------------------------------------%
-
-Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama:
-
-\subsection{Logika Translasi (\textit{Logical Translation})}
-Modul ini menggunakan LLM \textit{open-weight} untuk menerjemahkan premis bahasa natural menjadi FOL
-\begin{itemize}
-	\item \textbf{Input:} Data poin dalam bahasa Indonesia
-	\item \textbf{Proses:} Menerjemahkan data poin menjadi 3 bagian, sesuai dengan formula, yaitu premis dari konteks $\rightarrow$ fakta dan aturan, pertanyaan dari konteks $\rightarrow$ konjektur
-\end{itemize}
-
-\subsection{Dekomposer (\textit{Decomposer})}
-Modul ini menggunakan LLM \textit{open-weight} untuk dekomposisi aturan yang sudha berbentuk FOL ke dalam PNF, CNF, dan Skolemisasi
-\begin{itemize}
-	\item \textbf{Input:} data poin yang sudah melewati Logical Translation dalam bentuk FOL
-	\item \textbf{Proses:} Dekomposisi data poin yang sudha menjadi FOL ke dalam bentuk NF, lalu Skolemisasi, dan terakhir CNF.
-\end{itemize}
-
-\subsection{Penyelesai Pencarian (\textit{Search Router})}
-Mesin inti inferensi terdiri dari dua sub-komponen:
-\begin{enumerate}
-	\item \textbf{\textit{Logical Search Router}:} Memilih klausa mana yang relevan untuk diproses. Hal ini mencegah terjadinya ledakan kombinatorial yang mengakibatkan proses komputasi yang lama dan pencarian bukti yang sesuai dengan pembuatan set untuk menyimpan premis yang sudah ditelusuri dan memberi batasan banyaknya ronde dalam pencarian bukti
-	\item \textbf{\textit{Logical Resolver}:} Menerapkan aturan resolusi secara iteratif hingga ditemukan kontradiksi (untuk pembuktian salah) atau hingga ruang pencarian habis.
-\end{enumerate}
-
-\subsection{Resolusi (\textit{Resolver})}
-Sistem memverifikasi sebuah hipotesis $S$ melalui dua jalur paralel dengan menerapkan pembuktian dengan kontradiksi (\textit{Proof By Contradiction})
-\begin{itemize}
-	\item \textbf{Jalur 1 :} Asumsikan $S$. Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
-	\item \textbf{Jalur 2 :} Asumsikan $\neg S$ (Negasi S). Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
-\end{itemize}
+Unifikasi adalah proses mencari Most General Unifier (MGU) $\theta$ yang membuat dua atom sintaksis menjadi identik.
+Contoh: Unifikasi $P(x)$ dan $\neg P(Alex)$ menghasilkan $\theta = \{x/Alex\}$. Tanpa unifikasi, resolusi pada FOL tidak mungkin dilakukan karena variabel pada premis yang berbeda harus diselaraskan.

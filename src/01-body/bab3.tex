@@ -3,7 +3,7 @@
 \label{bab:3}
 %-----------------------------------------------------------------------------%
 
-Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan masalah penelitian. Metodologi ini disusun untuk menguji secara empiris apakah pendekatan \textit{Neuro-Symbolic}, khususnya kerangka kerja Aristotle yang telah dibahas pada Bab~\ref{bab:2}, dapat mengatasi kelemahan penalaran probabilistik pada \textit{open-weight} \textit{Large Language Models} (LLM) dalam konteks Bahasa Indonesia.
+Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan masalah penelitian. Metodologi ini disusun untuk menguji secara empiris apakah pendekatan dapat mengatasi kelemahan penalaran probabilistik pada \textit{open-weight} \textit{Large Language Models} (LLM) dalam konteks Bahasa Indonesia.
 
 Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya adalah mengukur akurasi penalaran logis yang diperoleh melalui manipulasi struktur \textit{prompting} (dari Naive ke Neuro-Symbolic) dan dampaknya ketika model dijalankan dengan sumber daya terbatas (melalui kuantisasi).
 
@@ -86,6 +86,46 @@ Setiap model dijalankan dengan pengaturan parameter yang sama / konsisten untuk 
 Konfigurasi lengkap ini disajikan dalam kode berikut:
 
 \lstinputlisting[language=Python, caption=Konfigurasi parameter deterministik untuk meniadakan halusinasi kreatif, label=code:parameter_kwargs]{assets/codes/parameter_kwargs.py}
+
+%-----------------------------------------------------------------------------%
+\section{Kerangka Kerja Aristotle}
+\label{sec:aristotleFramework}
+%-----------------------------------------------------------------------------%
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/pics/Framework.drawio.png}
+    \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan LLM dan metode neuro-symbolic (\cite{Aristotle25})}
+    \label{fig:aristotle_framework}
+\end{figure}
+Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama, sesuai dengan gambar \ref{fig:aristotle_framework}.
+
+\subsection{Logika Translasi (\textit{Logical Translation})}
+Modul ini menggunakan LLM \textit{open-weight} untuk menerjemahkan premis bahasa natural menjadi FOL
+\begin{itemize}
+    \item \textbf{Input:} Data poin dalam bahasa Indonesia
+    \item \textbf{Proses:} Menerjemahkan data poin menjadi 3 bagian, sesuai dengan formula, yaitu premis dari konteks $\rightarrow$ fakta dan aturan, pertanyaan dari konteks $\rightarrow$ konjektur
+\end{itemize}
+
+\subsection{Dekomposer (\textit{Decomposer})}
+Modul ini menggunakan LLM \textit{open-weight} untuk dekomposisi aturan yang sudha berbentuk FOL ke dalam PNF, CNF, dan Skolemisasi
+\begin{itemize}
+    \item \textbf{Input:} data poin yang sudah melewati Logical Translation dalam bentuk FOL
+    \item \textbf{Proses:} Dekomposisi data poin yang sudha menjadi FOL ke dalam bentuk NF, lalu Skolemisasi, dan terakhir CNF.
+\end{itemize}
+
+\subsection{Penyelesai Pencarian (\textit{Search Router})}
+Mesin inti inferensi terdiri dari dua sub-komponen:
+\begin{enumerate}
+    \item \textbf{\textit{Logical Search Router}:} Memilih klausa mana yang relevan untuk diproses. Hal ini mencegah terjadinya ledakan kombinatorial yang mengakibatkan proses komputasi yang lama dan pencarian bukti yang sesuai dengan pembuatan set untuk menyimpan premis yang sudah ditelusuri dan memberi batasan banyaknya ronde dalam pencarian bukti
+    \item \textbf{\textit{Logical Resolver}:} Menerapkan aturan resolusi secara iteratif hingga ditemukan kontradiksi (untuk pembuktian salah) atau hingga ruang pencarian habis.
+\end{enumerate}
+
+\subsection{Resolusi (\textit{Resolver})}
+Sistem memverifikasi sebuah hipotesis $S$ melalui dua jalur paralel dengan menerapkan pembuktian dengan kontradiksi (\textit{Proof By Contradiction})
+\begin{itemize}
+    \item \textbf{Jalur 1 :} Asumsikan $S$. Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
+    \item \textbf{Jalur 2 :} Asumsikan $\neg S$ (Negasi S). Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
+\end{itemize}
 
 %-----------------------------------------------------------------------------%
 \section{Prosedur Eksekusi: Pipeline Aristotle}
