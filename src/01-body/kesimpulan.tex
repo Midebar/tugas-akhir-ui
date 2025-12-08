@@ -2,30 +2,45 @@
 \chapter{\kesimpulan}
 \label{bab:kesimpulan}
 %---------------------------------------------------------------
-Pada bab ini, Penulis akan memaparkan kesimpulan penelitian dan saran untuk penelitian berikutnya.
+Bab ini merangkum temuan-temuan utama yang diperoleh dari rangkaian eksperimen validasi kerangka kerja Neuro-Symbolic pada dataset logika berbahasa Indonesia. Kesimpulan disusun untuk menjawab rumusan masalah yang telah ditetapkan pada Bab 1, diikuti dengan saran strategis untuk pengembangan penelitian selanjutnya.
 
+\section{Kesimpulan} \label{sec:kesimpulan}
 
-%---------------------------------------------------------------
-\section{Kesimpulan}
-\label{sec:kesimpulan}
-%---------------------------------------------------------------
-Berikut ini adalah kesimpulan terkait pekerjaan yang dilakukan dalam penelitian ini:
-\begin{enumerate}
-	\item \bo{Poin pertama} \\
-	      Penjelasan poin pertama.
-	\item \bo{Poin kedua} \\
-	      Penjelasan poin kedua.
+Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rendah (7B-9B) yang dikuantisasi pada dataset berbahasa Indonesia, penelitian ini menghasilkan tiga kesimpulan utama:
+
+\begin{enumerate} 
+	\item \textbf{Mekanisme Penalaran Logis pada Bahasa Indonesia:}
+	      Implementasi \textit{framework translation-decomposition-search-resolve} pada data berbahasa Indonesia berhasil mengubah paradigma permasalahan dari "probabilitas linguistik" menjadi "validitas simbolik". Tantangan utama dalam mekanisme ini bukan terletak pada kemampuan mesin \textit{solver} untuk menyelesaikan logika, melainkan pada tahap \textbf{Translasi Logika} (\textit{Logical Translation}). Ditemukan bahwa struktur kalimat Bahasa Indonesia yang implisit (sering tanpa penanda subjek eksplisit) memerlukan \textit{prompt engineering} yang sangat spesifik untuk mencegah model menghasilkan halusinasi sintaks. Keberhasilan framework ini sangat bergantung pada kemampuan model untuk memisahkan struktur "Fakta" dan "Aturan" secara presisi sebelum masuk ke mesin inferensi.
+	      
+	\item \textbf{Perbandingan Performa Antar Model Open-Weight:} \\
+	      Terdapat divergensi hasil yang signifikan antara model global dan model regional/nasional dalam tugas translasi simbolik ini:
+	      \begin{itemize}
+		      \item \textbf{SEA-LION v3 (Regional)} mencatat performa terbaik dengan akurasi \textbf{81.60\%}. Model ini menunjukkan keseimbangan terbaik antara pemahaman instruksi dalam Bahasa Indonesia dan kepatuhan terhadap format logika formal.
+		      \item \textbf{Sahabat-AI v1 (Nasional)} menunjukkan performa yang stabil (\textbf{61.20\%}), mengungguli model global dalam memahami nuansa semantik lokal, meskipun masih di bawah SEA-LION dalam konsistensi sintaks kompleks.
+		      \item \textbf{Qwen2.5 (Global)}, meskipun dikenal unggul dalam *coding*, mengalami kegagalan katastropik (\textbf{14.00\%}) pada metode ini. Kegagalan ini disebabkan oleh ketidakmampuan model untuk menjawab sesuai penalaran logis ketika dipaksa mengikuti format ketat, menandakan bahwa kapabilitas \textit{instruction following} tidak selalu berbanding lurus dengan kemampuan penalaran logis dalam konteks bahasa tertentu.
+	      \end{itemize}
+	\item \textbf{Efektivitas Aristotle vs Naive Prompting:} \\
+	      Penerapan framework Aristotle terbukti \textbf{meningkatkan reliabilitas} jika dan hanya jika model memiliki kapabilitas \textit{instruction following} yang kuat dalam bahasa target.
+	      \begin{itemize}
+		      \item Pada model \textbf{SEA-LION}, penggunaan framework Aristotle meningkatkan akurasi dari 76.80\% (\textit{Naive}) menjadi \textbf{81.60\%}. Ini membuktikan bahwa \textit{framework translation-decomposition-search-resolve} dapat memanfaatkan kemampuan model untuk menghasilkan logika yang lebih tepat ketika diarahkan dengan benar.
+		      \item Sebaliknya, pada model \textbf{Qwen2.5}, performa justru turun drastis dari 81.00\% (\textit{Naive}) menjadi 14.00\% (\textit{Aristotle}). Hal ini menunjukkan bahwa sistem \textit{Neuro-Symbolic} memiliki sifat \textit{brittle}, kesalahan kecil pada satu tahap akan merusak keseluruhan hasil, juga model yang tidak dapat mematuhi atau terlalu patuh pada format \textit{prompt template} tidak akan menghasilkan penalaran logis yang baik, berbeda dengan \textit{Naive Prompting} yang lebih toleran terhadap kesalahan parsial.
+	      \end{itemize}
 \end{enumerate}
 
-Tulis kalimat penutup di sini.
+Secara keseluruhan, penelitian ini menyimpulkan bahwa untuk aplikasi logika berbahasa Indonesia dengan sumber daya terbatas (model kecil \& terkuantisasi), model regional seperti SEA-LION yang dipadukan dengan arsitektur Neuro-Symbolic menawarkan solusi yang lebih lebih baik dibandingkan mengandalkan intuisi atau \textit{greedy reasoning} model semata.
 
-
-%---------------------------------------------------------------
 \section{Saran}
 \label{sec:saran}
-%---------------------------------------------------------------
-Berdasarkan hasil penelitian ini, berikut ini adalah saran untuk pengembangan penelitian berikutnya:
-\begin{enumerate}
-	\item Saran 1.
-	\item Saran 2.
+
+Berdasarkan temuan dan keterbatasan penelitian ini, disarankan beberapa langkah pengembangan untuk penelitian selanjutnya:
+
+\begin{enumerate} 
+	\item \textbf{Penerapan Grammar-Constrained Decoding:}
+	      Untuk mengatasi masalah \textit{parsability} (seperti yang dialami Qwen), penelitian masa depan sebaiknya mengintegrasikan penegakan tata bahasa (seperti format GBNF di \texttt{llama.cpp}) saat inferensi. Ini akan memaksa model, bahkan yang terkuantisasi, untuk menghasilkan output yang 100\% valid secara sintaks, seperti mengikuti format FOL, sehingga evaluasi dapat berfokus murni pada logika semantik.
+	\item \textbf{Fine-Tuning Khusus (Instruction Tuning):}
+	      Alih-alih hanya mengandalkan \textit{Prompt Engineering} (\textit{few-shot}), disarankan untuk melakukan \textit{Fine-Tuning} ringan (seperti LoRA) pada model Sahabat-AI atau SEA-LION menggunakan dataset pasangan (Teks Indonesia $\rightarrow$ FOL).
+	      Hal ini akan meningkatkan konsistensi model dalam menangani struktur kalimat kompleks Bahasa Indonesia.
+	\item \textbf{Peningkatan Kompleksitas Dataset:}
+	      Penelitian ini hanya terbatas pada dataset ProntoQA (logika deduktif sintetik).
+	      Pengujian selanjutnya perlu memperluas cakupan ke dataset, seperti menggunakan dataset yang dipakai pada penelitian Aristotle aslinya, yaitu ProofWriter \cite{tafjord2021proofwritergeneratingimplicationsproofs} dan LogicNLI \cite{tian-etal-2021-diagnosing}.
 \end{enumerate}

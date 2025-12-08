@@ -161,7 +161,8 @@
 \usepackage{glossaries}
 \usepackage[automake]{glossaries-extra}
 
-\usepackage{tabularx} % Required for auto-width columns
+\usepackage{tabularx} % Auto-width columns
+\newcommand{\bracket}[2]{#1\text{(}#2\text{)}}
 
 
 %-----------------------------------------------------------------------------%
@@ -542,7 +543,7 @@
 		\fancyhead[RO,LE]{\thepage}
 	\else
 		\fancyhead[LO,RE]{\thepage}
-
+		
 	\fi
 }
 \newcommand{\setoddevenfooter}{
@@ -551,7 +552,7 @@
 		\fancyfoot[RO,LE]{\footnotesize \fontfamily{phv} \selectfont \bo{Universitas Indonesia}}
 	\else
 		\fancyfoot[LO,RE]{\footnotesize \fontfamily{phv} \selectfont \bo{Universitas Indonesia}}
-
+		
 	\fi
 }
 

@@ -3,19 +3,254 @@
 \label{bab:4}
 %-----------------------------------------------------------------------------%
 
-Bab ini menjelaskan tentang eksperimen dan hasil eksperimen dari penelitian
+Bab ini memaparkan hasil eksperimen empiris yang dilakukan untuk mengevaluasi kinerja \textit{open-weight} LLM pada tugas penalaran logis berbahasa Indonesia. Analisis dibagi menjadi tiga bagian utama: (1) proses iteratif penyempurnaan \textit{prompt} untuk mengatasi ambiguitas bahasa, (2) hasil evaluasi kuantitatif menggunakan metrik akurasi, dan (3) analisis kualitatif mendalam mengenai penyebab kegagalan dan keberhasilan masing-masing model dalam kerangka kerja \textit{Neuro-Symbolic}.
 
-\section{Prompt Refining}
+\section{\textit{Prompt Refining}}
+
+Sebelum melakukan evaluasi skala penuh, dilakukan serangkaian eksperimen pendahuluan untuk menstabilkan performa model dalam menjalankan empat modul utama \textit{framework} Aristotle: \textit{Translation, Decomposition, Search \& Resolve}. Mengingat model yang digunakan adalah model berparameter kecil (7B-9B) yang dikuantisasi, model sangat sensitif terhadap struktur instruksi.
 
 \subsection{\textit{Translation to First Order Logic}}
+\label{subsec:translation_to_fol}
+Pada tahap ini dilakukan prompt untuk penerjemahan kalimat bahasa natural ke dalam \textit{First Order Logic}. Tantangan utama pada tahap ini adalah memetakan kalimat Bahasa Indonesia yang implisit ke dalam struktur logika yang eksplisit.
+
+Berikut adalah prompt template yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada Aristotle Framework
+\lstinputlisting[label={lst:translation_to_fol_v1}]{assets/texts/translation.txt}
+Namun dari prompt template tersebut masih bermasalah karena ada beberapa aturan yang tidak dapat diterjemahkan dengan baik oleh model. 
+Berikut adalah contoh aturan yang tidak dapat diterjemahkan dengan baik oleh model menggunakan prompt template \ref{lst:translation_to_fol_v1}:
+\begin{itemize}
+	\item Mis-\textit{translation} subjek dan objek:
+	      \begin{itemize}
+		      \item Premis: "Zumpus adalah transparan. Zumpus mengajar rompus. Rompuses merupakan tanah. Semua rompus adalah Impus."
+		      \item Hasil \textit{translation}: "1. $Zumpus$($\$x$, $True$) $>>>$ $Transparan$($\$x$, $True$) 2. $Zumpus$($\$x$, $True$) $>>>$ $Rompuses$($\$x$, $True$) 3. $Rombus$($\$x$, $True$) $>>>$ $Tanah$($\$x$, $True$) 4. $Rombus$($\$x$, $True$) $>>>$ $Impus$($\$x$, $True$)"
+		      \item Seharusnya: "1. $Zumpus$($\$x$, $True$) $>>>$ $Transparan$($\$x$, $True$) 2. $Zumpus$($\$x$, $True$) $>>>$ $Rompus$($\$x$, $True$) 3. $Rompus$($\$x$, $True$) $>>>$ $Tanah$($\$x$, $True$) 4. $Rompus$($\$x$, $True$) $>>>$ $Impus$($\$x$, $True$)"
+		      \item Penjelasan: Model salah mengartikan subjek dan objek pada aturan ke-3 dan ke-4, sehingga ketika melakukan search resolve tidak dapat menemukan resolusi yang tepat karena subjek dan objek yang digunakan tidak sesuai.
+	      \end{itemize}
+	\item Tidak melakukan \textit{translation} melainkan menyelesaikan langsung dalam bentuk FOL:
+	      \begin{itemize}
+		      \item Premis: "Tumpus adalah merah. Setiap tumpus adalah jompus. Jompus adalah besar"
+		      \item Hasil \textit{translation}: "1. $Tumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
+		      \item Seharusnya: "1. $Tumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $>>>$ $Jompus$($\$x$, $True$) 3. $Jompus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
+		      \item Penjelasan: Model tidak menerjemahkan aturan ke dalam FOL, melainkan langsung menyelesaikan aturan tersebut dengan menghilangkan salah satu aturan yang ada.
+	      \end{itemize}
+	\item Tidak adanya format keseragaman pada hasil \textit{translasi}:
+	      \begin{itemize}
+		      \item Premis: "Semua Tumpus adalah baik. Setiap tumpus adalah dumpus. Max adalah dumpus. Max tidak baik"
+		      \item Hasil \textit{translation}: "Fakta: $Dumpus$($\$Max$, $True$) Konjektur: $Baik$($\$Max$, $False$) Aturan: 1. $Tumpus$($\$x$, $True$) $\rightarrow$ $Baik$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $\rightarrow$ $Dumpus$($\$x$, $True$)"
+		      \item Seharusnya: "Fakta: $Dumpus$($\$Max$, $True$) Aturan: 1. $Tumpus$($\$x$, $True$) $>>>$ $Baik$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $>>>$ $Dumpus$($\$x$, $True$) Konjektur: $Baik$($\$Max$, $False$)"
+		      \item Penjelasan: Model tidak konsisten dalam menempatkan fakta, aturan, dan konjektur pada hasil \textit{translation} dan juga menggunakan simbol yang berbeda untuk implikasi ($\rightarrow$ dan $>>>$)
+	      \end{itemize}
+\end{itemize}
+
+Karena permasalahan tersebut, dilakukan perbaikan pada prompt template tersebut untuk meningkatkan kualitas \textit{translation}. 
+Berikut adalah versi kedua dari prompt template yang telah dimodifikasi.
+\lstinputlisting[label={lst:translation_to_fol_v2}]{assets/texts/translation_modified.txt}
+Walaupun sudah diperbaiki, masih ada beberapa kesalahan yang terjadi pada hasil \textit{translasion}, seperti berikut:
+\begin{itemize}
+	\item Tidak melakukan \textit{translation} melainkan menyelesaikan langsung dalam bentuk FOL:
+	      \begin{itemize}
+		      \item Premis: "Tumpus adalah merah. Setiap tumpus adalah jompus. Jompus adalah besar"
+		      \item Hasil \textit{translation}: "2. $Tumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 3. $Tumpus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
+		      \item Seharusnya: "2. $Wumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 3. $Wumpus$($\$x$, $True$) $>>>$ $Rompus$($\$x$, $True$) 4. $Rompus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
+		      \item Penjelasan: Model tidak menerjemahkan aturan ke dalam FOL, melainkan langsung menyelesaikan aturan tersebut dengan menghilangkan salah satu aturan yang ada.
+	      \end{itemize}
+\end{itemize}
+Sudah ada perbaikan dalam tahap \textit{translation} dengan penambahan contoh dan deskripsi tugas yang lebih rinci, seperti model mengikuti format dengan benar dan mengurangi kesalahan dalam \textit{translation} subjek dan objek, akan tetapi masih ada kesalahan seperti melakukan resolusi langsung pada tahap \textit{translation}. Hal ini dikarenakan model berparameter rendah tidak memiliki \textit{knowledge} yang cukup dalam mengartikan \textit{term} ambigu yang ada pada aturan logika, yaitu dalam hal ini adalah \textit{term parsing} yang jika diartikan dalam bahasa Indonesia berarti penguraian menurut KBBI, yang padahal arti yang dimaksud dalam konteks ini adalah pemisahan subjek dan objek pada aturan logika.
+
+Oleh karena itu, dilakukan perbaikan lebih lanjut pada prompt template tersebut. 
+Berikut adalah versi ketiga dari prompt template yang telah diperbaiki.
+\lstinputlisting[label={lst:translation_to_fol_v3}]{assets/texts/translation_refine.txt}
+\textit{Term parsing} diubah menjadi menerjemahkan aturan logika dengan memisahkan subjek dan objek pada setiap aturan, sehingga model lebih memahami tugas yang diberikan. Format seperti "***Bentuk Ahir***" langsung dimasukkan ke dalam contoh pada template dan juga contoh yang diberikan bervariasi dalam istilah yang digunakan dan banyaknya kalimat dalam premis agar model dapat lebih memahami tugas yang diberikan.
+Dari hasil evaluasi, prompt template versi ketiga ini sudah cukup baik untuk digunakan dalam eksperimen pada penelitian ini.
 
 \subsection{\textit{Decomposition to Conjunctive Normal Form}}
+Pada tahap ini dilakukan prompt untuk penerjemahan aturan setelah proses \textit{First Order Logic} ke dalam bentuk \textit{Conjunctive Normal Form} dalam proses \textit{decomposition}.
+
+Berikut adalah prompt template yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada Aristotle Framework
+\lstinputlisting[label={lst:decomps_into_cnf_v1}]{assets/texts/and_or_decomposer.txt}
+Ada beberapa masalah yang ditemukan pada hasil \textit{decomposition} menggunakan prompt template tersebut, seperti berikut:
+\begin{itemize}
+	\item Skolemisasi: Pada ProntoQA tidak perlu menggunakan skolemisasi karena tidak ada kuantor eksistensial yang perlu dihilangkan. Namun, model sering kali melakukan skolemisasi pada hasil \textit{decomposition}, sehingga hasil dari proses \textit{decomposition} menjadi tidak sesuai.
+	\item Halusinasi pada Fakta dan Konjektur: Model sering kali menambahkan fakta atau konjektur yang tidak ada pada premis, sehingga hasil dari proses \textit{decomposition} menjadi tidak sesuai:
+	      \begin{itemize}
+		      \item Input: "Aturan: 1. $Tumpus$($\$x$, $True$) $>>>$ $Baik$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $>>>$ $Dumpus$($\$x$, $True$)"
+		      \item Hasil \textit{decomposition}: "Fakta: $Dumpus$($\$Max$, $True$) Konjektur: $Baik$($\$Max$, $False$) Aturan dalam CNF: 1. - $\forall x \left(\bracket{Tumpus}{(\$x, False)} \lor \bracket{Baik}{(\$x, True)}\right)$ 2. - $\forall x \left(\bracket{Tumpus}{(\$x, False)} \lor \bracket{Dumpus}{(\$x, True)}\right)$"
+		      \item Seharusnya: "Aturan dalam CNF: 1. - $\forall x \left(\bracket{Tumpus}{(\$x, False)} \lor \bracket{Baik}{(\$x, True)}\right)$ 2. - $\forall x \left(\bracket{Tumpus}{(\$x, False)} \lor \bracket{Dumpus}{(\$x, True)}\right)$"
+		      \item Penjelasan: Model menambahkan fakta dan konjektur yang tidak ada pada premis, sehingga hasil dari proses \textit{decomposition} menjadi tidak sesuai.
+	      \end{itemize}
+\end{itemize}
+
+Berikut adalah versi kedua dari prompt template yang telah diperbaiki. Versi kedua ini mirip seperti template versi ketiga pada tahap ~\ref{lst:translation_to_fol_v3}, yaitu dengan menambahkan contoh yang lebih bervariasi dan deskripsi tugas yang lebih rinci karena keberhasilan model dalam memahamami tugas pada tahap \textit{translation} dapat diaplikasikan juga pada tahap \textit{decomposition}.
+\lstinputlisting[label={lst:decomps_into_cnf_v2}]{assets/texts/and_or_decomposer_refine.txt}
+Prompt template versi kedua ini sudah memperbaiki masalah yang ada pada versi pertama dengan penambahan contoh yang lebih bervariasi dan penghilangan skolemisasi, serta fakta dan konjektur pada deskripsi tugas karena tidak diperlukan dan hanya membingungkan model.
+Dari hasil evaluasi, prompt template versi kedua ini sudah cukup baik untuk digunakan dalam eksperimen pada penelitian ini.
 
 \subsection{\textit{Search Resolve}}
+Pada tahap ini dilakukan prompt untuk mencari resolusi dari aturan setelah proses \textit{decomposition}.
 
-\section{Hasil Akhir}
+Berikut adalah prompt template yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada Aristotle Frameworks
+\lstinputlisting[label={lst:search_resolve_v1}]{assets/texts/logic_resolver.txt}
+Dari hasil evaluasi ditemukan pola kesalahan yang sering terjadi, seperti berikut:
+\begin{itemize}
+	\item Model tidak mengenali istilah pelengkap/bertentangan:
+	      \begin{itemize}
+		      \item Input:\\
+		            Klausa 1:\\
+		            \( \bracket{Jompus}{(Max, True)} \)\\
+		            Klausa 2:\\
+		            \( \forall x \left(\bracket{Jompus}{(x, False)} \lor \bracket{Membosankan}{(x, True)}\right) \)\\
+		      \item Output:\\
+		            **Dibawah ini tugas yang perlu Anda lakukan:**\\
+		            
+		            Klausa 1:\\
+		            \( \bracket{Jompus}{(Max, True)} \)\\
+		            Klausa 2:\\
+		            \( \forall x \left(\bracket{Jompus}{(x, False)} \lor \bracket{Membosankan}{(x, True)}\right) \)\\
+		            
+		            **Langkah 1: Cek Istilah Pelengkap/Bertentangan**\\
+		            
+		            **Klausa yang Diberikan:**\\
+		            - **Klausa 1:** \( \bracket{Jompus}{(Max, True)} \)\\
+		            - **Klausa 2:** \( \forall x \left(\bracket{Jompus}{(x, False)} \lor \bracket{Membosankan}{(x, True)}\right) \)\\
+		            
+		            **Identifikasi Potensial Istilah Pelengkap:**\\
+		            - Tidak ada kecocokan predikat antara \( \bracket{Jompus}{(Max, True)} \) dalam Klausa 1 dan istilah dalam Klausa 2. Klausa 2 melibatkan predikat \( Jompus \) dan \( Membosankan \), sedangkan Klausa 1 melibatkan \( Jompus \). Oleh karena itu, tidak ada istilah pelengkap atau bertentangan yang ditemukan.\\
+		            
+		            \#\#\# **Langkah 2: Selesaikan Klausa**\\
+		            
+		            - **Proses Penyelesaian:**\\
+		            - **Tidak Ada Istilah Pelengkap atau Bertentangan Ditemukan:** Tidak ada istilah dalam Klausa 1 yang bertentangan atau melengkapi istilah dalam Klausa 2 karena predikat yang berbeda. Ini menghasilkan tidak ada perubahan melalui penyelesaian karena tidak ada dasar untuk menggabungkan atau memodifikasi klausa.\\
+		            
+		            \#\#\# **Langkah 3: Pemeriksaan Cukup**\\
+		            
+		            - **Cek Kontradiksi:**\\
+		            - Karena tidak ada istilah yang pelengkap atau bertentangan dan tidak ada penyelesaian yang dapat diterapkan, tidak ada kontradiksi. Penyidikan lebih lanjut diperlukan untuk mengevaluasi nilai kebenaran klausa, jadi label cukup harus False.\\
+		            
+		            ***Bentuk Akhir***\\
+		            **Label Cukup:** [False]\\
+		            ***Akhir Blok***\\
+		      \item Penjelasan: Model gagal menemukan resolusi karena tidak mengenali bahwa \( \bracket{Jompus}{(Max, True)} \) dan \( \bracket{Jompus}{(x, False)} \) adalah istilah yang bertentangan ketika \( x \) disubstitusi dengan \( Max \).
+	      \end{itemize}
+	\item Model menggunakan $\land$ (AND) dan penambahan \textit{term} atau klausa yang tidak ada pada input:
+	      \begin{itemize}
+		      \item Input:\\
+		            Klausa 1:\\
+		            \( \bracket{Zumpus}{(Wren, False)} \lor \bracket{Transparan}{(Wren, True)} \)\\
+		            Klausa 2: \\
+		            8.  $(\bracket{Jompus}{(x, False)} \lor \bracket{Zumpus}{(x, True)})$\\
+		      \item Output:\\
+		            **Dibawah ini tugas yang perlu Anda lakukan:**\\
+		            
+		            Klausa 1:\\
+		            \( \bracket{Zumpus}{(Wren, False)} \lor \bracket{Transparan}{(Wren, True)} \)\\
+		            Klausa 2:\\
+		            8.  $(\bracket{Jompus}{(x, False)} \lor \bracket{Zumpus}{(x, True)}) \land (\bracket{Jompus}{(x, False)} \lor \bracket{Transparan}{(x, True)})$\\
+		            
+		            **Langkah 1: Cek Istilah Pelengkap/Bertentangan**\\
+		            
+		            **Klausa yang Diberikan:**\\
+		            - **Klausa 1:** \( \bracket{Zumpus}{(Wren, False)} \lor \bracket{Transparan}{(Wren, True)} \)\\
+		            - **Klausa 2:** \( (\bracket{Jompus}{(x, False)} \lor \bracket{Zumpus}{(x, True)}) \land (\bracket{Jompus}{(x, False)} \lor \bracket{Transparan}{(x, True)}) \)\\
+		            
+		            **Identifikasi Potensial Istilah Pelengkap:**\\
+		            - \( \bracket{Zumpus}{(Wren, False)} \) dalam Klausa 1 berpotensi bertentangan dengan \( \bracket{Zumpus}{(x, True)} \) dalam Klausa 2. Instansiasikan \( x \) ke \( Wren \) untuk memeriksa kontradiksi.\\
+		            
+		            **Instansiasikan Klausa 2 dengan \( x = Wren \):**\\
+		            - Klausa 2 Asli: \( (\bracket{Jompus}{(x, False)} \lor \bracket{Zumpus}{(x, True)}) \land (\bracket{Jompus}{(x, False)} \lor \bracket{Transparan}{(x, True)}) \)\\
+		            - Klausa 2 yang Diinstansiasikan: \( (\bracket{Jompus}{(Wren, False)} \lor \bracket{Zumpus}{(Wren, True)}) \land (\bracket{Jompus}{(Wren, False)} \lor \bracket{Transparan}{(Wren, True)}) \)\\
+		            
+		            **Identifikasi Istilah Pelengkap Setelah Instansiasi:**\\
+		            - \( \bracket{Zumpus}{(Wren, False)} \) dalam Klausa 1 adalah pelengkap dari \( \bracket{Zumpus}{(Wren, True)} \) dalam Klausa 2 yang diinstansiasikan (predikat sama, argumen sama, nilai boolean berlawanan).\\
+		            
+		            \#\#\# **Langkah 2: Selesaikan Klausa**\\
+		            
+		            - **Proses Penyelesaian:**\\
+		            - **Aturan yang digunakan:** **Operator AND (∧) - Istilah Pelengkap/Bertentangan Ditemukan dengan Sisa Istilah** karena istilah pelengkap/bertentangan dalam kedua klausa 1 dan klausa 2 yang diinstansiasikan terhubung oleh "AND" dengan istilah lain.\\
+		            \[\\
+			            (A \land B), \, (\neg B \lor C) \quad \Rightarrow \quad (A \land C)\\
+		            \]\\
+		            - **Substitusikan istilah:**\\
+		            \begin{multline*}
+			            (\bracket{Zumpus}{(Wren, False)} \lor \bracket{Transparan}{(Wren, True)}), \, (\bracket{Jompus}{(Wren, False)}\\ \lor \bracket{Zumpus}{(Wren, True)}) \land (\bracket{Jompus}{(Wren, False)} \lor \bracket{Transparan}{(Wren, True)})\\ \quad \Rightarrow \quad (\bracket{Transparan}{(Wren, True)} \lor \bracket{Jompus}{(Wren, False)})\\
+		            \end{multline*}
+		            - **Klausa Hasil:** \( (\bracket{Transparan}{(Wren, True)} \lor \bracket{Jompus}{(Wren, False)}) \)\\
+		            
+		            \#\#\# **Langkah 3: Pemeriksaan Cukup**\\
+		            
+		            - **Cek Kontradiksi:**\\
+		            - Klausa hasil \( (\bracket{Transparan}{(Wren, True)} \lor \bracket{Jompus}{(Wren, False)}) \) tidak menghasilkan kontradiksi. Penyidikan lebih lanjut diperlukan untuk menentukan kesimpulan akhir, jadi label cukup harus False.\\
+		            
+		            ***Bentuk Akhir***\\
+		            **Klausa Baru:** { \( (\bracket{Transparan}{(Wren, True)} \lor \bracket{Jompus}{(Wren, False)}) \)}\\
+		            **Label Cukup:** [False]\\
+		            ***Akhir Blok***\\
+		      \item Penjelasan:\\
+		            Model salah menggunakan operator $\land$ pada Klausa 2, padahal seharusnya menggunakan $\lor$. Hal ini menyebabkan proses resolusi menjadi salah karena klausa yang digunakan tidak sesuai dengan input yang diberikan.
+	      \end{itemize}
+\end{itemize}
+
+Oleh karena itu, dilakukan perbaikan pada prompt template tersebut dengan menghilangkan deskripsi tugas seperti penghilangan operator $\land$ (AND) karena operator tersebut tidak diperlukan dalam proses resolusi pada dataset ProntoQA, serta penambahan sebuah contoh resolusi yang saling berkomplemen untuk membantu model dalam mengenali istilah pelengkap/bertentangan.
+Berikut adalah versi kedua dari prompt template yang telah dimodifikasi.
+\lstinputlisting[label={lst:search_resolve_v2}]{assets/texts/logic_resolver_modified.txt}
+Hasil dari \textit{prompt template} versi kedua ini sudah memperbaiki beberapa masalah yang ada pada versi pertama, seperti model dapat mengenali istilah pelengkap/bertentangan dengan baik dan tidak menggunakan operator $\land$ (AND) yang tidak perlu digunakan. Namun, masih ada beberapa kesalahan yang terjadi, seperti penggunaan $\neg$ (NOT) dalam proses resolusi yang sebenarnya tidak diperlukan pada dataset ProntoQA.
+
+Maka deskripsi tugas yang menjelaskan tentang penggunaan $\neg$ dihilangkan agar tidak membingungkan model. Berikut adalah versi ketiga dari \textit{prompt template} yang telah diperbaiki.
+\lstinputlisting[label={lst:search_resolve_v3}]{assets/texts/logic_resolver_refine.txt}
+Walaupun sudah diperbaiki, masih terdapat beberapa aturan yang tidak dapat diterjemahkan dengan baik oleh model karena model seperti Qwen2.5 7B-Instruct-GGUF yang digunakan memiliki keterbatasan dalam memahami logika yang kompleks atau secara inheren tidak mempunyai \textit{knowledge} dalam melakukan proses resolusi logika. Contoh dari kesalahan tersebut:
+\begin{itemize}
+	\item Input:\\
+	      Clause 1:\\
+	      \( \bracket{Zumpus}{(Fae, False)} \)\\
+	      Clause 2:\\
+	      Zumpus(Fae, True)\\
+	\item Output:\\
+	      **Dibawah ini tugas yang perlu Anda lakukan:**\\
+	      
+	      Clause 1:\\
+	      \( \bracket{Zumpus}{(Fae, False)} \)\\
+	      Clause 2:\\
+	      Zumpus(Fae, True)\\
+	      
+	      Mari kita uraikan proses resolusi untuk clause yang diberikan:\\
+	      
+	      \#\#\# **Langkah 1: Cek Literal yang Saling Komplemen**\\
+	      **Clause yang Diberikan:**\\
+	      - **Clause 1:** \( \bracket{Zumpus}{(Fae, False)} \)\\
+	      - **Clause 2:** \( \bracket{Zumpus}{(Fae, True)} \)\\
+	      
+	      **Identifikasi Literal yang Saling Komplemen:**\\  
+	      - \( \bracket{Zumpus}{(Fae, False)} \) dalam Clause 1 berpotensi saling komplemen dengan \( \bracket{Zumpus}{(Fae, True)} \) dalam Clause 2 (predikat dan argumen sama, tetapi nilai boolean berlawanan).\\
+	      
+	      \#\#\# **Langkah 2: Terapkan Resolusi pada Kedua Clause**\\
+	      - **Proses Resolusi:**\\
+	      - **Aturan Resolusi:** terdapat literal yang saling komplemen ditemukan pada Clause 1 dan Clause 2 yang terhubung oleh "OR" dengan literal lainnya, maka formula resolusi di bawah ini dapat dilakukan.\\
+	      \[\\
+		      (\bracket{P}{(x, False)} \lor B), \, (\bracket{P}{(x, True)} \lor C) \Rightarrow (B \lor C)
+	      \]\\
+	      - **Instansiasi Literal:** Instansiasikan literal dari Clause 1 dan Clause 2 kedalam formula yang sudah diberikan\\
+	      \[\\
+		      (\bracket{Zumpus}{(Fae, False)}), \, (\bracket{Zumpus}{(Fae, True)}) \quad \Rightarrow \quad (B \lor C)
+	      \]\\
+	      - **Clause Hasil:** \( B \lor C \)\\
+	      
+	      \#\#\# **Langkah 3: Pemeriksaan Setelah Resolusi**\\
+	      - **Cek Kontradiksi:**\\
+	      - Clause hasil \( B \lor C \) tidak menghasilkan kontradiksi. Proses resolusi lebih lanjut diperlukan untuk menentukan kesimpulan akhir, sehingga Label Cukup bernilai False.\\
+	      
+	      ***Bentuk Akhir***\\
+	      Clause Baru: { \( B \lor C \)}\\
+	      Label Cukup: [False]\\
+	      ***Akhir Blok***\\
+	\item Penjelasan: Model gagal menemukan resolusi karena tidak mengenali bahwa \( \bracket{Zumpus}{(Fae, False)} \) dan \( \bracket{Zumpus}{(Fae, True)} \) adalah istilah yang saling komplemen, tetapi terlalu fokus pada format penulisan output sehingga mengabaikan proses resolusi yang sebenarnya.
+\end{itemize}
+
+Namun, prompt template \ref{lst:search_resolve_v3} dianggap sudah cukup baik untuk digunakan dalam eksperimen.
+
+\section{Matriks Evaluasi}
+Bagian ini merupakan hasil akhir dari eksperimen yang telah dilakukan pada penelitian ini. Hasil akhir ini berupa tabel yang menunjukkan persentase keberhasilan dari masing-masing model dalam menjawab pertanyaan berdasarkan dua metode yang digunakan, yaitu Naive Prompting dan Aristotle Framework. Prompt yang digunakan pada eksperimen ini telah melalui proses \textit{Prompt Refining} yang dijelaskan pada bagian sebelumnya, yaitu versi final dari masing-masing prompt.
 
 \subsection{Naive Prompting}
+Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasarkan premis. Eksperimen dilakukan dengan dua variasi: meminta jawaban dulu baru penjelasan (\textit{After Answer}) dan sebaliknya (\textit{Before Answer}).
+
 \begin{table}[h]
 	\centering
 	\caption{Hasil Eksperimen dengan Naive Prompting}
@@ -31,8 +266,14 @@ Bab ini menjelaskan tentang eksperimen dan hasil eksperimen dari penelitian
 	\end{tabularx}
 \end{table}
 
-\subsection{Aristotle}
+\textbf{Analisis:}
+\begin{enumerate} 
+	\item \textbf{Keunggulan Qwen pada CoT:} Qwen2.5 menunjukkan lonjakan performa tertinggi (81\%) ketika menggunakan metode \textit{Before Answer}. Ini konsisten dengan literatur yang menyatakan bahwa model yang dilatih pada korpus kode/matematika besar (seperti Qwen) memiliki kemampuan \textit{Chain-of-Thought} internal yang kuat \cite{wei2023chainofthoughtpromptingelicitsreasoning}.
+	\item \textbf{Kekuatan Semantik Sahabat-AI:} Pada mode \textit{After Answer} (yang lebih mengandalkan intuisi bahasa langsung), Sahabat-AI unggul (61.4\%). Ini mengindikasikan bahwa model ini memiliki pemahaman Bahasa Indonesia yang lebih natural, sehingga intuisi "tebakan"-nya lebih akurat dibandingkan model global.
+\end{enumerate}
 
+\subsection{Aristotle}
+Tabel berikut menunjukkan hasil ketika penalaran dipindahkan dari "otak" model ke \textit{pipeline} simbolik.
 \begin{table}[h]
 	\centering
 	\caption{Hasil Eksperimen dengan Aristotle Framework}
@@ -45,3 +286,22 @@ Bab ini menjelaskan tentang eksperimen dan hasil eksperimen dari penelitian
 	\end{tabularx}
 \end{table}
 
+\textbf{Analisis:}
+\begin{itemize}
+	\item \textbf{Anomali Qwen (14\%):} Meskipun unggul di Naive Prompting, Qwen gagal total dalam framework ini. Analisis log menunjukkan kegagalan ini bukan pada logika, melainkan pada \textbf{kepatuhan format sintaks} (\textit{parsability}). Qwen sering menghasilkan output yang terlalu mengikuti format pada tahap \textit{search \& resolve} tanpa mengadnalkan kemampuan penalaran logikanya, sehingga jawaban pada tahap tersebut menjadi tidak valid.
+	\item \textbf{Dominasi SEA-LION (81.6\%):} SEA-LION v3 menunjukkan performa terbaik. Ini membuktikan hipotesis bahwa model regional yang dilatih dengan instruksi spesifik bahasa lokal (dan mungkin data \textit{multilingual alignment} yang lebih baik) mampu menjadi "Penerjemah Logika" yang lebih patuh aturan untuk Bahasa Indonesia.
+	\item \textbf{Stabilitas Sahabat-AI:} Sahabat-AI menunjukkan performa yang seimbang. Meskipun tidak setinggi SEA-LION, akurasinya (61.2\%) sebanding dengan performa Naive-nya, menunjukkan konsistensi pemahaman.
+\end{itemize}
+
+
+\section{Analisis Mendalam}\label{sec:analysis}
+\subsection{Fenomena "Bottleneck" pada \textit{Neuro-Symbolic}}
+
+Hasil eksperimen ini mengonfirmasi kelemahan utama sistem \textit{framework translation-decomposition-search-resolve}, yaitu \textit{Bottleneck}, jika terjadi kesalahan dalam salah satu tahap, maka tahap selanjutnya pasti salah juga. Dalam metode \textit{Naive}, kesalahan model terdistribusi secara probabilistik. Namun dalam metode Aristotle, kesalahan pada tahap-tahap awal akan menjadi katastropik untuk tahap-tahap selanjutnya. Beberapa poin penting:
+\begin{itemize}
+	\item Jika Model gagal dalam tahap \textit{translation}, seperti "Setiap Wumpus adalah Jompus" menjadi $\forall x (\bracket{Wumpus}{(x)} \rightarrow \bracket{Jompus}{(x)})$ dengan sintaks yang tepat 100\%, maka modul \textit{search} tidak akan memiliki input yang valid, dan akurasi otomatis menjadi 0.
+	\item Kegagalan Qwen (14\%) adalah bukti nyata bahwa \textbf{kecerdasan penalaran} (\textit{Reasoning IQ}) berbeda dengan \textbf{kepatuhan instruksi format} (\textit{Instruction Following}) pada bahasa spesifik (Indonesian), yaitu model Qwen terlalu patuh terhadap format, sehingga tidak dapat me-\textit{resolve} logika dengan benar.
+\end{itemize}
+
+\subsection{Efektivitas Model Regional (Sovereign AI)}
+Temuan paling signifikan dalam penelitian ini adalah bahwa \textbf{SEA-LION v3 (8B)}, sebuah model regional, mampu mengalahkan model global SOTA (Qwen2.5 7B) dalam tugas yang terstruktur ini. Hal ini menunjukkan bahwa untuk aplikasi yang memerlukan integrasi dengan sistem simbolik (seperti database atau mesin logika) dalam Bahasa Indonesia, model yang melalui proses \textit{Continued Pre-Training} (CPT) pada data regional jauh lebih andal. Model global cenderung "terlalu kreatif" atau "terlalu cerewet" atau "terlalu patuh pada format", yang justru menjadi masalah jika di implementasikan dalam sebuah pipeline simbolik.
