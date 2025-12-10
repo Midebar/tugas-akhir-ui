@@ -34,11 +34,13 @@
 
 \vspace*{0.5cm}
 
-\noindent Abstract content. \\
+\noindent \textit{Large Language Models} (LLMs) have demonstrated exceptional capabilities in natural language processing but frequently suffer from hallucinations in multi-hop logical reasoning tasks due to their probabilistic nature ("Greedy Reasoners"). This challenge is particularly acute in low-resource languages like Indonesian, where research on formal reasoning methods remains limited. This study evaluates the effectiveness of a \textit{Neuro-Symbolic} approach using the framework (\textit{Translation-Decomposition-Search-Resolution}) compared to conventional \textit{Naive Prompting}.
+
+The experiment utilized the ProntoQA synthetic logic dataset adapted into Indonesian, involving three quantized (4-bit) low-parameter (7B-9B) open-weight models: Qwen2.5 (Global), SEA-LION v3 (Regional), and Sahabat-AI v1 (National). The results reveal a significant divergence between implicit and explicit reasoning capabilities. In \textit{Naive Prompting}, the global model Qwen2.5 led with 81.00\% accuracy. However, when applied to the \textit{Neuro-Symbolic} framework, Qwen2.5's performance collapsed to 14.00\% due to failures in adhering to strict formal logic syntax (\textit{parsability error}). Conversely, the regional model SEA-LION v3 achieved the highest performance with 81.60\% accuracy, demonstrating that regional alignment is important for overcoming the "Translation Bottleneck" when converting natural language to symbolic logic. This study concludes that for rigorous logical applications under resource constraints, regional models integrated with symbolic solvers offer superior reliability compared to relying solely on the intuition of global models. \\
 
 \vspace*{0.2cm}
 
-\noindent Key words: \\ Open-weight LLM, Bahasa Indonesia logical inference dataset, translation-decompose-search-resolve framework \\
+\noindent Key words: \\ Open-weight LLM, logical reasoning, ProntoQA, resolution \\
 
 \setstretch{1.4}
 \newpage

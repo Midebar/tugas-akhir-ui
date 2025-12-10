@@ -103,24 +103,12 @@ manual{latex:source_code_listings,
   publisher = {Association for Computational Linguistics}
 }
 
-@misc{saparov2023languagemodelsgreedyreasoners,
-  title         = {Language Models Are Greedy Reasoners: A Systematic Formal Analysis of Chain-of-Thought},
-  author        = {Abulhair Saparov and He He},
-  year          = {2023},
-  eprint        = {2210.01240},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.CL},
-  url           = {https://arxiv.org/abs/2210.01240}
-}
-
-@misc{llama.cpp,
-  author       = {Gerganov, Georgi},
-  title        = {llama.cpp},
-  year         = {2023},
-  publisher    = {GitHub},
-  journal      = {GitHub repository},
-  howpublished = {\url{https://github.com/ggml-org/llama.cpp}},
-  note         = {Accessed: \today}
+@inproceedings{saparov2023language,
+  title     = {Language Models Are Greedy Reasoners: A Systematic Formal Analysis of Chain-of-Thought},
+  author    = {Abulhair Saparov and He He},
+  booktitle = {The Eleventh International Conference on Learning Representations },
+  year      = {2023},
+  url       = {https://openreview.net/forum?id=qFVVBzXxR2V}
 }
 
 @misc{cobbe2021trainingverifierssolvemath,
@@ -162,16 +150,25 @@ manual{latex:source_code_listings,
   url     = {https://api.semanticscholar.org/CorpusID:258762525}
 }
 
-@misc{pan2023logiclmempoweringlargelanguage,
-  title         = {Logic-LM: Empowering Large Language Models with Symbolic Solvers for Faithful Logical Reasoning},
-  author        = {Liangming Pan and Alon Albalak and Xinyi Wang and William Yang Wang},
-  year          = {2023},
-  eprint        = {2305.12295},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.CL},
-  url           = {https://arxiv.org/abs/2305.12295}
+@inproceedings{pan-etal-2023-logic,
+  title     = {Logic-{LM}: Empowering Large Language Models with Symbolic Solvers for Faithful Logical Reasoning},
+  author    = {Pan, Liangming  and
+               Albalak, Alon  and
+               Wang, Xinyi  and
+               Wang, William},
+  editor    = {Bouamor, Houda  and
+               Pino, Juan  and
+               Bali, Kalika},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2023},
+  month     = dec,
+  year      = {2023},
+  address   = {Singapore},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2023.findings-emnlp.248/},
+  doi       = {10.18653/v1/2023.findings-emnlp.248},
+  pages     = {3806--3824},
+  abstract  = {Large Language Models (LLMs) have shown human-like reasoning abilities but still struggle with complex logical problems. This paper introduces a novel framework, Logic-LM, which integrates LLMs with symbolic solvers to improve logical problem-solving. Our method first utilizes LLMs to translate a natural language problem into a symbolic formulation. Afterward, a deterministic symbolic solver performs inference on the formulated problem. We also introduce a self-refinement module, which utilizes the symbolic solver{'}s error messages to revise symbolic formalizations. We demonstrate Logic-LM{'}s effectiveness on five logical reasoning datasets: ProofWriter, PrOntoQA, FOLIO, LogicalDeduction, and AR-LSAT. On average, Logic-LM achieves a significant performance boost of 39.2{\%} over using LLM alone with standard prompting and 18.4{\%} over LLM with chain-of-thought prompting. Our findings suggest that Logic-LM, by combining LLMs with symbolic logic, offers a promising avenue for faithful logical reasoning.}
 }
-
 @misc{xu2024faithfullogicalreasoningsymbolic,
   title         = {Faithful Logical Reasoning via Symbolic Chain-of-Thought},
   author        = {Jundong Xu and Hao Fei and Liangming Pan and Qian Liu and Mong-Li Lee and Wynne Hsu},
@@ -182,25 +179,15 @@ manual{latex:source_code_listings,
   url           = {https://arxiv.org/abs/2405.18357}
 }
 
-@book{rosen-discrete,
-  author    = {K. H. Rosen},
-  language  = {english},
-  title     = {Discrete mathematics and its applications},
-  edition   = {7th},
-  publisher = {WCB/McGraw-Hill},
-  year      = 2012
-}
-
-@article{DBLP:journals/jacm/Robinson65,
-  author    = {John Alan Robinson},
-  title     = {A Machine-Oriented Logic Based on the Resolution Principle},
-  journal   = {J. ACM},
-  volume    = {12},
-  number    = {1},
-  year      = {1965},
-  pages     = {23-41},
-  ee        = {db/journals/jacm/Robinson65.html, http://doi.acm.org/10.1145/321250.321253},
-  bibsource = {DBLP, http://dblp.uni-trier.de}
+@book{brachman2004knowledge,
+  title     = {Knowledge Representation and Reasoning},
+  author    = {Brachman, R. and Levesque, H.},
+  isbn      = {9781558609327},
+  lccn      = {2004046573},
+  series    = {The Morgan Kaufmann Series in Artificial Intelligence},
+  url       = {https://books.google.co.id/books?id=OuPtLaA5QjoC},
+  year      = {2004},
+  publisher = {Elsevier Science}
 }
 
 @book{fitting-fol-atp,
@@ -252,4 +239,55 @@ manual{latex:source_code_listings,
   archiveprefix = {arXiv},
   primaryclass  = {cs.CL},
   url           = {https://arxiv.org/abs/2012.13048}
+}
+
+@inproceedings{NIPS2017_3f5ee243,
+  author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, \L ukasz and Polosukhin, Illia},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {I. Guyon and U. Von Luxburg and S. Bengio and H. Wallach and R. Fergus and S. Vishwanathan and R. Garnett},
+  pages     = {},
+  publisher = {Curran Associates, Inc.},
+  title     = {Attention is All you Need},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf},
+  volume    = {30},
+  year      = {2017}
+}
+
+@inproceedings{NEURIPS2020_1457c0d6,
+  author    = {Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and Agarwal, Sandhini and Herbert-Voss, Ariel and Krueger, Gretchen and Henighan, Tom and Child, Rewon and Ramesh, Aditya and Ziegler, Daniel and Wu, Jeffrey and Winter, Clemens and Hesse, Chris and Chen, Mark and Sigler, Eric and Litwin, Mateusz and Gray, Scott and Chess, Benjamin and Clark, Jack and Berner, Christopher and McCandlish, Sam and Radford, Alec and Sutskever, Ilya and Amodei, Dario},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
+  pages     = {1877--1901},
+  publisher = {Curran Associates, Inc.},
+  title     = {Language Models are Few-Shot Learners},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf},
+  volume    = {33},
+  year      = {2020}
+}
+
+@inproceedings{NEURIPS2022_b1efde53,
+  author    = {Ouyang, Long and Wu, Jeffrey and Jiang, Xu and Almeida, Diogo and Wainwright, Carroll and Mishkin, Pamela and Zhang, Chong and Agarwal, Sandhini and Slama, Katarina and Ray, Alex and Schulman, John and Hilton, Jacob and Kelton, Fraser and Miller, Luke and Simens, Maddie and Askell, Amanda and Welinder, Peter and Christiano, Paul F and Leike, Jan and Lowe, Ryan},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+  pages     = {27730--27744},
+  publisher = {Curran Associates, Inc.},
+  title     = {Training language models to follow instructions with human feedback},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2022/file/b1efde53be364a73914f58805a001731-Paper-Conference.pdf},
+  volume    = {35},
+  year      = {2022}
+}
+
+@inproceedings{10.5555/3600270.3602468,
+  author    = {Dettmers, Tim and Lewis, Mike and Belkada, Younes and Zettlemoyer, Luke},
+  title     = {LLM.int8(): 8-bit matrix multiplication for transformers at scale},
+  year      = {2022},
+  isbn      = {9781713871088},
+  publisher = {Curran Associates Inc.},
+  address   = {Red Hook, NY, USA},
+  abstract  = {Large language models have been widely adopted but require significant GPU memory for inference. We develop a procedure for Int8 matrix multiplication for feed-forward and attention projection layers in transformers, which cut the memory needed for inference by half while retaining full precision performance. With our method, a 175B parameter 16/32-bit checkpoint can be loaded, converted to Int8, and used immediately without performance degradation. This is made possible by understanding and working around properties of highly systematic emergent features in transformer language models that dominate attention and transformer predictive performance. To cope with these features, we develop a two-part quantization procedure, <b>LLM.int8()</b>. We first use vector-wise quantization with separate normalization constants for each inner product in the matrix multiplication, to quantize most of the features. However, for the emergent outliers, we also include a new mixed-precision decomposition scheme, which isolates the outlier feature dimensions into a 16-bit matrix multiplication while still more than 99.9\% of values are multiplied in 8-bit. Using LLM.int8(), we show empirically it is possible to perform inference in LLMs with up to 175B parameters without any performance degradation. This result makes such models much more accessible, for example making it possible to use OPT-175B/BLOOM on a single server with consumer GPUs. We open source our software.},
+  booktitle = {Proceedings of the 36th International Conference on Neural Information Processing Systems},
+  articleno = {2198},
+  numpages  = {15},
+  location  = {New Orleans, LA, USA},
+  series    = {NIPS '22}
 }

@@ -1,91 +1,42 @@
 %-----------------------------------------------------------------------------%
-\chapter{Cara Kerja Framework}
+\chapter{\babTiga}
 \label{bab:3}
 %-----------------------------------------------------------------------------%
 
 Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan masalah penelitian. Metodologi ini disusun untuk menguji secara empiris apakah pendekatan dapat mengatasi kelemahan penalaran probabilistik pada \textit{open-weight} \textit{Large Language Models} (LLM) dalam konteks Bahasa Indonesia.
 
-Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya adalah mengukur akurasi penalaran logis yang diperoleh melalui manipulasi struktur \textit{prompting} (dari Naive ke Neuro-Symbolic) dan dampaknya ketika model dijalankan dengan sumber daya terbatas (melalui kuantisasi).
-
-%-----------------------------------------------------------------------------%
-\section{Desain Eksperimen}
-\label{sec:researchDesign}
-%-----------------------------------------------------------------------------%
-
-Eksperimen dirancang dengan membandingkan performa model dalam dua skenario inferensi:
-
-\begin{enumerate}
-    \item \textbf{Skenario Pertama (\textit{Naive Prompting}):}
-          Pada skenario ini, model diuji kemampuan "intuisi"-nya. Masalah logika diberikan dalam bentuk narasi langsung dengan instruksi standar dan beberapa contoh pengerjaan (\textit{few-shot}). Skenario ini merepresentasikan cara penggunaan LLM pada umumnya, di mana model dipaksa melakukan logika secara implisit di dalam \textit{hidden states}-nya.
-          
-    \item \textbf{Skenario Kedua (\textit{Framework Aristotle} ):}
-          Skenario ini menerapkan (\textit{pipeline}) yang memaksa model untuk mengeksternalisasi proses berpikirnya ke dalam simbol-simbol logika formal. Sesuai landasan teori, proses ini dipecah menjadi tahapan sekuensial: Translasi $\rightarrow$ Dekomposisi $\rightarrow$ Pencarian Bukti $\rightarrow$ Resolusi.
-\end{enumerate}
-
-Struktur variabel penelitian didefinisikan sebagai berikut:
-
-\begin{itemize}
-    \item \textbf{Variabel Bebas (\textit{Independent Variables}):}
-          \begin{itemize}
-              \item \textbf{Model:} Tiga kategori model yang mewakili spektrum pemahaman bahasa: Global (Qwen), Regional (SEA-LION), dan Nasional (SahabatAI).
-              \item \textbf{Metode Prompting:} \textit{Naive} vs \textit{Aristotle Framework}.
-              \item \textbf{Tingkat Presisi:} \textit{Unquantized} (FP16/BF16) vs Terkuantisasi (4-bit GGUF)
-          \end{itemize}
-          
-    \item \textbf{Variabel Terikat (\textit{Dependent Variables}):}
-          \begin{itemize}
-              \item \textbf{Akurasi (\textit{Accuracy}):} Ketepatan hasil akhir (Benar/Salah) yang diverifikasi terhadap \textit{ground truth}.
-              \item \textbf{Kepatuhan Format (\textit{Parsability}):} Kemampuan model menghasilkan sintaks logika (FOL/CNF) yang valid secara komputasi. Kegagalan menghasilkan format yang benar dianggap sebagai kegagalan penalaran.
-          \end{itemize}
-          
-    \item \textbf{Variabel Kontrol:}
-          Untuk memastikan bahwa variasi hasil murni disebabkan oleh variabel bebas, seluruh eksperimen dijalankan secara deterministik dengan parameter yang tetap. Hal ini meniadakan faktor (\textit{randomness}) dalam resolusi inferensi.
-\end{itemize}
-
-%-----------------------------------------------------------------------------%
-\section{Instrumen Data dan Adaptasi Linguistik}
-\label{sec:dataset}
-%-----------------------------------------------------------------------------%
-
-Penelitian ini menggunakan dataset \textbf{ProntoQA} (\textit{Prompting with Ontologies for QA}). Pemilihan dataset ini didasarkan pada kebutuhan untuk menguji kemampuan LLM dalam deduksi sintetis, terlepas dari pengetahuan dunia nyata dari LLM tersebut. ProntoQA menggunakan ontologi fiktif (misalnya: \textit{"Setiap Wumpus adalah Jompus"}), sehingga model tidak dapat menjawab dengan mengandalkan hafalan dalam \textit{pre-training}.
-
-\subsection{Proses Adaptasi ke Bahasa Indonesia}
-Proses penerjemahan dilakukan secara otomatis dengan \textit{prompting} dan memeberikan beberapa contoh dalam proses tranlasinya. Penerjemahan dilakukan dengan \textit{open-weight} LLM yaitu \textbf{Gemma-SEA-LION-v3-9B-IT}. Model dipilih karena kemampuan yang baik dalam translasi dari bahasa Inggris ke bahasa Indonesia sesuai dengan SEA-HELM \textit{leaderboard}
-
-\begin{itemize}
-    \item \textbf{Konsistensi Kuantor:} Frasa "Every X is Y" diterjemahkan menjadi "Setiap X adalah Y" atau "Semua X adalah Y" untuk menjaga pola \textit{Universal Quantifier} ($\forall$).
-    \item \textbf{Konsistensi Negasi:} Struktur "X is not Y" dipetakan menjadi "X bukan Y" atau "X tidak Y".
-    \item \textbf{Konsistensi Plural:} Subjek seperti "Wumpuses", "Jompuses", dan subjek lainnya, tidak diterjemahkan imbuhannya untuk menjaga struktur kalimat.
-\end{itemize}
+Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya adalah mengukur akurasi penalaran logis pada bahasa Indonesia yang diperoleh melalui manipulasi struktur \textit{prompting} \textit{Neuro-Symbolic} dan dampaknya ketika model dijalankan dengan sumber daya terbatas (melalui kuantisasi).
 
 %-----------------------------------------------------------------------------%
 \section{Konfigurasi Model}
 \label{sec:modelConfig}
 %-----------------------------------------------------------------------------%
 
-Mengingat bahwa adanya batasan sumber daya komputasi, maka eksperimen dijalankan menggunakan pustaka \code{llama.cpp} \cite{llama.cpp} yang dioptimalkan untuk inferensi model.
+Mengingat bahwa adanya batasan sumber daya komputasi, maka eksperimen dijalankan menggunakan kuantisasi pada setiap model yang dijalankan menggunakan \textit{tools open-source}, yaitu \textit{llama.cpp} \footnote{\url{https://github.com/ggml-org/llama.cpp}}.
 
 \subsection{Pemilihan Model}
 Model yang dipilih mewakili tiga tingkatan spesialisasi bahasa untuk menguji hipotesis bahwa pemahaman dalam bahasa lokal membantu proses dekomposisi logika:
 \begin{enumerate}
     \item \textbf{Qwen2.5-7B-Instruct (Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
-    \item \textbf{SEA-LION-v3-Llama-8B-Instruct (Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
+    \item \textbf{SEA-LION-v3-Llama-8B-Instruct (Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
     \item \textbf{SahabatAI-v1-Llama-8B-Instruct (Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
 \end{enumerate}
 
 \subsection{Parameterisasi Inferensi}
-Setiap model dijalankan dengan pengaturan parameter yang sama / konsisten untuk memastikan hasil eksperimen mencerminkan pengaruh variabel bebas, bukan perbedaan konfigurasi teknis. Strategi deterministik diterapkan untuk menghilangkan unsur \textit{randomness} dalam proses inferensi. Parameter utama yang dikontrol adalah:
+
+Setiap model dijalankan dengan pengaturan parameter yang sama / konsisten untuk memastikan hasil eksperimen mencerminkan pengaruh variabel bebas, bukan perbedaan konfigurasi teknis. Strategi deterministik diterapkan untuk menghilangkan unsur \textit{randomness} dalam proses inferensi. 
+
+\lstinputlisting[language=Python, caption=Konfigurasi parameter deterministik untuk setiap model yang digunakan, label=code:parameter_kwargs]{assets/codes/parameter_kwargs.py}
+
+Parameter utama yang dikontrol adalah:
 
 \begin{itemize}
     \item \textbf{\textit{Temperature}:} Ditetapkan ke 0.0 sehingga model hanya memilih token dengan probabilitas tertinggi tanpa penambahan noise acak (\textit{greedy decoding}). Hal ini memastikan setiap prompt menghasilkan output yang identik.
     \item \textbf{\textit{Max Tokens}:} Dibatasi sesuai dengan panjang output yang wajar untuk setiap tahap dalam pipeline, mencegah generasi yang berlebihan. Adapun token yang dibutuhkan untuk setiap tahap inferensi dalam \textit{framework} antara lain: proses translasi ke FOL memerlukan output setidaknya 400 token, proses dekomposisi setidaknya memerlukan output 700 token, dan proses pencarian bukti setidaknya memerlukan 1000 token., sehingga \textbf{\textit{max tokens}} yang di set untuk semua proses adalah 2500 untuk mengatasi \textit{overhead} atau halusinasi jika model tidak secara \textit{strict} mengikuti format.
     \item \textbf{\textit{n\_ctx}:} Ukuran konteks diatur untuk menentukan berapa banyak token sebelumnya yang dapat dipertimbangkan model saat menghasilkan respons. Nilai yang lebih besar memungkinkan model memahami konteks yang lebih panjang, namun meningkatkan penggunaan memori. \textbf{\textit{n\_ctx}} di set ke 0, sehingga ukuran konteks akan sesuai dengan kemampuan model masing-masing.
-    \item \textbf{\textit{n\_gpu\_layers}:} Menentukan jumlah layer model yang dijalankan di GPU untuk akselerasi. Nilai yang lebih tinggi mempercepat inferensi tetapi memerlukan VRAM yang lebih besar. Nilai -1 berarti semua komputasi dilakukan di CPU.
+    \item \textbf{\textit{n\_gpu\_layers}:} Menentukan jumlah layer model yang dijalankan di GPU untuk akselerasi. Nilai yang lebih tinggi mempercepat inferensi tetapi memerlukan VRAM yang lebih besar. Nilai -1 berarti semua komputasi dilakukan di GPU.
 \end{itemize}
 
-Konfigurasi lengkap ini disajikan dalam kode berikut:
-
-\lstinputlisting[language=Python, caption=Konfigurasi parameter deterministik untuk meniadakan halusinasi kreatif, label=code:parameter_kwargs]{assets/codes/parameter_kwargs.py}
 
 %-----------------------------------------------------------------------------%
 \section{Kerangka Kerja Aristotle}
@@ -93,74 +44,64 @@ Konfigurasi lengkap ini disajikan dalam kode berikut:
 %-----------------------------------------------------------------------------%
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{assets/pics/Framework.drawio.png}
-    \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan LLM dan metode neuro-symbolic (\cite{Aristotle25})}
+    \includegraphics[width=\textwidth]{assets/pics/Framework.drawio.png}
+    \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan LLM dan metode \textit{neuro-symbolic} (\cite{Aristotle25})}
     \label{fig:aristotle_framework}
 \end{figure}
-Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama, sesuai dengan gambar \ref{fig:aristotle_framework}.
+Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama, sesuai dengan Gambar ~\ref{fig:aristotle_framework}.
 
-\subsection{Logika Translasi (\textit{Logical Translation})}
-Modul ini menggunakan LLM \textit{open-weight} untuk menerjemahkan premis bahasa natural menjadi FOL
+\subsection{Translasi Logika (\textit{Logical Translation})}
+Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik LLM. Tujuannya adalah memetakan kalimat Bahasa Indonesia yang implisit menjadi struktur logika formal.
+
 \begin{itemize}
-    \item \textbf{Input:} Data poin dalam bahasa Indonesia
-    \item \textbf{Proses:} Menerjemahkan data poin menjadi 3 bagian, sesuai dengan formula, yaitu premis dari konteks $\rightarrow$ fakta dan aturan, pertanyaan dari konteks $\rightarrow$ konjektur
+    \item \textbf{Tugas Model:} Menerjemahkan narasi bahasa alami menjadi representasi \textit{First-Order Logic} (FOL) yang terdiri dari Fakta Atomik dan Aturan Implikasi.
+    \item \textbf{Mekanisme Eksekusi:} Model diberikan \textit{few-shot prompt} yang berisi contoh pasangan kalimat Indonesia dan format logika target.
+    \item \textbf{Format Output:}
+          \begin{itemize}
+              \item \textbf{Fakta:} $P$($Subjek, Nilai Kebenaran$). Contoh: $Wumpus$($Max, True$)
+              \item \textbf{Aturan:} $P$($Subjek, Nilai Kebenaran$) $>>> P$($Objek, Nilai Kebenaran$). Contoh: $Wumpus$($\$x, True$) $>>> Manis$($\$x, False$)
+              \item \textbf{Konjektur:} $P$($Subjek, Nilai Kebenaran$). Contoh: $Manis$($Max, True$)
+          \end{itemize}
 \end{itemize}
 
-\subsection{Dekomposer (\textit{Decomposer})}
-Modul ini menggunakan LLM \textit{open-weight} untuk dekomposisi aturan yang sudha berbentuk FOL ke dalam PNF, CNF, dan Skolemisasi
+\subsection{Dekomposisi (\textit{Decomposer})}
+Pada tahap ini, output FOL diproses lebih lanjut untuk memenuhi standar mesin pembukti teorema. Model diinstruksikan untuk melakukan konversi ke Prenex Normal Form(PNF) dan kemudian ke Conjunctive Normal Form (CNF). Proses penting di sini adalah Skolemisasi, yaitu penghapusan kuantor eksistensial (∃) yang sering menjadi sumber ambiguitas bagi model bahasa. Dalam dataset ProntoQA, tidak perlu dilakukan skolemisasi karena premis-premis dari dataset tersebut tidak memiliki kuantor eksistensial.
+
 \begin{itemize}
-    \item \textbf{Input:} data poin yang sudah melewati Logical Translation dalam bentuk FOL
-    \item \textbf{Proses:} Dekomposisi data poin yang sudha menjadi FOL ke dalam bentuk NF, lalu Skolemisasi, dan terakhir CNF.
+    \item \textbf{Tugas Model:} Mengonversi aturan FOL menjadi \textit{Conjunctive Normal Form} (CNF) melalui serangkaian transformasi logis.
+    \item \textbf{Mekanisme Eksekusi:}
+          \begin{itemize}
+              \item \textbf{PNF:} Konversi FOL ke bentuk PNF, di mana semua kuantor diletakkan di awal formula, diikuti oleh matriks bebas kuantor.
+              \item \textbf{Skolemisasi:} Penghapusan kuantor eksistensial (∃) dengan mengganti variabel eksistensial dengan fungsi Skolem. Dataset ProntoQA tidak memerlukan langkah ini.
+              \item \textbf{CNF:} Transformasi akhir ke CNF, di mana formula diekspresikan dalam bentuk konjungsi (AND) dari disjungsi (OR) literal.
+          \end{itemize}
 \end{itemize}
 
 \subsection{Penyelesai Pencarian (\textit{Search Router})}
 Mesin inti inferensi terdiri dari dua sub-komponen:
 \begin{enumerate}
-    \item \textbf{\textit{Logical Search Router}:} Memilih klausa mana yang relevan untuk diproses. Hal ini mencegah terjadinya ledakan kombinatorial yang mengakibatkan proses komputasi yang lama dan pencarian bukti yang sesuai dengan pembuatan set untuk menyimpan premis yang sudah ditelusuri dan memberi batasan banyaknya ronde dalam pencarian bukti
+    \item \textbf{\textit{Logical Search Router}:} Memilih klausa mana yang relevan untuk diproses. Hal ini mencegah proses komputasi yang memerlukan resource terlalu banyak dan yang lama dalam pencarian bukti. Di sini juga dideklarasikan \textit{search\_round} yaitu batas maksimum iterasi pencarian bukti.
     \item \textbf{\textit{Logical Resolver}:} Menerapkan aturan resolusi secara iteratif hingga ditemukan kontradiksi (untuk pembuktian salah) atau hingga ruang pencarian habis.
 \end{enumerate}
 
-\subsection{Resolusi (\textit{Resolver})}
-Sistem memverifikasi sebuah hipotesis $S$ melalui dua jalur paralel dengan menerapkan pembuktian dengan kontradiksi (\textit{Proof By Contradiction})
-\begin{itemize}
-    \item \textbf{Jalur 1 :} Asumsikan $S$. Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
-    \item \textbf{Jalur 2 :} Asumsikan $\neg S$ (Negasi S). Jika ditemukan kontradiksi, maka $S$ adalah \textbf{Benar}.
-\end{itemize}
-
-%-----------------------------------------------------------------------------%
-\section{Prosedur Eksekusi: Pipeline Aristotle}
-\label{sec:procedure}
-%-----------------------------------------------------------------------------%
-
-Berbeda dengan \textit{Naive Prompting} yang hanya berupa satu kali pemanggilan (\textit{single-turn}), implementasi kerangka kerja Aristotle menuntut beberapa pemanggilan model (\textit{chain-of-calls}).
-
-\subsection{Tahap 1: Translasi Logika (Logical Translator)}
-Langkah pertama bertujuan memetakan kalimat Bahasa Indonesia yang sering kali implisit (tanpa penanda waktu atau subjek yang jelas) menjadi representasi \textit{First Order Logic} (FOL). Model diberikan instruksi untuk mengidentifikasi:
-\begin{itemize}
-    \item \textbf{Fakta Atomik:} Pernyataan spesifik tentang entitas (misal: $Pahit$($Bernard, False$)).
-    \item \textbf{Aturan Implikasi:} Hubungan sebab-akibat (misal: $Dermawan$($x, False$) >>> $Murni$($Axel, False$)).
-\end{itemize}
-
-\subsection{Tahap 2: Dekomposisi dan Normalisasi}
-Pada tahap ini, output FOL diproses lebih lanjut untuk memenuhi standar mesin pembukti teorema. Model diinstruksikan untuk melakukan konversi ke \textit{Prenex Normal Form} (PNF) dan kemudian ke \textit{Conjunctive Normal Form} (CNF). Proses penting di sini adalah \textbf{Skolemisasi}, yaitu penghapusan kuantor eksistensial ($\exists$) yang sering menjadi sumber ambiguitas bagi model bahasa. Dalam dataset ProntoQA, tidak perlu dilakukan skolemisasi karena premis-premis dari dataset tersebut tidak memiliki kuantor eksistensial.
+\subsection{Resolusi (\textit{Logical Resolver})}
+Ini adalah mesin inferensi deterministik yang menggantikan peran penalaran LLM.
 
 \begin{itemize}
-    \item \textbf{PNF:} Konversi FOL ke bentuk PNF, di mana semua kuantor diletakkan di awal formula, diikuti oleh matriks bebas kuantor.
-    \item \textbf{Skolemisasi:} Penghapusan kuantor eksistensial ($\exists$) dengan mengganti variabel eksistensial dengan fungsi Skolem. Meskipun dataset \textit{ProntoQA} tidak memerlukan langkah ini, tetpai inklusinya memastikan pipeline dapat menangani formula umum dengan kuantor campuran untuk dataset lain, seperti \textit{ProofWriter} dan \textit{LogicNLI}
-    \item \textbf{CNF:} Transformasi akhir ke CNF, di mana formula diekspresikan dalam bentuk konjungsi (AND) dan disjungsi (OR) antar premis / kalimat.
+    \item \textbf{Prinsip:} Menggunakan aturan resolusi berbasis pembuktian kontradiksi (\textit{Proof By Contradiction}) untuk menilai kebenaran hipotesis $S$ berdasarkan premis $P$ (~\ref{subsec:proof_by_contradiction})
+    \item \textbf{Mekanisme Dual-Path:} Sistem mencoba membuktikan kebenaran hipotesis $S$ melalui dua jalur paralel pembuktian kontradiksi:
+          \begin{enumerate}
+              \item \textbf{Jalur A:} Untuk $\neg S$ (Negasi S), jika ditemukan kontradiksi (Klausa Kosong), maka $S$ terbukti \textbf{Benar}.
+              \item \textbf{Jalur B:} Untuk $S$, jika ditemukan kontradiksi, maka $\neg S$ terbukti \textbf{Benar}.
+          \end{enumerate}
+    \item Jika tidak ada kontradiksi yang ditemukan di kedua jalur (misalnya karena informasi tidak lengkap atau translasi putus), sistem mengembalikan \textbf{Unknown}.
 \end{itemize}
 
-\subsection{Tahap 3: Pencarian dan Resolusi (Search \& Resolve)}
-Ini adalah inti dari arsitektur neuro-symbolic. Alih-alih membiarkan model menebak jawaban akhir, model diminta bertindak sebagai mesin \textit{Resolution Prover}.
-\begin{enumerate}
-    \item \textbf{Clause Selection:} Model memilih premis yang relevan dari premis yang sudah didekomposisi dan disimpan ke memori.
-    \item \textbf{Resolution Step:} Model menerapkan aturan inferensi (seperti Modus Ponens atau Silogisme) untuk menurunkan klausa baru.
-    \item \textbf{Contradiction Check:} Proses berhenti ketika ditemukan kontradiksi (misal: $P$ dan $\neg P$ hadir bersamaan), yang membuktikan bahwa asumsi awal salah / terjadinya kontradiksi.
-\end{enumerate}
-
-Mekanisme injeksi instruksi ke dalam \textit{prompt template} untuk setiap tahap diimplementasikan menggunakan kode Python berikut:
+Mekanisme injeksi instruksi ke dalam \textit{prompt template} untuk setiap tahap diimplementasikan menggunakan kode dalam bahasa pemrograman Python berikut:
 
 \lstinputlisting[language=Python, caption=Mekanisme injeksi data poin ke dalam template prompt Aristotle, label=code:prompt_replacement]{assets/codes/prompt_replacement.py}
+
+Potongan kode di atas menunjukkan fungsi \textit{construct\_prompt\_a} yang bertugas membangun \textit{prompt} dinamis untuk masalah logika, dalam hal ini fungsi tersebut digunakan untuk membangun \textit{prompt} untuk tahap \textit{translation}. Fungsi ini membaca \textit{template} dasar yang memuat instruksi sistem dan contoh \textit{few-shot}, lalu mengganti \textit{placeholder}, seperti{{PREMISES}} dan {{CONJECTURE}} dengan data dari dataset ProntoQA yang sedang diuji. Pendekatan injeksi string ini memastikan bahwa struktur instruksi tetap konsisten (statis) sementara konten masalah berubah-ubah, meminimalkan risiko model "lupa" terhadap format output yang diminta saat beralih ke soal baru. Untuk setiap tahap dalam \textit{framework} Aristotle, kode serupa diterapkan dengan penyesuaian pada \textit{template} dan \textit{placeholder} yang relevan, misalnya \textit{template} untuk tahap \textit{decomposition} akan berbeda dengan tahap \textit{translation}, tetapi kode fungsi pembangun \textit{prompt} tetap mengikuti pola yang sama.
 
 %-----------------------------------------------------------------------------%
 \section{Teknik Evaluasi dan Analisis Data}
@@ -175,20 +116,47 @@ Sistem evaluasi dirancang untuk "menangkap" struktur logika dari output teks mod
 \begin{itemize}
     \item \textbf{Ekstraksi FOL:} Mengambil Fakta, Aturan, dan Konjektur sesuai bloknya
           \lstinputlisting[language=Python, caption=Regex untuk ekstraksi blok Translasi, label=code:fol_regex]{assets/codes/translation_regex_grabs.py}
+          Kode di atas menggunakan ekspresi reguler (\textit{Regular Expressions}) untuk mem-\textit{parsing output} dari tahap \textit{Logical Translation}. Pola regex dirancang untuk menangkap tiga komponen utama: blok "Fakta", "Konjektur" (seperti Manis(Jeruk)) dan blok "Aturan" (seperti Jeruk(x) >>> Manis(x)). Jika model menghasilkan teks naratif atau penjelasan di luar format yang ditentukan, regex ini akan mengabaikannya dan hanya mengambil struktur logika yang valid. Jika tidak ada struktur yang cocok, fungsi akan mengembalikan nilai kosong yang menandakan kegagalan translasi (\textit{parsability error}).
     \item \textbf{Ekstraksi CNF:} mengambil hasil akhir dari dekomposisi dari Aturan FOL.
           \lstinputlisting[language=Python, caption=Regex untuk ekstraksi blok Dekomposisi, label=code:decomposition_regex]{assets/codes/decomposition_regex_grabs.py}
+          Serupa dengan tahap sebelumnya, kode pada \lst~\ref{code:decomposition_regex} bertugas memvalidasi output dari tahap \textit{Decomposer}. Regex ini secara spesifik mencari pola "Aturan dalam CNF". Jika model tidak mengikuti format yang diharapkan, regex ini akan gagal menemukan kecocokan, menandakan kegagalan dekomposisi.
     \item \textbf{Ekstraksi Resolusi:} Mendeteksi klausa baru dan kesimpulan akhir dalam label kecukupan.
           \lstinputlisting[language=Python, caption=Regex untuk memvalidasi langkah Resolusi, label=code:resolve_regex]{assets/codes/search_resolve_regex_grabs.py}
+          \lst~\ref{code:resolve_regex} di atas adalah komponen validasi akhir yang bekerja pada output modul \textit{Resolver}. Regex ini bertugas mengekstraksi dua informasi vital dari log resolusi LLM: (1) Clause Baru, yaitu kesimpulan antara yang dihasilkan dari penggabungan dua premis, dan (2) Label Cukup, yang menandakan apakah kontradiksi telah ditemukan (\textit{True}) atau belum (\textit{False}). Jika format ini tidak ditemukan, sistem akan menganggap langkah resolusi tersebut gagal atau tidak konklusif.
+          
+          
 \end{itemize}
 
-\subsection{Matrix Keberhasilan}
-Kinerja dari sebuah LLM diukur menggunakan \textbf{\textit{Accuracy}}. Berikut adalah matrix kebenaran dari sebuah jawaban:
-\[
-    A = \begin{cases} 
-        \text{True},               & P_n \vdash S_n \land P_n \nvdash \neg S_n  \\
-        \text{False},              & P_n \nvdash S_n \land P_n \vdash \neg S_n  \\
-        \text{Unknown},            & P_n \nvdash S_n \land P_n \nvdash \neg S_n \\
-        \text{Self-Contradictory}, & P_n \vdash S_n \land P_n \vdash \neg S_n 
-    \end{cases}
-\]
-$A$ merupakan output dari matrix kebenaran tersebut dan merupakan jawaban akhir dari sebuah data poin. $P_n$ merupakan premis, $S_n$ merupakan konjektur dan $\neg S_n$ merupakan konjektur yang dinegasi yang diinisialisasi dalam dua jalur pencarian bukti.
+\subsection{Matriks Keputusan Evaluasi (Truth Table)}
+Kinerja akhir model tidak ditentukan secara probabilistik, melainkan melalui tabel kebenaran logika berdasarkan hasil dari \textit{Logical Resolver}.
+Untuk setiap pertanyaan $S$, sistem menjalankan dua pembuktian paralel. Tabel \ref{tab:decision_matrix} menunjukkan logika penentuan jawaban akhir.
+
+\begin{table}[H]
+    \centering
+    \caption{Matriks Keputusan untuk Penentuan Label Jawaban ($A$)}
+    \label{tab:decision_matrix}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c|X|X|l|}
+        \hline
+        \textbf{Kondisi}    & \centering\textbf{Jalur A: Buktikan $S$} & \centering\textbf{Jalur B: Buktikan $\neg S$} & \multirow{2}{*}{\textbf{Kesimpulan ($A$)}} \\
+        \textbf{(Skenario)} & \centering(Cari Kontradiksi di $\neg S$) & \centering(Cari Kontradiksi di $S$)           &                                            \\
+        \hline
+        1                   & \textbf{Berhasil} (Ada Kontradiksi)      & Gagal                                         & \textbf{TRUE}                              \\
+        \hline
+        2                   & Gagal                                    & \textbf{Berhasil} (Ada Kontradiksi)           & \textbf{FALSE}                             \\
+        \hline
+        3                   & Gagal                                    & Gagal                                         & \textbf{UNKNOWN}                           \\
+        \hline
+        4                   & \textbf{Berhasil}                        & \textbf{Berhasil}                             & \textbf{SELF-CONTRADICTORY}                \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\textbf{Keterangan:}
+\begin{itemize}
+    \item \textbf{Berhasil (Ada Kontradiksi):} Resolver menemukan klausa kosong, yang berarti asumsi awal salah, sehingga kebalikannya pasti benar.
+    \item \textbf{TRUE:} Premis mendukung hipotesis $S$.
+    \item \textbf{FALSE:} Premis menyangkal hipotesis $S$.
+    \item \textbf{UNKNOWN:} Informasi pada premis tidak cukup untuk membuktikan atau menyangkal $S$.
+    \item \textbf{SELF-CONTRADICTORY:} Premis itu sendiri tidak konsisten (mengandung konflik internal).
+\end{itemize}

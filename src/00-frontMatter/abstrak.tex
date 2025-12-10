@@ -34,11 +34,13 @@
 
 \vspace*{0.5cm}
 
-\noindent Isi abstrak. \\
+\noindent \textit{Large Language Models} (LLM) telah menunjukkan kemampuan yang baik dalam pemrosesan bahasa, namun sering mengalami kegagalan halusinasi pada tugas penalaran logis \textit{multi-hop} karena sifatnya yang probabilistik (\textit{Greedy Reasoners}). Tantangan ini semakin nyata pada bahasa dengan sumber daya rendah seperti Bahasa Indonesia, di mana riset mengenai metode penalaran formal masih terbatas. Penelitian ini bertujuan untuk mengevaluasi efektivitas pendekatan \textit{Neuro-Symbolic} menggunakan framework (\textit{Translation-Decomposition-Search-Resolution}) dibandingkan dengan metode \textit{Naive Prompting}.
+
+Eksperimen dilakukan menggunakan dataset logika sintetis ProntoQA yang diadaptasi ke Bahasa Indonesia, melibatkan tiga model \textit{open-weight} berparameter rendah (7B-9B) yang dikuantisasi (4-bit): Qwen2.5 (Global), SEA-LION v3 (Regional), dan Sahabat-AI v1 (Nasional). Hasil eksperimen menunjukkan divergensi performa yang signifikan antara kemampuan penalaran implisit dan eksplisit. Pada metode \textit{Naive Prompting}, model global Qwen2.5 unggul dengan akurasi 81.00\%. Namun, saat diterapkan pada framework \textit{Neuro-Symbolic}, performa Qwen2.5 mengalami degradasi drastis menjadi 14.00\% akibat ketidakmampuan mematuhi batasan sintaksis logika formal (\textit{parsability error}). Sebaliknya, model regional SEA-LION v3 menunjukkan performa terbaik dengan akurasi 81.60\%, membuktikan bahwa penyelarasan bahasa regional (\textit{regional alignment}) sangat penting untuk mengatasi "\textit{Translation Bottleneck}" dalam konversi bahasa alami ke logika simbolik. Penelitian ini menyimpulkan bahwa untuk aplikasi logika ketat pada sumber daya terbatas, model regional yang dipadukan dengan \textit{solver} simbolik menawarkan reliabilitas yang lebih tinggi dibandingkan mengandalkan intuisi model global semata. \\
 
 \vspace*{0.2cm}
 
-\noindent Kata kunci: \\ \textit{Open-weight} LLM, Penalaran logika dataset berbahasa Indonesia, \textit{translation-decompose-search-resolve framework} \\
+\noindent Kata kunci: \\ \textit{Open-weight} LLM, Penalaran logika, ProntoQA bahasa Indonesia, resolusi \\
 
 \setstretch{1.4}
 \newpage

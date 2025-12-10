@@ -1,5 +1,5 @@
 %-----------------------------------------------------------------------------%
-\chapter{Landasan Teori}
+\chapter{\babDua}
 \label{bab:2}
 %-----------------------------------------------------------------------------%
 
@@ -9,10 +9,10 @@ Bab ini membangun kerangka teoretis yang mendasari analisis kemampuan \textit{La
 \section{\textit{First-Order Logic} (FOL)}
 \label{sec:fol}
 %-----------------------------------------------------------------------------%
-First-Order Logic (FOL), atau Kalkulus Predikat, adalah sistem formal yang memperluas logika proposisi dengan memperkenalkan variabel, fungsi, dan kuantor untuk merepresentasikan objek dan relasi di dunia nyata.
+First-Order Logic (FOL), atau Kalkulus Predikat, adalah logika formal yang memperluas logika proposisi dengan memperkenalkan variabel, fungsi, dan kuantor untuk merepresentasikan objek dan relasi di dunia nyata.
 
 \subsection{Sintaks: Alfabet dan Aturan Pembentukan}
-Mengacu pada definisi standar dalam buku Discrete Mathematics and Its Applications karya Kenneth H. Rosen \cite{rosen-discrete}, sintaks FOL dibangun dari komponen-komponen berikut:
+Sintaks FOL dibangun dari komponen-komponen berikut menurut \cite[Chapter 2]{brachman2004knowledge}: 
 \begin{itemize}
 	\item Simbol Logis:
 	      \begin{itemize}
@@ -26,53 +26,100 @@ Mengacu pada definisi standar dalam buku Discrete Mathematics and Its Applicatio
 		      \item Fungsi ($f$($x_1$, $\dots$, $x_n$)): Memetakan objek ke objek lain. Contoh: $AyahDari$($Budi$).
 		      \item Predikat ($P$($x_1$, $\dots$, $x_n$)): Fungsi yang memetakan tuple objek ke nilai kebenaran (True/False). Contoh: $Suka$($Budi, Apel$).
 	      \end{itemize}
-	\item Grammar (Tata Bahasa):
-	      \begin{itemize}
-		      \item Term: Sebuah variabel, konstanta, atau fungsi yang diterapkan pada term lain.
-		      \item Formula Atomik: Predikat yang diterapkan pada term. Ini adalah unit terkecil yang memiliki nilai kebenaran.
-		      \item \textit{Well-Formed Formulas} (WFFs): Formula yang disusun secara rekursif dari formula atomik menggunakan konektif dan kuantor. Rosen menekankan pentingnya cakupan kuantor (scope), di mana variabel dalam cakupan kuantor disebut bound variable (terikat), sedangkan yang di luar adalah free variable (bebas).
-	      \end{itemize}
 \end{itemize}
 
 \subsection{Semantik: Interpretasi dan Kebenaran}
 Kebenaran sebuah kalimat FOL ditentukan oleh sebuah Interpretasi ($\mathcal{I}$) atas Domain ($\mathcal{D}$) yang tidak kosong. Interpretasi memetakan:
 \begin{itemize}
-	\item Konstanta ke elemen di $\mathcal{D}$.
-	\item Memetakan predikat $n$-ary ke relasi $n$-ary di $\mathcal{D}$.
-	\item Sebuah formula $\alpha$ dikatakan Benar di bawah interpretasi $\mathcal{I}$ (ditulis $\mathcal{I} \models \alpha$) jika fakta di dunia nyata sesuai dengan struktur kalimat tersebut.
+	\item \textbf{Konstanta:} Setiap simbol konstanta $c$ dipetakan ke elemen spesifik di $\mathcal{D}$.
+	\item \textbf{Predikat:} Setiap simbol predikat $n$-ary dipetakan ke himpunan relasi $n$-ary di $\mathcal{D}$ (objek-objek mana yang memiliki sifat tersebut).
+	\item \textbf{Fungsi:} Setiap simbol fungsi $f$ dipetakan ke operasi konkret pada $\mathcal{D}$. Misalnya, jika domainnya adalah bilangan bulat, simbol fungsi $plus(x, y)$ dapat diinterpretasikan sebagai operasi penjumlahan $x + y$.
 \end{itemize}
+Sebuah formula $\alpha$ dikatakan \textbf{Benar} di bawah interpretasi $\mathcal{I}$ (ditulis $\mathcal{I} \models \alpha$) jika fakta di dunia nyata sesuai dengan struktur kalimat tersebut.
 
 %-----------------------------------------------------------------------------%
-\section{(Konsekuensi Logis \textit{(Entailment)})}
+\section{Konsekuensi Logis \textit{(Entailment)}}
 \label{sec:FOL}
 %-----------------------------------------------------------------------------%
-Tujuan utama sistem berbasis pengetahuan adalah menarik kesimpulan baru dari premis yang ada. Konsep ini diformalkan sebagai Entailment ($KB \models \alpha$). Menurut \cite{huth-ryan-lics2}, $KB \models \alpha$ berlaku jika dan hanya jika untuk setiap interpretasi di mana $KB$ bernilai benar, $\alpha$ juga pasti bernilai benar.Dalam konteks komputasi, memeriksa semua interpretasi adalah mustahil. Oleh karena itu, kita menggunakan Inference Rules (aturan inferensi) sintaksis untuk membuktikan validitas tanpa memeriksa semantik satu per satu.
+Tujuan utama sistem berbasis pengetahuan adalah menarik kesimpulan baru dari informasi yang sudah diketahui.
+Dalam sistem logika, kumpulan fakta dan aturan yang kita yakini kebenarannya disebut sebagai \textbf{\textit{Knowledge Base}} (KB). 
+Menurut \cite{huth-ryan-lics2}, $KB \models \alpha$ jika dan hanya jika untuk \textbf{setiap} interpretasi $\mathcal{I}$ di mana semua kalimat dalam $KB$ bernilai Benar, maka $\alpha$ juga pasti bernilai Benar. Artinya, tidak mungkin ada situasi di mana premis-premis kita benar tetapi kesimpulannya salah. Namun, memeriksa "setiap interpretasi" secara komputasi adalah mustahil karena jumlahnya bisa tak terbatas. Oleh karena itu, kita menggunakan algoritma inferensi sintaksis (seperti Resolusi) untuk membuktikan validitas tersebut secara otomatis.
 
 %-----------------------------------------------------------------------------%
 \section{Resolusi dan Unifikasi}
 \label{sec:normalForms}
 %-----------------------------------------------------------------------------%
-Metode inferensi utama yang digunakan dalam modul "Resolver" Aristotle adalah Resolusi. Teknik ini diperkenalkan oleh J.A. Robinson pada tahun 1965 dalam makalah seminalnya "A Machine-Oriented Logic Based on the Resolution Principle".\cite{DBLP:journals/jacm/Robinson65}
+Metode inferensi utama yang digunakan dalam modul \textit{resolve} Aristotle adalah \textbf{Resolusi} \cite[Chapter 4]{brachman2004knowledge}
 
-\subsection{\textit{Proof by Refutation} (Pembuktian Kontradiksi)}
-Robinson membuktikan bahwa untuk menguji $KB \models \alpha$, kita cukup membuktikan bahwa himpunan $KB \cup \{\neg \alpha\}$ adalah Unsatisfiable (tidak mungkin benar bersamaan). Jika kita dapat menurunkan klausa kosong ($\square$ atau False) dari himpunan tersebut, maka $\alpha$ terbukti benar.\cite{DBLP:journals/jacm/Robinson65}
+\subsection{Pembuktian Kontradiksi (\textit{Proof by Contradiction})}
+\label{subsec:proof_by_contradiction}
+Resolusi bekerja dengan prinsip \textit{Proof by Contradiction}. Untuk membuktikan bahwa $KB \models \alpha$, kita dapat menunjukkan bahwa himpunan $KB \cup \{\neg \alpha\}$ adalah \textit{Unsatisfiable} (tidak ada interpretasi yang memenuhi), maka terbukti secara logis bahwa $\alpha$ haruslah benar.
+Tanda terjadinya kontradiksi adalah ketika algoritma berhasil menurunkan \textbf{Klausa Kosong} ($\square$ atau \textit{False}) \cite[Chapter 4]{brachman2004knowledge}.
 
 \subsection{Konversi ke \textit{Conjunctive Normal Form} (CNF)}
 Agar aturan resolusi dapat diterapkan, formula logika harus diubah ke bentuk standar yang disebut \textit{Conjunctive Normal Form} (CNF). Menurut \cite{fitting-fol-atp} merinci langkah-langkah algoritma konversi ini sebagai berikut:
 
 \begin{enumerate}
 	\item Eliminasi Implikasi: Ubah $A \rightarrow B$ menjadi $\neg A \lor B$.
-	\item Geser Negasi ke Dalam: Gunakan hukum De Morgan dan aturan $\neg \forall x P \equiv \exists x \neg P$.
-	\item Standardisasi Variabel: Ubah nama variabel agar unik untuk setiap kuantor (misal: $\forall x P(x) \lor \forall x Q(x)$ menjadi $\forall x P(x) \lor \forall y Q(y)$).
-	\item Prenex Normal Form: Pindahkan semua kuantor universal ($\forall$) ke depan formula.
-	\item Skolemisasi: Menghilangkan kuantor eksistensial ($\exists$). Variabel $y$ yang terikat oleh $\exists$ diganti dengan Fungsi Skolem $f(x)$ yang bergantung pada variabel universal sebelumnya.Contoh: $\forall x \exists y (Parent(x, y))$ menjadi $\forall x (Parent(x, f(x)))$.
+	\item Geser Negasi ke Dalam: Gunakan hukum De Morgan dan aturan $\neg \bracket{\forall x}{P} \equiv \bracket{\exists x} {\neg P}$.
+	\item Standardisasi Variabel: Ubah nama variabel agar unik untuk setiap kuantor (misal: $\bracket{\forall x} {\bracket{P}{(x)}} \lor \bracket{\forall x} {\bracket{Q}{(x)}}$ menjadi $\bracket{\forall x} {\bracket{P}{(x)}} \lor \bracket{\forall y} {\bracket{Q}{(y)}}$).
+	\item Prenex Normal Form: Pindahkan semua kuantor ke depan formula.
+	\item Skolemisasi: Menghilangkan kuantor eksistensial ($\exists$). Variabel $y$ yang terikat oleh $\exists$ diganti dengan Fungsi Skolem ($\bracket{f}{(x)}$) yang bergantung pada variabel universal sebelumnya. Contoh: $\bracket{\forall x \exists y} {(\bracket{Parent}{(x, y)})}$ menjadi $\bracket{\forall x} {(\bracket{Parent}{(x, \bracket{f}{(x)})})}$.
 	\item Distribusi \& CNF: Gunakan aturan distributif untuk mendapatkan bentuk konjungsi dari klausa (AND of ORs).
 \end{enumerate}
 
-\subsection{Aturan Resolusi Robinson dan Unifikasi}
-Prinsip Resolusi Robinson menyederhanakan berbagai aturan inferensi klasik (seperti Modus Ponens dan Modus Tollens) menjadi satu aturan tunggal:
+\subsection{Aturan Resolusi dan Unifikasi}
+Aturan resolusi untuk logika predikat adalah:
 $$\frac{C_1 \lor L_1, \quad C_2 \lor L_2}{(C_1 \lor C_2)\theta}$$
-Di mana: $L_1$ dan $L_2$ adalah literal yang dapat dibuat saling berlawanan (komplemen). $\theta$ adalah substitusi variabel yang dihasilkan oleh algoritma Unifikasi.
+Di mana $L_1$ dan $L_2$ adalah literal yang saling berlawanan (misal $\bracket{P}{(x)}$ dan $\neg \bracket{P}{(a)}$). Agar mereka bisa saling menghilangkan (\textit{cancel out}), argumen di dalamnya harus disamakan terlebih dahulu.
 
-Unifikasi adalah proses mencari Most General Unifier (MGU) $\theta$ yang membuat dua atom sintaksis menjadi identik.
-Contoh: Unifikasi $P(x)$ dan $\neg P(Alex)$ menghasilkan $\theta = \{x/Alex\}$. Tanpa unifikasi, resolusi pada FOL tidak mungkin dilakukan karena variabel pada premis yang berbeda harus diselaraskan.
+Proses penyamaan argumen ini disebut \textbf{Unifikasi}. Unifikasi mencari substitusi $\theta$ (disebut \textit{Most General Unifier} / MGU) yang membuat dua atom menjadi identik secara sintaksis.
+Contoh: Unifikasi $\bracket{P}{(x)}$ dan $\bracket{P}{(Alex)}$ menghasilkan $\theta = \{x$ / $Alex\}$. Tanpa unifikasi, resolusi pada FOL tidak mungkin dilakukan karena variabel pada premis
+yang berbeda harus diselaraskan.
+
+%-----------------------------------------------------------------------------%
+\section{Large Language Models (LLM)}
+\label{sec:llm_general}
+%-----------------------------------------------------------------------------%
+Bagian ini membahas teknologi dasar yang memungkinkan implementasi \textit{Logical Translator} dalam penelitian ini.
+
+\subsection{Arsitektur Transformer}
+\textit{Large Language Models} (LLM) modern seperti Qwen, Llama, dan GPT dibangun di atas arsitektur \textbf{Transformer} yang diperkenalkan oleh \cite{NIPS2017_3f5ee243}. Inovasi utama arsitektur ini adalah mekanisme \textit{Self-Attention}, yang memungkinkan model untuk memproses hubungan antar kata dalam sebuah kalimat secara paralel tanpa bergantung pada urutan sekuensial seperti pada RNN (\textit{Recurrent Neural Networks}). Hal ini memungkinkan model menangkap ketergantungan jarak jauh (\textit{long-range dependencies}) yang penting untuk memahami konteks logika yang kompleks.
+
+\subsection{Pre-training dan Fine-tuning}
+LLM dilatih melalui dua tahap utama:
+\begin{enumerate}
+	\item \textbf{\textit{Pre-training}:} Model dilatih pada korpus teks yang sangat besar (triliunan token) dengan tujuan memprediksi kata berikutnya (\textit{next-token prediction}) (\cite{NEURIPS2020_1457c0d6}). Pada tahap ini, model mempelajari struktur bahasa, fakta dunia nyata, dan pola penalaran dasar secara implisit.
+	\item \textbf{\textit{Fine-tuning} / \textit{Instruction Tuning}:} Model disesuaikan lebih lanjut dengan dataset instruksi-jawaban agar mampu mengikuti perintah pengguna, seperti "Terjemahkan kalimat ini ke \textit{First Order Logic}" (\cite{NEURIPS2022_b1efde53}). Model yang digunakan dalam penelitian ini (Instruct versions) telah melalui tahap ini.
+\end{enumerate}
+
+\subsection{Inferensi dan Kuantisasi}
+Proses penggunaan model yang sudah dilatih untuk menghasilkan teks disebut \textbf{Inferensi}.
+\begin{itemize}
+	\item \textbf{Decoding Strategies:} Karena LLM memprediksi probabilitas kata berikutnya, cara kita memilih kata tersebut mempengaruhi hasil.
+	      \begin{itemize}
+		      \item \textit{Greedy Decoding:} Memilih token dengan probabilitas tertinggi di setiap langkah (\texttt{temperature=0}). Metode ini deterministik dan sangat cocok untuk tugas logika yang membutuhkan kepastian sintaks.
+		      \item \textit{Sampling:} Memilih token secara acak berdasarkan distribusi probabilitas (\texttt{temperature>0.7}), cocok untuk tugas kreatif namun buruk untuk logika.
+	      \end{itemize}
+	\item \textbf{Kuantisasi (GGUF):} Menjalankan LLM membutuhkan memori (VRAM) yang besar. Untuk mengatasi ini pada perangkat keras terbatas, digunakan teknik kuantisasi, yaitu mengurangi presisi bobot model dari 16-bit (\textit{half precision}) menjadi 4-bit atau 8-bit bilangan bulat (\cite{10.5555/3600270.3602468}).
+\end{itemize}
+
+%-----------------------------------------------------------------------------%
+\section{Dataset ProntoQA}
+\label{sec:prontoqa_theory}
+%-----------------------------------------------------------------------------%
+Untuk mengukur kemampuan penalaran secara objektif, penelitian ini mengadaptasi dataset ProntoQA yang dikembangkan oleh \cite{saparov2023language}.
+
+\subsection{Generasi Data Sintetis}
+ProntoQA berbeda dari dataset tanya-jawab umum karena sifatnya yang generatif dan sintetis. Data tidak diambil dari internet, melainkan dibangkitkan dari aturan logika formal yang kemudian diterjemahkan ke bahasa alami.
+Proses pembuatannya adalah:
+\begin{enumerate}
+	\item Sistem membangkitkan graf ontologi fiktif (misal: $Wumpus \rightarrow Jompus \rightarrow Tumpus$).
+	\item Sistem menurunkan rantai deduksi berdasarkan graf tersebut.
+	\item Simbol-simbol logika diganti dengan kata-kata fiktif atau nyata untuk membentuk kalimat bahasa alami.
+\end{enumerate}
+
+\subsection{Mengisolasi Kemampuan Penalaran}
+Keunggulan utama ProntoQA adalah kemampuannya mengisolasi kemampuan deduksi dari pengetahuan dunia (\textit{world knowledge}).
+Menggunakan istilah fiktif (seperti "Wumpus" atau "Tumpus") mencegah model menjawab benar hanya karena hafal fakta (misalnya "Burung bisa terbang"). Model dipaksa untuk melakukan penalaran ("Jika Wumpus adalah Burung, maka Wumpus bisa terbang") berdasarkan aturan yang diberikan di dalam \textit{prompt}, bukan dari memori pelatihannya.
+Dataset ini juga memungkinkan kontrol terhadap "kedalaman penalaran" (\textit{reasoning hops}), yaitu berapa langkah logika yang diperlukan untuk mencapai kesimpulan (misal: 1-hop, 3-hop, hingga 5-hop).
