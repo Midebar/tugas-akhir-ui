@@ -8,7 +8,7 @@ Bab ini memaparkan latar belakang, permasalahan, tujuan, batasan, manfaat, ringk
 \section{Latar Belakang}
 \label{sec:latBel}
 
-Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa natural seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu melakukan inferensi yang benar dari himpunan premis dan aturan formal—masih menghadapi kendala fundamental. Evaluasi yang ketat menunjukkan bahwa model sering kali berfungsi sebagai mesin probabilistik yang menebak pola statistik alih-alih melakukan deduksi deterministik. Fenomena ini dijelaskan oleh \cite{saparov2023language} dalam penelitian mereka yang menunjukkan bahwa LLM sering gagal dalam inferensi multi-langkah karena mereka mengambil jalan pintas heuristik daripada mengikuti rantai logika yang valid.
+Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa natural seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu melakukan inferensi yang benar dari himpunan premis dan aturan formal, masih menghadapi kendala fundamental. Evaluasi yang ketat menunjukkan bahwa model sering kali berfungsi sebagai mesin probabilistik yang menebak pola statistik alih-alih melakukan deduksi deterministik. Fenomena ini dijelaskan oleh \cite{saparov2023language} dalam penelitian mereka yang menunjukkan bahwa LLM sering gagal dalam inferensi multi-langkah karena mereka mengambil jalan pintas heuristik daripada mengikuti rantai logika yang valid.
 
 Selama dekade terakhir, perkembangan \textit{Natural Language Processing} (NLP) didorong oleh hukum skala (\textit{scaling laws}) yang menyatakan bahwa peningkatan jumlah parameter, data, dan komputasi akan secara linear meningkatkan performa model. Era ini melahirkan model-model raksasa atau \textit{Large Language Models} (LLM) dengan ratusan miliar parameter, seperti GPT-4 dan Llama-3-405B. Model-model ini menunjukkan kemampuan \textit{emergent} yang luar biasa, namun keberhasilan ini datang dengan biaya infrastruktur komputasi yang masif dan konsumsi energi yang besar \cite{10.1145/3768165}.
 
@@ -19,9 +19,9 @@ Namun, tantangan mendasar tetap membayangi utilitas SLM: kemampuan penalaran log
 Untuk mengatasi kesenjangan antara kemampuan linguistik dan logika ini, berbagai metode prompting dan arsitektur telah dikembangkan. Berikut adalah sedikit tinjauan terhadap evolusi metode penalaran logis pada SLM yang menjadi landasan penelitian ini:
 \begin{enumerate}
       \item \textit{Naive Prompting (Implicit Reasoning)}: Pendekatan paling dasar di mana model diminta langsung menjawab kesimpulan dari premis yang diberikan (misalnya, Zero-shot). Kelemahannya adalah "Curse of Complexity", di mana akurasi model menurun secara eksponensial seiring bertambahnya langkah logika karena model tidak memiliki memori kerja eksternal untuk menyimpan status inferensi perantara (\cite{saparov2023language}).
-      \item \textit{Chain-of-Thought} (CoT): Diperkenalkan oleh \cite{wei2023chainofthoughtpromptingelicitsreasoning}, CoT mendorong model untuk menghasilkan serangkaian langkah penalaran perantara sebelum memberikan jawaban akhir. Metode ini terbukti meningkatkan performa pada tugas aritmatika dan simbolik secara signifikan dengan mengubah pemetaan Input-Output menjadi Input-Reason1-Reason2-Output. Namun, CoT rentan terhadap propagasi kesalahan, jika satu langkah penalaran salah (halusinasi), seluruh kesimpulan akan salah karena tidak ada mekanisme verifikasi eksternal.
-      \item Tree-of-Thoughts (ToT): \cite{Yao2023TreeOT} mengembangkan konsep CoT menjadi struktur pohon, memungkinkan model untuk mengeksplorasi berbagai jalur penalaran, melakukan lookahead, dan backtracking saat menemui jalan buntu. Meskipun lebih kuat, ToT sangat mahal secara komputasi dan masih bergantung pada intuisi probabilistik model itu sendiri untuk mengevaluasi validitas setiap cabang pemikiran.
-      \item \textit{Neuro-Symbolic Approaches} (Logic-LM \& SymbCoT): Untuk mencapai ketepatan logika yang strict, pendekatan \textit{Neuro-Symbolic} mulai diadopsi. Logic-LM oleh \cite{pan-etal-2023-logic} menggunakan LLM hanya sebagai penerjemah masalah ke dalam kode simbolik (seperti Prolog) , yang kemudian diselesaikan oleh solver deterministik. \cite{xu2024faithfullogicalreasoningsymbolic} kemudian mengusulkan SymbCoT yang mencoba mengintegrasikan verifikasi simbolik langsung ke dalam rantai pemikiran LLM.
+      \item \textit{Chain-of-Thought} (CoT): Diperkenalkan oleh \cite{Wei2022ChainOT}, CoT mendorong model untuk menghasilkan serangkaian langkah penalaran perantara sebelum memberikan jawaban akhir. Metode ini terbukti meningkatkan performa pada tugas aritmatika dan simbolik secara signifikan dengan mengubah pemetaan Input-Output menjadi Input-Reason1-Reason2-Output. Namun, CoT rentan terhadap propagasi kesalahan, jika satu langkah penalaran salah (halusinasi), seluruh kesimpulan akan salah karena tidak ada mekanisme verifikasi eksternal.
+      \item Tree-of-Thoughts (ToT): \cite{10.5555/3666122.3666639} mengembangkan konsep CoT menjadi struktur pohon, memungkinkan model untuk mengeksplorasi berbagai jalur penalaran, melakukan lookahead, dan backtracking saat menemui jalan buntu. Meskipun lebih kuat, ToT sangat mahal secara komputasi dan masih bergantung pada intuisi probabilistik model itu sendiri untuk mengevaluasi validitas setiap cabang pemikiran.
+      \item \textit{Neuro-Symbolic Approaches} (Logic-LM \& SymbCoT): Untuk mencapai ketepatan logika yang strict, pendekatan \textit{Neuro-Symbolic} mulai diadopsi. Logic-LM oleh \cite{pan-etal-2023-logic} menggunakan LLM hanya sebagai penerjemah masalah ke dalam kode simbolik (seperti Prolog) , yang kemudian diselesaikan oleh solver deterministik. \cite{xu-etal-2024-faithful} kemudian mengusulkan SymbCoT yang mencoba mengintegrasikan verifikasi simbolik langsung ke dalam rantai pemikiran LLM.
       \item Aristotle \textit{Framework}: Penelitian ini berfokus pada \textit{Framework} Aristotle oleh \cite{Aristotle25}, yang menyempurnakan pendekatan \textit{Neuro-Symbolic} dengan arsitektur \textit{Translation-Decompose-Search-Resolve}. Keunggulan utamanya adalah adanya modul Search Router yang memangkas ruang pencarian premis yang tidak relevan, serta penggunaan dua jalur pembuktian untuk meminimalkan halusinasi.
 \end{enumerate}
 
@@ -46,7 +46,7 @@ Berikut adalah tujuan dari penelitian sesuai dengan latar belakang dan rumusan m
 
 \textbf{Tujuan:}
 \begin{enumerate}
-      \item Mengevaluasi penalaran logis pada dataset berbahasa Indonesia dilakukan dengan menggunakan \textit{framework translation-decompose-search-resolve}
+      \item Mengimplementasikan penalaran logis pada dataset berbahasa Indonesia dilakukan dengan menggunakan \textit{framework translation-decompose-search-resolve}
       \item Mengukur perbandingan performa \textit{framework translation-decompose-search-resolve} untuk penalaran logis berbahasa Indonesia antar open-weight LLM berparameter rendah atau SLM
       \item Mengukur perbandingan performa \textit{framework translation-decompose-search-resolve} naive prompting untuk penalaran logis berbahasa Indonesia pada open-weight LLM berparameter rendah atau SLM
 \end{enumerate}
@@ -104,7 +104,7 @@ Penelitian ini mengisi gap dalam literatur saat ini dengan menerapkan kerangka k
             GPT-3 (175B) \newline
             Inggris \newline
             ProntoQA (Eng)                                    & 
-            Hanya mengevaluasi model proprietary \textit{high-resource}, rentan terhadap \textit{greedy reasoning.}
+            Hanya mengevaluasi model proprietary \textit{high-resource}
             \\
             
             Pan et al.\ (2023)                                & 

@@ -295,7 +295,7 @@ Walaupun sudah diperbaiki, masih terdapat beberapa aturan yang tidak dapat diter
 
 Namun, prompt template \ref{lst:search_resolve_v3} dianggap sudah cukup baik untuk digunakan dalam eksperimen.
 
-\section{Matriks Evaluasi}
+\section{Hasil Eksperimen dan Analisis}
 Bagian ini merupakan hasil akhir dari eksperimen yang telah dilakukan pada penelitian ini. Hasil akhir ini berupa tabel yang menunjukkan persentase keberhasilan dari masing-masing model dalam menjawab pertanyaan berdasarkan dua metode yang digunakan, yaitu \textit{Naive Prompting} dan \textit{Aristotle Framework}. Prompt yang digunakan pada eksperimen ini telah melalui proses \textit{Prompt Refining} yang dijelaskan pada bagian sebelumnya, yaitu versi final dari masing-masing prompt.
 
 \subsection{Naive Prompting}
@@ -318,7 +318,7 @@ Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasar
 
 \textbf{Analisis:}
 \begin{enumerate} 
-	\item \textbf{Keunggulan Qwen pada CoT:} Qwen2.5 menunjukkan lonjakan performa tertinggi (81\%) ketika menggunakan metode \textit{Before Answer}. Ini konsisten dengan literatur yang menyatakan bahwa model yang dilatih pada korpus kode/matematika besar (seperti Qwen) memiliki kemampuan \textit{Chain-of-Thought} internal yang kuat \cite{wei2023chainofthoughtpromptingelicitsreasoning}.
+	\item \textbf{Keunggulan Qwen pada CoT:} Qwen2.5 menunjukkan lonjakan performa tertinggi (81\%) ketika menggunakan metode \textit{Before Answer}. Ini konsisten dengan literatur yang menyatakan bahwa model yang dilatih pada korpus kode/matematika besar (seperti Qwen) memiliki kemampuan \textit{Chain-of-Thought} internal yang kuat \cite{Wei2022ChainOT}.
 	\item \textbf{Kekuatan Semantik Sahabat-AI:} Pada mode \textit{After Answer} (yang lebih mengandalkan intuisi bahasa langsung), Sahabat-AI unggul (61.4\%). Ini mengindikasikan bahwa model ini memiliki pemahaman Bahasa Indonesia yang lebih natural, sehingga intuisi "tebakan"-nya lebih akurat dibandingkan model global.
 \end{enumerate}
 
@@ -345,8 +345,6 @@ Ada beberapa temuan menarik dalam eksperimen ini:
 \end{itemize}
 
 Temuan paling signifikan dalam penelitian ini adalah bahwa \textbf{SEA-LION v3 (8B)}, sebuah model regional, mampu mengalahkan model global SOTA (Qwen2.5 7B) dalam tugas yang terstruktur ini. Hal ini menunjukkan bahwa untuk aplikasi yang memerlukan integrasi dengan sistem simbolik (seperti database atau mesin logika) dalam Bahasa Indonesia, model yang melalui proses \textit{Continued Pre-Training} (CPT) pada data regional jauh lebih andal. Model yang cenderung "terlalu kreatif" atau "terlalu cerewet" atau "terlalu patuh pada format", yang justru menjadi masalah jika di implementasikan dalam sebuah pipeline simbolik.
-
-\section{Fenomena \textit{error propagation} pada \textit{framework translation-decomposition-search-resolve}}
 
 Hasil eksperimen ini mengonfirmasi kelemahan utama sistem \textit{framework translation-decomposition-search-resolve}, yaitu \textit{error propagation}, jika terjadi kesalahan dalam salah satu tahap, maka tahap selanjutnya pasti salah juga. Dalam metode \textit{Naive}, kesalahan model terdistribusi secara probabilistik. Namun dalam metode Aristotle, kesalahan pada tahap-tahap awal akan menjadi katastropik untuk tahap-tahap selanjutnya. Beberapa poin penting:
 \begin{itemize}

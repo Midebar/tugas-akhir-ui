@@ -12,7 +12,7 @@ Bab ini membangun kerangka teoretis yang mendasari analisis kemampuan \textit{La
 First-Order Logic (FOL), atau Kalkulus Predikat, adalah logika formal yang memperluas logika proposisi dengan memperkenalkan variabel, fungsi, dan kuantor untuk merepresentasikan objek dan relasi di dunia nyata.
 
 \subsection{Sintaks: Alfabet dan Aturan Pembentukan}
-Sintaks FOL dibangun dari komponen-komponen berikut menurut \cite[Chapter 2]{brachman2004knowledge}: 
+Sintaks FOL dibangun dari komponen-komponen berikut menurut \cite{brachman2004knowledge}: 
 \begin{itemize}
 	\item Simbol Logis:
 	      \begin{itemize}
@@ -49,12 +49,12 @@ Menurut \cite{huth-ryan-lics2}, $KB \models \alpha$ jika dan hanya jika untuk \t
 \section{Resolusi dan Unifikasi}
 \label{sec:normalForms}
 %-----------------------------------------------------------------------------%
-Metode inferensi utama yang digunakan dalam modul \textit{resolve} Aristotle adalah \textbf{Resolusi} \cite[Chapter 4]{brachman2004knowledge}
+Metode inferensi utama yang digunakan dalam modul \textit{resolve} Aristotle adalah \textbf{Resolusi} (\cite{brachman2004knowledge})
 
 \subsection{Pembuktian Kontradiksi (\textit{Proof by Contradiction})}
 \label{subsec:proof_by_contradiction}
 Resolusi bekerja dengan prinsip \textit{Proof by Contradiction}. Untuk membuktikan bahwa $KB \models \alpha$, kita dapat menunjukkan bahwa himpunan $KB \cup \{\neg \alpha\}$ adalah \textit{Unsatisfiable} (tidak ada interpretasi yang memenuhi), maka terbukti secara logis bahwa $\alpha$ haruslah benar.
-Tanda terjadinya kontradiksi adalah ketika algoritma berhasil menurunkan \textbf{Klausa Kosong} ($\square$ atau \textit{False}) \cite[Chapter 4]{brachman2004knowledge}.
+Tanda terjadinya kontradiksi adalah ketika algoritma berhasil menurunkan \textbf{Klausa Kosong} ($\square$ atau \textit{False}) (\cite{brachman2004knowledge}).
 
 \subsection{Konversi ke \textit{Conjunctive Normal Form} (CNF)}
 Agar aturan resolusi dapat diterapkan, formula logika harus diubah ke bentuk standar yang disebut \textit{Conjunctive Normal Form} (CNF). Menurut \cite{fitting-fol-atp} merinci langkah-langkah algoritma konversi ini sebagai berikut:
@@ -107,7 +107,6 @@ Proses penggunaan model yang sudah dilatih untuk menghasilkan teks disebut \text
 \subsection{Definisi dan Karakteristik Small Language Models (SLM)}
 Dalam perkembangannya, paradigma model bahasa mulai bergeser dari "semakin besar semakin baik" menjadi efisiensi. \textit{Small Language Models} (SLM) didefinisikan secara longgar dalam literatur sebagai model dengan jumlah parameter berkisar antara beberapa juta hingga batas atas sekitar 7 hingga 10 miliar parameter (\cite{10.1145/3768165, subramanian2025smalllanguagemodelsslms}).
 
-
 Karakteristik utama SLM meliputi:
 \begin{itemize}
 	\item \textbf{Efisiensi Parameter:} SLM mencapai performa kompetitif dengan jumlah parameter yang jauh lebih sedikit (10-100x lebih kecil dari LLM), memungkinkan inferensi yang lebih cepat dan penggunaan memori yang lebih rendah.
@@ -126,7 +125,7 @@ Untuk mengukur kemampuan penalaran secara objektif, penelitian ini mengadaptasi 
 ProntoQA berbeda dari dataset tanya-jawab umum karena sifatnya yang generatif dan sintetis. Data tidak diambil dari internet, melainkan dibangkitkan dari aturan logika formal yang kemudian diterjemahkan ke bahasa alami.
 Proses pembuatannya adalah:
 \begin{enumerate}
-	\item Sistem membangkitkan graf ontologi fiktif (misal: $Wumpus \rightarrow Jompus \rightarrow Tumpus$).
+	\item Sistem membuat graf ontologi fiktif (misal: $Setiap Wumpus adalah Jompus dan Setiap Jompus adalah Tumpus$).
 	\item Sistem menurunkan rantai deduksi berdasarkan graf tersebut.
 	\item Simbol-simbol logika diganti dengan kata-kata fiktif atau nyata untuk membentuk kalimat bahasa alami.
 \end{enumerate}

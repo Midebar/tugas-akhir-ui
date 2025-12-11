@@ -131,23 +131,27 @@ manual{latex:source_code_listings,
   url           = {https://arxiv.org/abs/2204.05660}
 }
 
-@misc{wei2023chainofthoughtpromptingelicitsreasoning,
-  title         = {Chain-of-Thought Prompting Elicits Reasoning in Large Language Models},
-  author        = {Jason Wei and Xuezhi Wang and Dale Schuurmans and Maarten Bosma and Brian Ichter and Fei Xia and Ed Chi and Quoc Le and Denny Zhou},
-  year          = {2023},
-  eprint        = {2201.11903},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.CL},
-  url           = {https://arxiv.org/abs/2201.11903}
+@article{Wei2022ChainOT,
+  title   = {Chain of Thought Prompting Elicits Reasoning in Large Language Models},
+  author  = {Jason Wei and Xuezhi Wang and Dale Schuurmans and Maarten Bosma and Ed H. Chi and F. Xia and Quoc Le and Denny Zhou},
+  journal = {ArXiv},
+  year    = {2022},
+  volume  = {abs/2201.11903},
+  url     = {https://api.semanticscholar.org/CorpusID:246411621}
 }
 
-@article{Yao2023TreeOT,
-  title   = {Tree of Thoughts: Deliberate Problem Solving with Large Language Models},
-  author  = {Shunyu Yao and Dian Yu and Jeffrey Zhao and Izhak Shafran and Thomas L. Griffiths and Yuan Cao and Karthik Narasimhan},
-  journal = {ArXiv},
-  year    = {2023},
-  volume  = {abs/2305.10601},
-  url     = {https://api.semanticscholar.org/CorpusID:258762525}
+@inproceedings{10.5555/3666122.3666639,
+  author    = {Yao, Shunyu and Yu, Dian and Zhao, Jeffrey and Shafran, Izhak and Griffiths, Thomas L. and Cao, Yuan and Narasimhan, Karthik},
+  title     = {Tree of thoughts: deliberate problem solving with large language models},
+  year      = {2023},
+  publisher = {Curran Associates Inc.},
+  address   = {Red Hook, NY, USA},
+  abstract  = {Language models are increasingly being deployed for general problem solving across a wide range of tasks, but are still confined to token-level, left-to-right decision-making processes during inference. This means they can fall short in tasks that require exploration, strategic lookahead, or where initial decisions play a pivotal role. To surmount these challenges, we introduce a new framework for language model inference, "Tree of Thoughts" (ToT), which generalizes over the popular "Chain of Thought" approach to prompting language models, and enables exploration over coherent units of text ("thoughts") that serve as intermediate steps toward problem solving. ToT allows LMs to perform deliberate decision making by considering multiple different reasoning paths and self-evaluating choices to decide the next course of action, as well as looking ahead or backtracking when necessary to make global choices. Our experiments show that ToT significantly enhances language models' problem-solving abilities on three novel tasks requiring non-trivial planning or search: Game of 24, Creative Writing, and Mini Crosswords. For instance, in Game of 24, while GPT-4 with chain-of-thought prompting only solved 4\% of tasks, our method achieved a success rate of 74\%. Code repo with all prompts: https://github.com/princeton-nlp/tree-of-thought-llm.},
+  booktitle = {Proceedings of the 37th International Conference on Neural Information Processing Systems},
+  articleno = {517},
+  numpages  = {14},
+  location  = {New Orleans, LA, USA},
+  series    = {NIPS '23}
 }
 
 @inproceedings{pan-etal-2023-logic,
@@ -169,16 +173,27 @@ manual{latex:source_code_listings,
   pages     = {3806--3824},
   abstract  = {Large Language Models (LLMs) have shown human-like reasoning abilities but still struggle with complex logical problems. This paper introduces a novel framework, Logic-LM, which integrates LLMs with symbolic solvers to improve logical problem-solving. Our method first utilizes LLMs to translate a natural language problem into a symbolic formulation. Afterward, a deterministic symbolic solver performs inference on the formulated problem. We also introduce a self-refinement module, which utilizes the symbolic solver{'}s error messages to revise symbolic formalizations. We demonstrate Logic-LM{'}s effectiveness on five logical reasoning datasets: ProofWriter, PrOntoQA, FOLIO, LogicalDeduction, and AR-LSAT. On average, Logic-LM achieves a significant performance boost of 39.2{\%} over using LLM alone with standard prompting and 18.4{\%} over LLM with chain-of-thought prompting. Our findings suggest that Logic-LM, by combining LLMs with symbolic logic, offers a promising avenue for faithful logical reasoning.}
 }
-@misc{xu2024faithfullogicalreasoningsymbolic,
-  title         = {Faithful Logical Reasoning via Symbolic Chain-of-Thought},
-  author        = {Jundong Xu and Hao Fei and Liangming Pan and Qian Liu and Mong-Li Lee and Wynne Hsu},
-  year          = {2024},
-  eprint        = {2405.18357},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.CL},
-  url           = {https://arxiv.org/abs/2405.18357}
+@inproceedings{xu-etal-2024-faithful,
+  title     = {Faithful Logical Reasoning via Symbolic Chain-of-Thought},
+  author    = {Xu, Jundong  and
+               Fei, Hao  and
+               Pan, Liangming  and
+               Liu, Qian  and
+               Lee, Mong-Li  and
+               Hsu, Wynne},
+  editor    = {Ku, Lun-Wei  and
+               Martins, Andre  and
+               Srikumar, Vivek},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2024.acl-long.720/},
+  doi       = {10.18653/v1/2024.acl-long.720},
+  pages     = {13326--13365},
+  abstract  = {While the recent Chain-of-Thought (CoT) technique enhances the reasoning ability of large language models (LLMs) with the theory of mind, it might still struggle in handling logical reasoning that relies much on symbolic expressions and rigid deducing rules. To strengthen the logical reasoning capability of LLMs, we propose a novel Symbolic Chain-of-Thought, namely SymbCoT, a fully LLM-based framework that integrates symbolic expressions and logic rules with CoT prompting. Technically, building upon an LLM, SymbCoT 1) first translates the natural language context into the symbolic format, and then 2) derives a step-by-step plan to solve the problem with symbolic logical rules, 3) followed by a verifier to check the translation and reasoning chain. Via thorough evaluations on 5 standard datasets with both First-Order Logic and Constraint Optimization symbolic expressions, SymbCoT shows striking improvements over the CoT method consistently, meanwhile refreshing the current state-of-the-art performances. We further demonstrate that our system advances in more faithful, flexible, and explainable logical reasoning. To our knowledge, this is the first attempt at combining symbolic expressions and rules into CoT for logical reasoning with LLMs. Code is open at https://github.com/Aiden0526/SymbCoT.}
 }
-
 @book{brachman2004knowledge,
   title     = {Knowledge Representation and Reasoning},
   author    = {Brachman, R. and Levesque, H.},
@@ -231,16 +246,24 @@ manual{latex:source_code_listings,
   abstract  = {Recently, language models (LMs) have achieved significant performance on many NLU tasks, which has spurred widespread interest for their possible applications in the scientific and social area. However, LMs have faced much criticism of whether they are truly capable of reasoning in NLU. In this work, we propose a diagnostic method for first-order logic (FOL) reasoning with a new proposed benchmark, LogicNLI. LogicNLI is an NLI-style dataset that effectively disentangles the target FOL reasoning from commonsense inference and can be used to diagnose LMs from four perspectives: accuracy, robustness, generalization, and interpretability. Experiments on BERT, RoBERTa, and XLNet, have uncovered the weaknesses of these LMs on FOL reasoning, which motivates future exploration to enhance the reasoning ability.}
 }
 
-@misc{tafjord2021proofwritergeneratingimplicationsproofs,
-  title         = {ProofWriter: Generating Implications, Proofs, and Abductive Statements over Natural Language},
-  author        = {Oyvind Tafjord and Bhavana Dalvi Mishra and Peter Clark},
-  year          = {2021},
-  eprint        = {2012.13048},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.CL},
-  url           = {https://arxiv.org/abs/2012.13048}
+@inproceedings{tafjord-etal-2021-proofwriter,
+  title     = {{P}roof{W}riter: Generating Implications, Proofs, and Abductive Statements over Natural Language},
+  author    = {Tafjord, Oyvind  and
+               Dalvi, Bhavana  and
+               Clark, Peter},
+  editor    = {Zong, Chengqing  and
+               Xia, Fei  and
+               Li, Wenjie  and
+               Navigli, Roberto},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL-IJCNLP 2021},
+  month     = aug,
+  year      = {2021},
+  address   = {Online},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2021.findings-acl.317/},
+  doi       = {10.18653/v1/2021.findings-acl.317},
+  pages     = {3621--3634}
 }
-
 @inproceedings{NIPS2017_3f5ee243,
   author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, \L ukasz and Polosukhin, Illia},
   booktitle = {Advances in Neural Information Processing Systems},

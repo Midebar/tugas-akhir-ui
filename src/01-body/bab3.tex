@@ -91,8 +91,8 @@ Ini adalah mesin inferensi deterministik yang menggantikan peran penalaran SLM.
     \item \textbf{Prinsip:} Menggunakan aturan resolusi berbasis pembuktian kontradiksi (\textit{Proof By Contradiction}) untuk menilai kebenaran hipotesis $S$ berdasarkan premis $P$ (~\ref{subsec:proof_by_contradiction})
     \item \textbf{Mekanisme Dual-Path:} Sistem mencoba membuktikan kebenaran hipotesis $S$ melalui dua jalur paralel pembuktian kontradiksi:
           \begin{enumerate}
-              \item \textbf{Jalur A:} Untuk $\neg S$ (Negasi S), jika ditemukan kontradiksi (Klausa Kosong), maka $S$ terbukti \textbf{Benar}.
-              \item \textbf{Jalur B:} Untuk $S$, jika ditemukan kontradiksi, maka $\neg S$ terbukti \textbf{Benar}.
+              \item \textbf{Jalur A:} Asumsikan $\neg S$ (Negasi S), jika ditemukan kontradiksi (Klausa Kosong), maka $S$ terbukti \textbf{Benar}.
+              \item \textbf{Jalur B:} Asumsikan $S$, jika ditemukan kontradiksi, maka $\neg S$ terbukti \textbf{Benar}.
           \end{enumerate}
     \item Jika tidak ada kontradiksi yang ditemukan di kedua jalur (misalnya karena informasi tidak lengkap atau translasi putus), sistem mengembalikan \textbf{Unknown}.
 \end{itemize}
@@ -133,21 +133,21 @@ Untuk setiap pertanyaan $S$, sistem menjalankan dua pembuktian paralel. Tabel \r
 
 \begin{table}[H]
     \centering
-    \caption{Matriks Keputusan untuk Penentuan Label Jawaban ($A$)}
+    \caption{Matriks Keputusan untuk Penentuan Label Jawaban (Kesimpulan)}
     \label{tab:decision_matrix}
     \renewcommand{\arraystretch}{1.5}
     \begin{tabularx}{\textwidth}{|c|X|X|l|}
         \hline
-        \textbf{Kondisi}    & \centering\textbf{Jalur A: Buktikan $S$} & \centering\textbf{Jalur B: Buktikan $\neg S$} & \multirow{2}{*}{\textbf{Kesimpulan ($A$)}} \\
-        \textbf{(Skenario)} & \centering(Cari Kontradiksi di $\neg S$) & \centering(Cari Kontradiksi di $S$)           &                                            \\
+        \textbf{Kondisi}    & \centering\textbf{Jalur A: Buktikan $S$} & \centering\textbf{Jalur B: Buktikan $\neg S$} & \multirow{2}{*}{\textbf{Kesimpulan}} \\
+        \textbf{(Skenario)} & \centering(Cari Kontradiksi di $\neg S$) & \centering(Cari Kontradiksi di $S$)           &                                      \\
         \hline
-        1                   & \textbf{Berhasil} (Ada Kontradiksi)      & Gagal                                         & \textbf{TRUE}                              \\
+        1                   & \textbf{Berhasil} (Ada Kontradiksi)      & Gagal                                         & \textbf{TRUE}                        \\
         \hline
-        2                   & Gagal                                    & \textbf{Berhasil} (Ada Kontradiksi)           & \textbf{FALSE}                             \\
+        2                   & Gagal                                    & \textbf{Berhasil} (Ada Kontradiksi)           & \textbf{FALSE}                       \\
         \hline
-        3                   & Gagal                                    & Gagal                                         & \textbf{UNKNOWN}                           \\
+        3                   & Gagal                                    & Gagal                                         & \textbf{UNKNOWN}                     \\
         \hline
-        4                   & \textbf{Berhasil}                        & \textbf{Berhasil}                             & \textbf{SELF-CONTRADICTORY}                \\
+        4                   & \textbf{Berhasil}                        & \textbf{Berhasil}                             & \textbf{SELF-CONTRADICTORY}          \\
         \hline
     \end{tabularx}
 \end{table}
