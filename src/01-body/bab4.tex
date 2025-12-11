@@ -350,6 +350,6 @@ Temuan paling signifikan dalam penelitian ini adalah bahwa \textbf{SEA-LION v3 (
 
 Hasil eksperimen ini mengonfirmasi kelemahan utama sistem \textit{framework translation-decomposition-search-resolve}, yaitu \textit{error propagation}, jika terjadi kesalahan dalam salah satu tahap, maka tahap selanjutnya pasti salah juga. Dalam metode \textit{Naive}, kesalahan model terdistribusi secara probabilistik. Namun dalam metode Aristotle, kesalahan pada tahap-tahap awal akan menjadi katastropik untuk tahap-tahap selanjutnya. Beberapa poin penting:
 \begin{itemize}
-	\item Jika Model gagal dalam tahap \textit{translation}, seperti "Setiap Wumpus adalah Jompus" menjadi $\forall x (\bracket{Wumpus}{(x)} \rightarrow \bracket{Jompus}{(x)})$ dengan sintaks yang tepat 100\%, maka modul \textit{search} tidak akan memiliki input yang valid, dan akurasi otomatis menjadi 0.
+	\item Jika Model gagal dalam tahap \textit{translation}, seperti "Setiap Wumpus adalah Jompus" menjadi $\bracket{\forall x} {(\bracket{Wumpus}{(x)})} \rightarrow \bracket{Jompus}{(x)}$ dengan sintaks yang tepat 100\%, maka modul \textit{search} tidak akan memiliki input yang valid, dan akurasi otomatis menjadi 0.
 	\item Kegagalan Qwen (14\%) adalah bukti nyata bahwa \textbf{kecerdasan penalaran} (\textit{Reasoning IQ}) berbeda dengan \textbf{kepatuhan instruksi format} (\textit{Instruction Following}) pada bahasa spesifik (Indonesian), yaitu model Qwen terlalu patuh terhadap format, sehingga tidak dapat me-\textit{resolve} logika dengan benar.
 \end{itemize}

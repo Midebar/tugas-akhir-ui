@@ -3,7 +3,7 @@
 \label{bab:3}
 %-----------------------------------------------------------------------------%
 
-Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan masalah penelitian. Metodologi ini disusun untuk menguji secara empiris apakah pendekatan dapat mengatasi kelemahan penalaran probabilistik pada \textit{open-weight} \textit{Large Language Models} (LLM) dalam konteks Bahasa Indonesia.
+Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan masalah penelitian. Metodologi ini disusun untuk menguji secara empiris apakah pendekatan dapat mengatasi kelemahan penalaran probabilistik pada \textit{open-weight} \textit{Small Language Models} (SLM) dalam konteks Bahasa Indonesia.
 
 Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya adalah mengukur akurasi penalaran logis pada bahasa Indonesia yang diperoleh melalui manipulasi struktur \textit{prompting} \textit{Neuro-Symbolic} dan dampaknya ketika model dijalankan dengan sumber daya terbatas (melalui kuantisasi).
 
@@ -45,13 +45,13 @@ Parameter utama yang dikontrol adalah:
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{assets/pics/Framework.drawio.png}
-    \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan LLM dan metode \textit{neuro-symbolic} (\cite{Aristotle25})}
+    \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan SLM dan metode \textit{neuro-symbolic} (\cite{Aristotle25})}
     \label{fig:aristotle_framework}
 \end{figure}
 Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama, sesuai dengan Gambar ~\ref{fig:aristotle_framework}.
 
 \subsection{Translasi Logika (\textit{Logical Translation})}
-Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik LLM. Tujuannya adalah memetakan kalimat Bahasa Indonesia yang implisit menjadi struktur logika formal.
+Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik SLM. Tujuannya adalah memetakan kalimat Bahasa Indonesia yang implisit menjadi struktur logika formal.
 
 \begin{itemize}
     \item \textbf{Tugas Model:} Menerjemahkan narasi bahasa alami menjadi representasi \textit{First-Order Logic} (FOL) yang terdiri dari Fakta Atomik dan Aturan Implikasi.
@@ -85,7 +85,7 @@ Mesin inti inferensi terdiri dari dua sub-komponen:
 \end{enumerate}
 
 \subsection{Resolusi (\textit{Logical Resolver})}
-Ini adalah mesin inferensi deterministik yang menggantikan peran penalaran LLM.
+Ini adalah mesin inferensi deterministik yang menggantikan peran penalaran SLM.
 
 \begin{itemize}
     \item \textbf{Prinsip:} Menggunakan aturan resolusi berbasis pembuktian kontradiksi (\textit{Proof By Contradiction}) untuk menilai kebenaran hipotesis $S$ berdasarkan premis $P$ (~\ref{subsec:proof_by_contradiction})
@@ -122,7 +122,7 @@ Sistem evaluasi dirancang untuk "menangkap" struktur logika dari output teks mod
           Serupa dengan tahap sebelumnya, kode pada \lst~\ref{code:decomposition_regex} bertugas memvalidasi output dari tahap \textit{Decomposer}. Regex ini secara spesifik mencari pola "Aturan dalam CNF". Jika model tidak mengikuti format yang diharapkan, regex ini akan gagal menemukan kecocokan, menandakan kegagalan dekomposisi.
     \item \textbf{Ekstraksi Resolusi:} Mendeteksi klausa baru dan kesimpulan akhir dalam label kecukupan.
           \lstinputlisting[language=Python, caption=Regex untuk memvalidasi langkah Resolusi, label=code:resolve_regex]{assets/codes/search_resolve_regex_grabs.py}
-          \lst~\ref{code:resolve_regex} di atas adalah komponen validasi akhir yang bekerja pada output modul \textit{Resolver}. Regex ini bertugas mengekstraksi dua informasi vital dari log resolusi LLM: (1) Clause Baru, yaitu kesimpulan antara yang dihasilkan dari penggabungan dua premis, dan (2) Label Cukup, yang menandakan apakah kontradiksi telah ditemukan (\textit{True}) atau belum (\textit{False}). Jika format ini tidak ditemukan, sistem akan menganggap langkah resolusi tersebut gagal atau tidak konklusif.
+          \lst~\ref{code:resolve_regex} di atas adalah komponen validasi akhir yang bekerja pada output modul \textit{Resolver}. Regex ini bertugas mengekstraksi dua informasi vital dari logika resolusi SLM: (1) Clause Baru, yaitu kesimpulan antara yang dihasilkan dari penggabungan dua premis, dan (2) Label Cukup, yang menandakan apakah kontradiksi telah ditemukan (\textit{True}) atau belum (\textit{False}). Jika format ini tidak ditemukan, sistem akan menganggap langkah resolusi tersebut gagal atau tidak konklusif.
           
           
 \end{itemize}

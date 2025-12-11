@@ -14,7 +14,7 @@ Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rend
 	      Proses ini diawali dengan adaptasi dataset, di mana dataset sintetis ProntoQA diterjemahkan ke dalam Bahasa Indonesia dengan mempertahankan struktur ontologi logika formal (fakta aturan, dan konjektur) namun menyesuaikan representasi linguistiknya.
 	      Selanjutnya, mekanisme penalaran logis dijalankan melalui empat tahapan sekuensial dalam \textit{framework} Aristotle:
 	      \begin{enumerate}
-		      \item \textbf{\textit{Logical Translation}}, di mana LLM melakukan \textit{translation} narasi alamiah Indonesia ke dalam sintaks \textit{First-Order Logic} (FOL)
+		      \item \textbf{\textit{Logical Translation}}, di mana SLM melakukan \textit{translation} narasi alamiah Indonesia ke dalam sintaks \textit{First-Order Logic} (FOL)
 		      \item \textbf{\textit{Decomposition}}, yang mengonversi aturan dalam format FOL menjadi \textit{Conjunctive Normal Form} (CNF)
 		      \item \textbf{\textit{Search Router}}, yang memilah klausa berkomplemen untuk disiapkan pada tahap resolusi
 		      \item \textbf{\textit{Logical Resolver}}, yang melakukan deduksi deterministik menggunakan prinsip resolusi untuk menghasilkan jawaban yang valid secara simbolik.

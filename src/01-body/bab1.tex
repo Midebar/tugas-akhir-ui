@@ -3,14 +3,20 @@
 \label{bab:1}
 %-----------------------------------------------------------------------------%
 
-Bab ini memaparkan latar belakang, permasalahan, tujuan, batasan, manfaat, ringkasan metodologi, serta sistematika penulisan laporan ini. Penelitian ini berfokus pada evaluasi kemampuan penalaran logis oleh \textit{Large Language Models} (LLM) yang bersifat \textit{open-weight} ketika bekerja pada dataset berbahasa Indonesia dengan \textit{framework translation-decomposition-search-resolve}.
+Bab ini memaparkan latar belakang, permasalahan, tujuan, batasan, manfaat, ringkasan metodologi, serta sistematika penulisan laporan ini. Penelitian ini berfokus pada evaluasi kemampuan penalaran logis oleh \textit{Small Language Models} (SLM) yang bersifat \textit{open-weight} ketika bekerja pada dataset berbahasa Indonesia dengan \textit{framework translation-decomposition-search-resolve}.
 
 \section{Latar Belakang}
 \label{sec:latBel}
 
-Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa natural seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu melakukan inferensi yang benar dari himpunan premis dan aturan formal—masih menghadapi kendala fundamental. Evaluasi yang ketat menunjukkan bahwa model sering kali berfungsi sebagai mesin probabilistik yang menebak pola statistik alih-alih melakukan deduksi deterministik. Fenomena ini dijelaskan oleh \cite{saparov2023language} dalam penelitian mereka yang menunjukkan bahwa LLM sering gagal dalam inferensi multi-langkah karena mereka mengambil jalan pintas heuristik daripada mengikuti rantai logika yang valid. 
+Perkembangan \textit{Large Language Model} (LLM) telah mendorong kemajuan signifikan pada berbagai tugas pemrosesan bahasa natural seperti penerjemahan, ringkasan, dan tanya-jawab. Namun, kemampuan LLM untuk melakukan penalaran logis, yaitu melakukan inferensi yang benar dari himpunan premis dan aturan formal—masih menghadapi kendala fundamental. Evaluasi yang ketat menunjukkan bahwa model sering kali berfungsi sebagai mesin probabilistik yang menebak pola statistik alih-alih melakukan deduksi deterministik. Fenomena ini dijelaskan oleh \cite{saparov2023language} dalam penelitian mereka yang menunjukkan bahwa LLM sering gagal dalam inferensi multi-langkah karena mereka mengambil jalan pintas heuristik daripada mengikuti rantai logika yang valid.
 
-Untuk mengatasi kesenjangan antara kemampuan linguistik dan logika ini, berbagai metode prompting dan arsitektur telah dikembangkan. Berikut adalah sedikit tinjauan terhadap evolusi metode penalaran logis pada LLM yang menjadi landasan penelitian ini:
+Selama dekade terakhir, perkembangan \textit{Natural Language Processing} (NLP) didorong oleh hukum skala (\textit{scaling laws}) yang menyatakan bahwa peningkatan jumlah parameter, data, dan komputasi akan secara linear meningkatkan performa model. Era ini melahirkan model-model raksasa atau \textit{Large Language Models} (LLM) dengan ratusan miliar parameter, seperti GPT-4 dan Llama-3-405B. Model-model ini menunjukkan kemampuan \textit{emergent} yang luar biasa, namun keberhasilan ini datang dengan biaya infrastruktur komputasi yang masif dan konsumsi energi yang besar \cite{10.1145/3768165}.
+
+Dalam konteks negara berkembang seperti Indonesia, ketergantungan pada LLM raksasa menjadi hambatan signifikan. Kebutuhan akan kedaulatan data dan privasi mendorong permintaan untuk menjalankan model secara lokal (\textit{on-premise}) atau di perangkat tepi (\textit{edge devices}). Untuk menghadapi tantangan ini, riset pada umumnya mulai beralih fokus pada \textit{Small Language Models} (SLM), yang umumnya memiliki parameter di bawah 10-14 miliar \cite{subramanian2025smalllanguagemodelsslms}. 
+
+Namun, tantangan mendasar tetap membayangi utilitas SLM: kemampuan penalaran logis (\textit{logical reasoning}). Model bahasa pada dasarnya adalah mesin prediksi token probabilistik. Kelemahan ini dikenal sebagai masalah "halusinasi", sering kali lebih parah pada model kecil karena keterbatasan memori asosiatif \cite{saparov2023language}. Oleh karena itu, diperlukan pendekatan metodologis untuk memperkuat kapabilitas penalaran SLM tanpa memperbesar ukuran modelnya.
+
+Untuk mengatasi kesenjangan antara kemampuan linguistik dan logika ini, berbagai metode prompting dan arsitektur telah dikembangkan. Berikut adalah sedikit tinjauan terhadap evolusi metode penalaran logis pada SLM yang menjadi landasan penelitian ini:
 \begin{enumerate}
       \item \textit{Naive Prompting (Implicit Reasoning)}: Pendekatan paling dasar di mana model diminta langsung menjawab kesimpulan dari premis yang diberikan (misalnya, Zero-shot). Kelemahannya adalah "Curse of Complexity", di mana akurasi model menurun secara eksponensial seiring bertambahnya langkah logika karena model tidak memiliki memori kerja eksternal untuk menyimpan status inferensi perantara (\cite{saparov2023language}).
       \item \textit{Chain-of-Thought} (CoT): Diperkenalkan oleh \cite{wei2023chainofthoughtpromptingelicitsreasoning}, CoT mendorong model untuk menghasilkan serangkaian langkah penalaran perantara sebelum memberikan jawaban akhir. Metode ini terbukti meningkatkan performa pada tugas aritmatika dan simbolik secara signifikan dengan mengubah pemetaan Input-Output menjadi Input-Reason1-Reason2-Output. Namun, CoT rentan terhadap propagasi kesalahan, jika satu langkah penalaran salah (halusinasi), seluruh kesimpulan akan salah karena tidak ada mekanisme verifikasi eksternal.
@@ -19,9 +25,9 @@ Untuk mengatasi kesenjangan antara kemampuan linguistik dan logika ini, berbagai
       \item Aristotle \textit{Framework}: Penelitian ini berfokus pada \textit{Framework} Aristotle oleh \cite{Aristotle25}, yang menyempurnakan pendekatan \textit{Neuro-Symbolic} dengan arsitektur \textit{Translation-Decompose-Search-Resolve}. Keunggulan utamanya adalah adanya modul Search Router yang memangkas ruang pencarian premis yang tidak relevan, serta penggunaan dua jalur pembuktian untuk meminimalkan halusinasi.
 \end{enumerate}
 
-Meskipun metode-metode di atas menunjukkan hasil positif, sebagian besar penelitian dilakukan pada dataset berbahasa Inggris. Studi terhadap kemampuan penalaran LLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. Perbedaan struktur linguistik (seperti ambiguitas subjek dalam Bahasa Indonesia) dan kualitas tokenisasi dapat memengaruhi performa model setelah adaptasi lintas bahasa. Selain itu, penelitian sebelumnya menggunakan proprietary LLM (seperti GPT-4), sehingga perbandingan performa \textit{apple-to-apple} pada model open-weight dengan sumber daya terbatas belum banyak dikaji.
+Meskipun metode-metode di atas menunjukkan hasil positif, sebagian besar penelitian dilakukan pada dataset berbahasa Inggris. Studi terhadap kemampuan penalaran SLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. Perbedaan struktur linguistik (seperti ambiguitas subjek dalam Bahasa Indonesia) dan kualitas tokenisasi dapat memengaruhi performa model setelah adaptasi lintas bahasa. Selain itu, penelitian sebelumnya menggunakan proprietary LLM (seperti GPT-4), sehingga perbandingan performa \textit{apple-to-apple} pada model open-weight dengan sumber daya terbatas atau SLM belum banyak dikaji.
 
-Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai efektivitas \textit{Framework} Aristotle pada dataset berbahasa Indonesia menggunakan open-weight LLM. Penelitian ini menjadi penting untuk mengevaluasi apakah model seperti Sahabat-AI (yang dilatih khusus untuk Bahasa Indonesia) atau SEA-LION (regional ASEAN) ataupun Qwen (generik) dapat mengatasi tantangan penalaran logis.
+Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai efektivitas \textit{Framework} Aristotle pada dataset berbahasa Indonesia menggunakan open-weight SLM. Penelitian ini menjadi penting untuk mengevaluasi apakah model seperti Sahabat-AI (yang dilatih khusus untuk Bahasa Indonesia) atau SEA-LION (regional ASEAN) ataupun Qwen (generik) dapat mengatasi tantangan penalaran logis.
 
 \section{Rumusan Masalah}
 \label{sec:rumusan}
@@ -29,8 +35,8 @@ Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai ef
 Berdasarkan latar belakang di atas, rumusan masalah penelitian ini adalah:
 \begin{enumerate}
       \item Bagaimana penalaran logis pada dataset berbahasa Indonesia dilakukan dengan menggunakan \textit{framework translation-decompose-search-resolve}?
-      \item Bagaimana perbandingan performa \textit{framework translation-decompose-search-resolve} untuk penalaran logis berbahasa Indonesia antar open-weight LLM berparameter rendah?
-      \item Bagaimana perbandingan performa \textit{framework translation-decompose-search-resolve} dibandingkan naive prompting untuk penalaran logis berbahasa Indonesia pada open-weight LLM berparameter rendah?
+      \item Bagaimana perbandingan performa \textit{framework translation-decompose-search-resolve} untuk penalaran logis berbahasa Indonesia antar open-weight LLM berparameter rendah atau SLM?
+      \item Bagaimana perbandingan performa \textit{framework translation-decompose-search-resolve} dibandingkan naive prompting untuk penalaran logis berbahasa Indonesia pada open-weight LLM berparameter rendah atau SLM?
 \end{enumerate}
 
 \section{Tujuan Penelitian}
@@ -41,8 +47,8 @@ Berikut adalah tujuan dari penelitian sesuai dengan latar belakang dan rumusan m
 \textbf{Tujuan:}
 \begin{enumerate}
       \item Mengevaluasi penalaran logis pada dataset berbahasa Indonesia dilakukan dengan menggunakan \textit{framework translation-decompose-search-resolve}
-      \item Mengukur perbandingan performa \textit{framework translation-decompose-search-resolve} untuk penalaran logis berbahasa Indonesia antar open-weight LLM berparameter rendah
-      \item Mengukur perbandingan performa \textit{framework translation-decompose-search-resolve} naive prompting untuk penalaran logis berbahasa Indonesia pada open-weight LLM berparameter rendah
+      \item Mengukur perbandingan performa \textit{framework translation-decompose-search-resolve} untuk penalaran logis berbahasa Indonesia antar open-weight LLM berparameter rendah atau SLM
+      \item Mengukur perbandingan performa \textit{framework translation-decompose-search-resolve} naive prompting untuk penalaran logis berbahasa Indonesia pada open-weight LLM berparameter rendah atau SLM
 \end{enumerate}
 
 \section{Batasan Penelitian}
@@ -63,7 +69,7 @@ Penelitian ini dibatasi sebagai berikut:
 Penelitian ini diharapkan memberikan kontribusi yang bermakna bagi berbagai pihak:
 
 \begin{itemize}
-      \item \textbf{Bagi pengembangan ilmu pengetahuan:} Penelitian ini dapat menambah pemahaman tentang kemampuan penalaran logis LLM pada bahasa Indonesia, sebuah aspek yang masih jarang dikaji. Temuan ini dapat menjadi fondasi bagi penelitian lanjutan dalam evaluasi model bahasa pada tugas-tugas penarlan logis kompleks dalam bahasa lokal.
+      \item \textbf{Bagi pengembangan ilmu pengetahuan:} Penelitian ini dapat menambah pemahaman tentang kemampuan penalaran logis SLM pada bahasa Indonesia, sebuah aspek yang masih jarang dikaji. Temuan ini dapat menjadi fondasi bagi penelitian lanjutan dalam evaluasi model bahasa pada tugas-tugas penarlan logis kompleks dalam bahasa lokal.
             
       \item \textbf{Bagi praktisi dan pengembang:} Hasil analisis perbandingan model dan efektivitas \textit{framework} dapat menjadi panduan dalam memilih model open-weight yang tepat dan merancang pipeline pemrosesan bahasa untuk tugas penalaran logis berbahasa Indonesia, terutama dengan sumber daya komputasi terbatas.
             
@@ -135,7 +141,7 @@ Penelitian ini mengisi gap dalam literatur saat ini dengan menerapkan kerangka k
             
             \bottomrule
       \end{tabularx}
-      \caption{Perbandingan Penelitian Terkait Penalaran Logis dengan LLM}
+      \caption{Perbandingan Penelitian Terkait Penalaran Logis dengan SLM}
       \label{tab:posisi_penelitian}
 \end{table}
 
@@ -148,7 +154,7 @@ Dari tabel \tab~\ref{tab:posisi_penelitian}, terlihat bahwa penelitian-penelitia
 Sistematika penulisan laporan adalah sebagai berikut:
 \begin{itemize}
       \item Bab 1 \babSatu \\
-            Menguraikan motivasi penelitian, kesenjangan dalam literatur saat ini mengenai penalaran LLM bahasa Indonesia, rumusan masalah, dan tujuan spesifik validasi \textit{framework translation-decompose-search-resolve}.
+            Menguraikan motivasi penelitian, kesenjangan dalam literatur saat ini mengenai penalaran SLM bahasa Indonesia, rumusan masalah, dan tujuan spesifik validasi \textit{framework translation-decompose-search-resolve}.
       \item Bab 2 \babDua \\
             Menjelaskan prinsip-prinsip First-Order Logic (FOL) dan aturan inferensi berdasarkan literatur klasik, serta tinjauan mendalam mengenai \textit{Neuro-Symbolic} dan evolusi dari \textit{Naive Prompting} ke \textit{framework translation-decompose-search-resolve}.
       \item Bab 3 \babTiga \\
@@ -156,5 +162,5 @@ Sistematika penulisan laporan adalah sebagai berikut:
       \item Bab 4 \babEmpat \\
             Menyajikan data hasil akurasi antara Qwen, SEA-LION, dan Sahabat-AI. Bab ini akan menganalisis permasalahan pada tiap tahap \textit{framework} serta membandingkan hasilnya dengan metode Naive Prompting.
       \item Bab 5 \kesimpulan \\
-            Merangkum temuan utama mengenai penggunaan model open-weight LLM untuk penalaran logis dan memberikan rekomendasi untuk penelitian selanjutnya di bidang penalaran logis pada bahasa Indonesia.
+            Merangkum temuan utama mengenai penggunaan model open-weight SLM untuk penalaran logis dan memberikan rekomendasi untuk penelitian selanjutnya di bidang penalaran logis pada bahasa Indonesia.
 \end{itemize}
