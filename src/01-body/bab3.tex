@@ -54,7 +54,7 @@ Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{
 Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik SLM. Tujuannya adalah memetakan kalimat Bahasa Indonesia yang implisit menjadi struktur logika formal.
 
 \begin{itemize}
-    \item \textbf{Tugas Model:} Menerjemahkan narasi bahasa alami menjadi representasi \textit{First-Order Logic} (FOL) yang terdiri dari Fakta Atomik dan Aturan Implikasi.
+    \item \textbf{Tugas Model:} Menerjemahkan narasi bahasa alami menjadi representasi \textit{First-Order Logic} (FOL) yang terdiri dari Fakta, Aturan Implikasi, dan Konjektur.
     \item \textbf{Mekanisme Eksekusi:} Model diberikan \textit{few-shot prompt} yang berisi contoh pasangan kalimat Indonesia dan format logika target.
     \item \textbf{Format Output:}
           \begin{itemize}
@@ -65,14 +65,14 @@ Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik SLM. T
 \end{itemize}
 
 \subsection{Dekomposisi (\textit{Decomposer})}
-Pada tahap ini, output FOL diproses lebih lanjut untuk memenuhi standar mesin pembukti teorema. Model diinstruksikan untuk melakukan konversi ke Prenex Normal Form(PNF) dan kemudian ke Conjunctive Normal Form (CNF). Proses penting di sini adalah Skolemisasi, yaitu penghapusan kuantor eksistensial (∃) yang sering menjadi sumber ambiguitas bagi model bahasa. Dalam dataset ProntoQA, tidak perlu dilakukan skolemisasi karena premis-premis dari dataset tersebut tidak memiliki kuantor eksistensial.
+Pada tahap ini, output FOL diproses lebih lanjut untuk memenuhi standar mesin pembukti teorema. Model diinstruksikan untuk melakukan konversi ke Prenex Normal Form(PNF) dan kemudian ke Conjunctive Normal Form (CNF). Proses penting di sini adalah Skolemisasi, yaitu penghapusan kuantor eksistensial ($\exists x$) yang sering menjadi sumber ambiguitas bagi model bahasa. Dalam dataset ProntoQA, tidak perlu dilakukan skolemisasi karena premis-premis dari dataset tersebut tidak memiliki kuantor eksistensial.
 
 \begin{itemize}
     \item \textbf{Tugas Model:} Mengonversi aturan FOL menjadi \textit{Conjunctive Normal Form} (CNF) melalui serangkaian transformasi logis.
     \item \textbf{Mekanisme Eksekusi:}
           \begin{itemize}
               \item \textbf{PNF:} Konversi FOL ke bentuk PNF, di mana semua kuantor diletakkan di awal formula, diikuti oleh matriks bebas kuantor.
-              \item \textbf{Skolemisasi:} Penghapusan kuantor eksistensial (∃) dengan mengganti variabel eksistensial dengan fungsi Skolem. Dataset ProntoQA tidak memerlukan langkah ini.
+              \item \textbf{Skolemisasi:} Penghapusan kuantor eksistensial ($\exists x$) dengan mengganti variabel eksistensial dengan fungsi Skolem. Dataset ProntoQA tidak memerlukan langkah ini.
               \item \textbf{CNF:} Transformasi akhir ke CNF, di mana formula diekspresikan dalam bentuk konjungsi (AND) dari disjungsi (OR) literal.
           \end{itemize}
 \end{itemize}
@@ -116,7 +116,7 @@ Sistem evaluasi dirancang untuk "menangkap" struktur logika dari output teks mod
 \begin{itemize}
     \item \textbf{Ekstraksi FOL:} Mengambil Fakta, Aturan, dan Konjektur sesuai bloknya
           \lstinputlisting[language=Python, caption=Regex untuk ekstraksi blok Translasi, label=code:fol_regex]{assets/codes/translation_regex_grabs.py}
-          Kode di atas menggunakan ekspresi reguler (\textit{Regular Expressions}) untuk mem-\textit{parsing output} dari tahap \textit{Logical Translation}. Pola regex dirancang untuk menangkap tiga komponen utama: blok "Fakta", "Konjektur" (seperti Manis(Jeruk)) dan blok "Aturan" (seperti Jeruk(x) >>> Manis(x)). Jika model menghasilkan teks naratif atau penjelasan di luar format yang ditentukan, regex ini akan mengabaikannya dan hanya mengambil struktur logika yang valid. Jika tidak ada struktur yang cocok, fungsi akan mengembalikan nilai kosong yang menandakan kegagalan translasi (\textit{parsability error}).
+          Kode di atas menggunakan ekspresi reguler (\textit{Regular Expressions}) untuk mem-\textit{parsing output} dari tahap \textit{Logical Translation}. Pola regex dirancang untuk menangkap tiga komponen utama: blok "Fakta", "Konjektur" (seperti Manis(Jeruk)) dan blok "Aturan" (seperti Jeruk(x) $>>>$ Manis(x)). Jika model menghasilkan teks naratif atau penjelasan di luar format yang ditentukan, regex ini akan mengabaikannya dan hanya mengambil struktur logika yang valid. Jika tidak ada struktur yang cocok, fungsi akan mengembalikan nilai kosong yang menandakan kegagalan translasi (\textit{parsability error}).
     \item \textbf{Ekstraksi CNF:} mengambil hasil akhir dari dekomposisi dari Aturan FOL.
           \lstinputlisting[language=Python, caption=Regex untuk ekstraksi blok Dekomposisi, label=code:decomposition_regex]{assets/codes/decomposition_regex_grabs.py}
           Serupa dengan tahap sebelumnya, kode pada \lst~\ref{code:decomposition_regex} bertugas memvalidasi output dari tahap \textit{Decomposer}. Regex ini secara spesifik mencari pola "Aturan dalam CNF". Jika model tidak mengikuti format yang diharapkan, regex ini akan gagal menemukan kecocokan, menandakan kegagalan dekomposisi.
