@@ -1,82 +1,9 @@
-# Judul Tugas Akhir Anda
 
-Mikhael Deo Barli - 1906350572 - Ilmu Komputer Universitas Indonesia (Tingkatan, 2025)
+## Penalaran Logika Berbasis Framework Translation-Decomposition-Search-Resolve pada Open-Weight Small Language Model dengan Dataset Berbahasa Indonesia
 
-----------
+## Logical Reasoning Framework Translation-Decomposition-Search-Resolve on Open-Weight Small Language Model with Indonesian Language Dataset
 
-## Selayang Pandang
-
-Bisa diisi dengan abstrak.
-
-## Ucapan Terima Kasih
-
-Ucapan terima kasih.
-
-## *Milestone* Pekerjaan
-
-Jika ada *milestone* pekerjaan, bisa dijelaskan di sini.
-
-## Kumpulan Referensi yang Digunakan
-
-Berikut ini kumpulan *softcopy* referensi yang saya gunakan untuk tugas akhir (laporan/skripsi/proposal/tesis/disertasi) ini, yang diperbolehkan untuk disebarluaskan secara bebas: Sertakan link Anda.
-
-Daftar referensi yang tersedia (akan diperbaharui hingga akhir pengerjaan):
-
-1. Kemampuan LLM dalam Logical Inference pada Dataset Berbahasa Indonesia (2025)
-
-Disclaimer: Konten referensi yang diberikan melalui link tersebut adalah apa adanya tanpa ada perubahan apapun. Saya hanya membagikan referensi tersebut jika tidak ada lisensi yang melarang saya untuk membagikannya secara luas.
-
-## README Template
-
-### Intro
-
-2010-12-23
-Modified on 2019-11-26
-
-Template ini dibuat oleh Andreas Febrian (Fasilkom UI 2003)
-dan disebarluaskan oleh Erik Dominikus (Fasilkom UI 2007).
-
-Template ini dimodifikasi oleh Azhar Kurnia (Fasilkom UI 2016)
-dan Ichlasul Affan (Fasilkom UI 2016) agar mengikuti standar terbaru
-Tugas Akhir di Universitas Indonesia (tahun 2017).
-
-Selamat menggunakan template ini.
-
-### How To Use
-
-Anda bisa membaca tutorialnya lebih lanjut dengan melakukan kompilasi template LaTeX ini dengan menggunakan MikTeX/TexStudio/alat-alat lain.
-Atau cara lebih praktis: silakan unduh PDF hasil kompilasi di GitLab melalui https://gitlab.com/ichlaffterlalu/latex-skripsi-ui-2017/-/jobs/artifacts/master/download?job=Generate+PDF.
-Daftar perubahan (CHANGELOG) juga terdapat di PDF hasil kompilasi (`thesis.pdf`) atau `lampiran.tex`.
-
-#### Menggunakan Overleaf
-
-Template ini dapat digunakan di Overleaf. Berikut prosedur untuk menggunakannya:
-
-1. Download zip dari gitlab ini.
-2. Upload ke Overleaf
-
-Link di bawah ini merupakan template **Overleaf versi lama**, yaitu versi 1.03 
-
-[![Open as template in Overleaf](https://img.shields.io/badge/Overleaf-Open%20as%20template-green?style=flat-square)](https://www.overleaf.com/project/new/template/9383?id=26018259&latexEngine=pdflatex&mainFile=thesis.tex&templateName=Thesis+Template+for+Universitas+Indonesia&texImage=texlive-full%3A2021.1)
-
-#### Menggunakan Development Container
-
-[Development Container (Devcontainer)](https://containers.dev/) adalah spesifikasi yang memungkinkan pengguna untuk mempunyai lingkungan pengembangan menggunakan *container*. Terdapat dua cara untuk memanfaatkan Development Container dalam pengerjaan skripsi Anda:
-
-- **Local menggunakan VSCode**
-  Anda dapat menggunakan template ini dengan Devcontainer dengan bantuan [*extension* Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) di VSCode. Anda dapat clone repo ini, mengaktifkan Devcontainer, dan langsung mengerjakan tugas Anda ketika VSCode anda sudah memasuki ke dalam Devcontainer.
-- **Remote menggunakan GitHub Codespace**
-  Anda dapat fork repo ini ke akun GitHub Anda, dan kemudian membuat Codespace dari repo hasil fork. Cara untuk membuat GitHub Codespace dapat dilihat di [laman ini](https://docs.github.com/en/codespaces/developing-in-codespaces/creating-a-codespace-for-a-repository).
-
-Karena Dev Container umumnya disupport oleh turunan dari VSCode, maka anda dapat memanfaatkan *VSCode extension* untuk mempermudah pengerjaan tugas anda. Beberapa *extension* yang sudah menjadi bawaan *template* ini antara lain:
-
-- LaTex Workshop
-- GitLens
-- LiveShare code collaboration
-- Grammarly
-- Zotero LaTex
-
-PDF yang dihasilkan Devcontainer akan dapat diakses melalui folder `PDF`.
+Original template repo: https://gitlab.com/ichlaffterlalu/latex-skripsi-ui-2017
 
 ## Contributing
 

@@ -24,7 +24,7 @@ Sintaks FOL dibangun dari komponen-komponen berikut menurut \cite{brachman2004kn
 	      \begin{itemize}
 		      \item Konstanta: Simbol yang merepresentasikan objek spesifik (misalnya, "Alice", "42").
 		      \item Fungsi ($f$($x_1$, $\dots$, $x_n$)): Memetakan objek ke objek lain. Contoh: $AyahDari$($Budi$).
-		      \item Predikat ($P$($x_1$, $\dots$, $x_n$)): Fungsi yang memetakan tuple objek ke nilai kebenaran (True/False). Contoh: $Suka$($Budi, Apel$).
+		      \item Predikat ($P$($x_1$, $\dots$, $x_n$)): Fungsi yang memetakan tuple objek ke nilai kebenaran (True/False). Contoh: $Ayah$($Budi, True$).
 	      \end{itemize}
 \end{itemize}
 
@@ -110,10 +110,10 @@ Dalam perkembangannya, paradigma model bahasa mulai bergeser dari "semakin besar
 Karakteristik utama SLM meliputi:
 \begin{itemize}
 	\item \textbf{Efisiensi Parameter:} SLM mencapai performa kompetitif dengan jumlah parameter yang jauh lebih sedikit (10-100x lebih kecil dari LLM), memungkinkan inferensi yang lebih cepat dan penggunaan memori yang lebih rendah.
-	\item \textbf{(\textit{Edge Deployability}):} Karena ukurannya yang ringkas, SLM dapat dijalankan secara lokal pada perangkat konsumen standar, seperti laptop, ponsel, tanpa memerlukan kluster GPU \textit{data center}. Hal ini memberikan keuntungan dalam privasi data dan kedaulatan informasi (\cite{belcak2025smalllanguagemodelsfuture}).
-	\item \textbf{Teknik Kompresi:} Performa tinggi SLM sering kali dicapai melalui teknik \textit{Knowledge Distillation} (belajar dari model guru yang lebih besar) dan pelatihan pada dataset berkualitas sangat tinggi ("textbook quality"), serta penggunaan teknik pemangkasan (\textit{pruning}) (\cite{10.1145/3768165}).
+	\item \textbf{(\textit{Edge Deployability}):} Karena ukurannya yang ringan, SLM dapat dijalankan secara lokal pada perangkat konsumen standar, seperti laptop, bahkan ponsel, tanpa memerlukan kluster GPU \textit{data center}. Hal ini memberikan keuntungan dalam privasi data dan kedaulatan informasi (\cite{belcak2025smalllanguagemodelsfuture}).
+	\item \textbf{Teknik Kompresi:} Performa tinggi SLM sering kali dicapai melalui teknik \textit{Knowledge Distillation} (belajar dari model guru yang lebih besar) dan pelatihan pada dataset berkualitas sangat tinggi atau \textit{textbook quality}, serta penggunaan teknik (\textit{pruning}) (\cite{10.1145/3768165}).
 \end{itemize}
-Model seperti Microsoft Phi-3, Mistral 7B, dan Gemma 2B adalah contoh representatif dari kelas model ini yang menunjukkan kemampuan penalaran mengejutkan meskipun berukuran kecil ("Tiny but Mighty")\footnote{\url{https://news.microsoft.com/source/features/ai/the-phi-3-small-language-models-with-big-potential/}}
+Model seperti Microsoft Phi-3, Mistral 7B, dan Gemma 2B adalah contoh representatif dari kelas model ini yang menunjukkan kemampuan penalaran yang menarik meskipun berukuran kecil ("Tiny but Mighty")\footnote{\url{https://news.microsoft.com/source/features/ai/the-phi-3-small-language-models-with-big-potential/}}
 
 %-----------------------------------------------------------------------------%
 \section{Dataset ProntoQA}
@@ -125,7 +125,7 @@ Untuk mengukur kemampuan penalaran secara objektif, penelitian ini mengadaptasi 
 ProntoQA berbeda dari dataset tanya-jawab umum karena sifatnya yang generatif dan sintetis. Data tidak diambil dari internet, melainkan dibangkitkan dari aturan logika formal yang kemudian diterjemahkan ke bahasa alami.
 Proses pembuatannya adalah:
 \begin{enumerate}
-	\item Sistem membuat graf ontologi fiktif (misal: $Setiap Wumpus adalah Jompus dan Setiap Jompus adalah Tumpus$).
+	\item Sistem membuat graf ontologi fiktif (misal: Setiap Wumpus adalah Jompus dan Setiap Jompus adalah Tumpus).
 	\item Sistem menurunkan rantai deduksi berdasarkan graf tersebut.
 	\item Simbol-simbol logika diganti dengan kata-kata fiktif atau nyata untuk membentuk kalimat bahasa alami.
 \end{enumerate}
