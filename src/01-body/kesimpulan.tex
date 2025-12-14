@@ -45,9 +45,9 @@ Berdasarkan temuan dan keterbatasan penelitian ini, disarankan beberapa langkah 
 
 \begin{enumerate} 
 	\item \textbf{Penerapan Grammar-Constrained Decoding:}
-	      Untuk mengatasi masalah \textit{parsability} (seperti yang dialami Qwen), penelitian lebih lanjut sebaiknya mengintegrasikan penegakan tata bahasa (seperti format GBNF\footnote{\url{https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md}}) saat inferensi. Ini akan memaksa model, bahkan yang terkuantisasi, untuk menghasilkan output yang 100\% valid secara sintaks, seperti mengikuti format FOL, sehingga evaluasi dapat berfokus murni pada logika semantik.
-	\item \textbf{Fine-Tuning Khusus (Instruction Tuning):}
-	      Alih-alih hanya mengandalkan \textit{Prompt Engineering} (\textit{few-shot}), disarankan untuk melakukan \textit{Fine-Tuning} ringan (seperti LoRA) pada model Sahabat-AI atau SEA-LION menggunakan dataset pasangan (Teks Indonesia ke bentuk FOL).
+	      Untuk mengatasi masalah \textit{parsability}, seperti yang dialami Qwen, penelitian lebih lanjut sebaiknya mengintegrasikan penegakan tata bahasa (seperti format GBNF\footnote{\url{https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md}}) saat inferensi. Ini akan memaksa model, bahkan yang terkuantisasi, untuk menghasilkan output yang 100\% valid secara sintaks, seperti mengikuti format FOL, sehingga evaluasi dapat berfokus murni pada logika semantik.
+	\item \textbf{\textit{Fine-Tuning Khusus (Instruction Tuning)}:}
+	      Alih-alih hanya mengandalkan \textit{Prompt Engineering} (\textit{few-shot}), disarankan untuk melakukan \textit{Fine-Tuning} ringan, seperti LoRA (\cite{hu2022lora}), pada model Sahabat-AI atau SEA-LION menggunakan dataset pasangan (Teks Indonesia ke bentuk FOL).
 	      Hal ini akan meningkatkan konsistensi model dalam menangani struktur kalimat kompleks Bahasa Indonesia.
 	\item \textbf{Peningkatan Kompleksitas Dataset:}
 	      Penelitian ini hanya terbatas pada dataset ProntoQA (logika deduktif sintetik).
