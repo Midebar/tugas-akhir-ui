@@ -36,8 +36,6 @@ Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rend
 	      \end{itemize}
 \end{enumerate}
 
-Secara keseluruhan, penelitian ini menyimpulkan bahwa untuk penalaran logika pada dataset berbahasa Indonesia pada sumber daya terbatas (model kecil \& terkuantisasi), model regional seperti SEA-LION yang dipadukan dengan arsitektur \textit{Neuro-Symbolic} menawarkan solusi yang lebih lebih baik dibandingkan mengandalkan intuisi model semata.
-
 \section{Saran}
 \label{sec:saran}
 
@@ -52,4 +50,6 @@ Berdasarkan temuan dan keterbatasan penelitian ini, disarankan beberapa langkah 
 	\item \textbf{Peningkatan Kompleksitas Dataset:}
 	      Penelitian ini hanya terbatas pada dataset ProntoQA (logika deduktif sintetik).
 	      Pengujian selanjutnya perlu memperluas cakupan ke dataset, seperti menggunakan dataset yang dipakai pada penelitian Aristotle aslinya, yaitu ProofWriter (\cite{tafjord-etal-2021-proofwriter}) dan LogicNLI (\cite{tian-etal-2021-diagnosing}).
+	\item \textbf{Penggunaan Metode Lain:}
+	      Penelitian ini hanya membandingkan dua metode \textit{reasoning} dalam menangani penalaran logika, yaitu \textit{Naive Prompting} dan \textit{Framework Aristotle}. Untuk penelitian kedepannya bisa menggunakan atau penambahan metode \textit{reasoning}, seperti \textit{Aggregative Reasoning}, seperti \textit{Tree-of-Thought} \cite{10.5555/3666122.3666639} atau pun Symbolic Reasoning selain \textit{framework Aristotle} ini.
 \end{enumerate}

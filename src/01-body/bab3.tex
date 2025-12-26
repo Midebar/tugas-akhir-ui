@@ -18,7 +18,7 @@ Mengingat bahwa adanya batasan sumber daya komputasi, maka eksperimen dijalankan
 Model yang dipilih mewakili tiga tingkatan spesialisasi bahasa untuk menguji hipotesis bahwa pemahaman dalam bahasa lokal membantu proses dekomposisi logika:
 \begin{enumerate}
     \item \textbf{Qwen2.5-7B-Instruct (Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
-    \item \textbf{SEA-LION-v3-Llama-8B-Instruct (Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
+    \item \textbf{SEALION-v3-Llama-8B-Instruct (Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
     \item \textbf{SahabatAI-v1-Llama-8B-Instruct (Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
 \end{enumerate}
 
@@ -160,3 +160,78 @@ Untuk setiap pertanyaan $S$, sistem menjalankan dua pembuktian paralel. Tabel \r
     \item \textbf{UNKNOWN:} Informasi pada premis tidak cukup untuk membuktikan atau menyangkal $S$.
     \item \textbf{SELF-CONTRADICTORY:} Premis itu sendiri tidak konsisten (mengandung konflik internal).
 \end{itemize}
+
+\section{Illustrasi}
+Untuk memperjelas proses inferensi menggunakan kerangka kerja Aristotle, berikut adalah ilustrasi langkah demi langkah sebagai contoh dari dataset ProntoQA.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/pics/Framework_steps.drawio.png}
+    \captionof{figure}{Tahapan yang dilakukan dalam menjalankan \textit{framework Aristotle}}
+    \label{fig:aristotle_framework}
+\end{figure}
+
+\subsection{Translasi Dataset ke Bahasa Indonesia}
+Sebelum dataset ProntoQA dijalankan dalam \textit{framework Aristotle}, dilakukan translasi ke bahasa Indonensia karena dataset tersebut masih dalam bahasa Inggris.
+Prosesnya sebagai berikut:
+\begin{itemize}
+    \item \textbf{Premis original:} "Wumpuses are sweet. Every Wumpus is jompus. All jompus are fruity. Max is wumpus."
+    \item \textbf{Premis hasil translasi:} "Wumpuses adalah manis. Setiap Wumpus adalah jompus. Semua jompus berbuah. Max adalah wumpus."
+    \item \textbf{Pertanyaan original:} "Is the following statement true or false? Max is fruity."
+    \item \textbf{Pertanyaan hasil translasi:} "Apakah pernyataan berikut benar atau salah? Max berbuah."
+    \item \textbf{Penjelasan original:} "Max is wumpus. Every wumpus is jompus. Max is jompus. All jompus are fruity. Max is fruity."
+    \item \textbf{Penjelasan hasil translasi:} "Max adalah wumpus. Setiap wumpus adalah jompus. Max adalah jompus. Semua jompus berbuah. Max berbuah."
+\end{itemize}
+
+\subsection{\textit{Translation to FOL}}
+Misalkan diberikan premis berikut dalam Bahasa Indonesia:
+\begin{itemize}
+    \item \textbf{Premis:} "Wumpuses adalah manis. Setiap Wumpus adalah jompus. Semua jompus berbuah. Max adalah wumpus."
+    \item \textbf{Pertanyaan:} "Apakah pernyataan berikut benar atau salah? Max asam."
+\end{itemize}
+Model SLM menerima prompt yang berisi premis dan pertanyaan di atas, dan menghasilkan representasi FOL sebagai berikut:
+\begin{itemize}
+    \item \textbf{Fakta:}
+          \begin{itemize}
+              \item $\bracket{Wumpus}{(Max, True)}$
+          \end{itemize}
+    \item \textbf{Aturan:}
+          \begin{itemize}
+              \item $\bracket{Wumpus}{(x, True)} >>> \bracket{Manis}{(x, True)}$
+              \item $\bracket{Wumpus}{(x, True)} >>> \bracket{Jompus}{(x, True)}$
+              \item $\bracket{Jompus}{(x, True)} >>> \bracket{Berbuah}{(x, True)}$
+          \end{itemize}
+    \item \textbf{Konjektur:}
+          \begin{itemize}
+              \item $\bracket{Berbuah}{(Max, False)}$
+          \end{itemize}
+\end{itemize}
+
+\subsection{\textit{Decomposition to CNF}}
+Output FOL dari tahap sebelumnya kemudian diproses untuk konversi ke CNF:
+\begin{itemize}
+    \item \textbf{Aturan dalam CNF:}
+          \begin{enumerate}
+              \item $\bracket{Wumpus}{(x, False)} \lor \bracket{Manis}{(x, True)}$
+              \item $\bracket{Wumpus}{(x, False)} \lor \bracket{Jompus}{(x, True)}$
+              \item $\bracket{Jompus}{(x, False)} \lor \bracket{Berbuah}{(x, True)}$
+          \end{enumerate}
+\end{itemize}
+
+\subsection{\textit{Logical Resolution}}
+Terakhir, modul \textit{Logical Resolver} mencoba membuktikan kebenaran konjektur $\bracket{Berbuah}{(Max, False)}$ melalui dua jalur paralel:
+\begin{itemize}
+    \item \textbf{Jalur A (Buktikan $S$):} Asumsikan $\bracket{Berbuah}{(Max, True)}$
+          \begin{itemize}
+              \item Step 1: Dari $\bracket{Berbuah}{(Max, True)}$ tidak ditemukan klausa yang berkomplemen terhadap premis yang ada.
+          \end{itemize}
+          Dari step tersebut, tidak ditemukan kontradiksi, sehingga Jalur A gagal membuktikan $S$.
+    \item \textbf{Jalur B (Buktikan $\neg S$):} Asumsikan $\bracket{Berbuah}{(Max, False)}$
+          \begin{itemize}
+              \item Step 1: Dari $\bracket{Berbuah}{(Max, False)}$ dan aturan $\bracket{Jompus}{(x, False)} \lor \bracket{Berbuah}{(x, True)}$, dapat disimpulkan $\bracket{Jompus}{(Max, False)}$.
+              \item Step 2: Dari $\bracket{Jompus}{(Max, False)}$ dan aturan $\bracket{Wumpus}{(x, False)} \lor \bracket{Jompus}{(x, True)}$, dapat disimpulkan $\bracket{Wumpus}{(Max, False)}$.
+              \item Step 3: Dari $\bracket{Wumpus}{(Max, False)}$ dan fakta $\bracket{Wumpus}{(Max, True)}$, ditemukan klausa kosong (kontradiksi).
+          \end{itemize}
+          Dari step tersebut, ditemukan kontradiksi, sehingga Jalur B berhasil membuktikan $\neg S$.
+\end{itemize}
+Berdasarkan matriks keputusan, karena Jalur A gagal dan Jalur B berhasil, kesimpulan akhir adalah \textbf{FALSE}. Dengan demikian, model berhasil menyimpulkan bahwa Max berbuah berdasarkan premis yang diberikan yang bertentangan dengan konjektur awal, yaitu "Apakah Max tidak berbuah?"

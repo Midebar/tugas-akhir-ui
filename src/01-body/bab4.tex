@@ -25,7 +25,7 @@ Struktur variabel penelitian didefinisikan sebagai berikut:
 \begin{itemize}
 	\item \textbf{Variabel Bebas (\textit{Independent Variables}):}
 	      \begin{itemize}
-		      \item \textbf{Model:} Tiga kategori model yang mewakili spektrum pemahaman bahasa: Global (Qwen), Regional (SEA-LION), dan Nasional (SahabatAI).
+		      \item \textbf{Model:} Tiga kategori model yang mewakili spektrum pemahaman bahasa: Global (Qwen), Regional (SEALION), dan Nasional (SahabatAI).
 		      \item \textbf{Metode Prompting:} \textit{Naive} vs \textit{Aristotle Framework}.
 	      \end{itemize}
 	      
@@ -301,7 +301,7 @@ Namun, prompt template \ref{lst:search_resolve_v3} dianggap sudah cukup baik unt
 Bagian ini merupakan hasil akhir dari eksperimen yang telah dilakukan pada penelitian ini. Hasil akhir ini berupa tabel yang menunjukkan persentase keberhasilan dari masing-masing model dalam menjawab pertanyaan berdasarkan dua metode yang digunakan, yaitu \textit{Naive Prompting} dan \textit{Aristotle Framework}. Prompt yang digunakan pada eksperimen ini telah melalui proses \textit{Prompt Refining} yang dijelaskan pada bagian sebelumnya, yaitu versi final dari masing-masing prompt.
 
 \subsection{Naive Prompting}
-Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasarkan premis. Eksperimen dilakukan dengan dua variasi: meminta jawaban dulu baru penjelasan (\textit{After Answer}) dan sebaliknya (\textit{Before Answer}).
+Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasarkan premis. Eksperimen dilakukan dengan dua variasi: meminta jawaban dulu baru penjelasan (\textit{After Answer}) dan sebaliknya (\textit{Before Answer}) yang menyerupai teknik \textit{Chain-of-Thought}.
 
 \begin{table}[h]
 	\centering
@@ -309,11 +309,11 @@ Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasar
 	% >{\centering\arraybackslash} centers the text inside the X column.
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
-		                         & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEA-LION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
+		                         & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEALION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
 		\midrule
-		\textbf{Naive Prompting} &                                   &                                    &                                     \\
-		\quad After Answer       & 51.40\%                           & 56.20\%                            & 61.40\%                             \\
-		\quad Before Answer      & 81.00\%                           & 76.80\%                            & 67.80\%                             \\
+		\textbf{Naive Prompting} &                                   &                                   &                                     \\
+		\quad After Answer       & 51.40\%                           & 56.20\%                           & 61.40\%                             \\
+		\quad Before Answer      & 81.00\%                           & 76.80\%                           & 67.80\%                             \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
@@ -331,9 +331,9 @@ Tabel berikut menunjukkan hasil ketika penalaran dipindahkan dari "otak" model k
 	\caption{Hasil Eksperimen dengan \textit{Aristotle Framework}}
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
-		                   & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEA-LION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
+		                   & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEALION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
 		\midrule
-		\textbf{Aristotle} & 14.00\%                           & 81.60\%                            & 61.20\%                             \\
+		\textbf{Aristotle} & 14.00\%                           & 81.60\%                           & 61.20\%                             \\
 		\bottomrule
 	\end{tabularx}
 \end{table}

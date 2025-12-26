@@ -1,0 +1,58 @@
+\documentclass[a4paper, 12pt]{article}
+
+% Required Packages
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} % Adjust margins
+\usepackage{tabularx} % For adjustable column widths (X columns)
+\usepackage{float}    % For [H] placement
+\usepackage{multirow} % For multi-row cells if needed
+\usepackage{array}    % Helper for table formatting
+
+\begin{document}
+
+% Title for the document (Optional)
+\begin{center}
+    \Large \textbf{Log Revisi Dokumen}
+\end{center}
+\vspace{1cm}
+
+% The Table
+\begin{table}[H]
+    \centering
+    \caption{Daftar Revisi dan Perubahan}
+    \label{tab:revisi_log}
+    \renewcommand{\arraystretch}{1.5} % Increases row height for readability
+
+    % Column setup: 
+    % c = center (small width)
+    % X = auto-width (wraps long text)
+    % X = auto-width (wraps long text)
+    % l = left align (adjust to 'c' if you prefer centered status)
+    \begin{tabularx}{\textwidth}{|c|X|X|l|}
+        \hline
+        \textbf{No}                                                                                                   & \centering\textbf{Masukan / Isu Awal} & \centering\textbf{Perubahan / Tindak Lanjut} & \textbf{Hal/Bab} \\
+        \hline
+
+        % Example Row 1
+        1                                                                                                             &
+        Penjelasan mengenai metodologi dianggap kurang detail, khususnya pada bagian alur data.                       &
+        Menambahkan diagram alir baru dan memperjelas deskripsi langkah-langkah preprocessing data.                   &
+        Bab 3                                                                                                                                                                                                                   \\
+        \hline
+
+        % Example Row 2
+        2                                                                                                             &
+        Terdapat kesalahan penulisan (typo) pada istilah asing yang tidak dicetak miring.                             &
+        Semua istilah asing (e.g., \textit{framework}, \textit{backend}) telah diubah menjadi format \textit{italic}. &
+        All                                                                                                                                                                                                                     \\
+        \hline
+
+        % Example Row 3
+        3                                                                                                             &
+        Rumus 2.1 tidak konsisten dengan referensi yang dikutip.                                                      &
+        Memperbaiki notasi pada Rumus 2.1 agar sesuai dengan Referensi [5].                                           &
+        Hal. 12                                                                                                                                                                                                                 \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

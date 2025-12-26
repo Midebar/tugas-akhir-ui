@@ -123,11 +123,18 @@ Untuk mengukur kemampuan penalaran secara objektif, penelitian ini mengadaptasi 
 
 \subsection{Generasi Data Sintetis}
 ProntoQA berbeda dari dataset tanya-jawab umum karena sifatnya yang generatif dan sintetis. Data tidak diambil dari internet, melainkan dibangkitkan dari aturan logika formal yang kemudian diterjemahkan ke bahasa alami.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{assets/pics/ProntoQA_generation.png}
+	\captionof{figure}{Tahapan yang dilakukan dalam generasi dataset ProntoQA (\cite{saparov2023language})}
+	\label{fig:prontoqa_generation}
+\end{figure}
+
 Proses pembuatannya adalah:
 \begin{enumerate}
-	\item Sistem membuat graf ontologi fiktif (misal: Setiap Wumpus adalah Jompus dan Setiap Jompus adalah Tumpus).
-	\item Sistem menurunkan rantai deduksi berdasarkan graf tersebut.
-	\item Simbol-simbol logika diganti dengan kata-kata fiktif atau nyata untuk membentuk kalimat bahasa alami.
+	\item Sistem membuat graf ontologi fiktif (misal: $\bracket{Wumpus}{\text{Deskripsi: Merah}} \rightarrow \bracket{Jompus}{\text{Deskripsi: Transparan}}$. $\bracket{Jompus}{\text{Deskripsi: Transparan}} \rightarrow Tumpus$.)
+	\item Sistem membuat \textit{proof} dari ontologi tersebut (misal: $\bracket{Wumpus}{Max}$. $\bracket{\forall x}{\bracket{Wumpus}{x}} \rightarrow \bracket{Merah}{x}$. $\bracket{\forall x}{\bracket{Wumpus}{x}} \rightarrow \bracket{Jompus}{x}$.)
+	\item Simbol-simbol logika diganti dengan kata-kata fiktif atau nyata untuk membentuk kalimat bahasa alami (misal: Max adalah wumpus. Setiap wumpus adalah merah. Wumpuses adalah jompus. Jompuses bersifat transparan. Semua jompus adalah Tumpus.)
 \end{enumerate}
 
 \subsection{Mengisolasi Kemampuan Penalaran}

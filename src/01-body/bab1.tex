@@ -27,7 +27,7 @@ Untuk mengatasi kesenjangan antara kemampuan linguistik dan logika ini, berbagai
 
 Meskipun metode-metode di atas menunjukkan hasil positif, sebagian besar penelitian dilakukan pada dataset berbahasa Inggris. Studi terhadap kemampuan penalaran SLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. Perbedaan struktur linguistik (seperti ambiguitas subjek dalam Bahasa Indonesia) dan kualitas tokenisasi dapat memengaruhi performa model setelah adaptasi lintas bahasa. Selain itu, penelitian sebelumnya menggunakan proprietary LLM (seperti GPT-4), sehingga perbandingan performa \textit{apple-to-apple} pada model open-weight dengan sumber daya terbatas atau SLM belum banyak dikaji.
 
-Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai efektivitas \textit{Framework} Aristotle pada dataset berbahasa Indonesia menggunakan open-weight SLM. Penelitian ini menjadi penting untuk mengevaluasi apakah model seperti Sahabat-AI (yang dilatih khusus untuk Bahasa Indonesia) atau SEA-LION (regional ASEAN) ataupun Qwen (generik) dapat mengatasi tantangan penalaran logis.
+Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai efektivitas \textit{Framework} Aristotle pada dataset berbahasa Indonesia menggunakan open-weight SLM. Penelitian ini menjadi penting untuk mengevaluasi apakah model seperti Sahabat-AI (\textit{localized pre-trained} dengan Bahasa Indonesia) atau SEALION (\textit{language-adaptive pre-trained} dengan bahasa di regional ASEAN) ataupun Qwen (\textit{multilingual foundation model}) dapat mengatasi tantangan penalaran logis.
 
 \section{Rumusan Masalah}
 \label{sec:rumusan}
@@ -160,7 +160,9 @@ Sistematika penulisan laporan adalah sebagai berikut:
       \item Bab 3 \babTiga \\
             Mendeskripsikan desain eksperimen, proses adaptasi dataset ProntoQA ke Bahasa Indonesia, konfigurasi model, dan implementasi teknis \textit{framework translation-decompose-search-resolve}.
       \item Bab 4 \babEmpat \\
-            Menyajikan data hasil akurasi antara Qwen, SEA-LION, dan Sahabat-AI. Bab ini akan menganalisis permasalahan pada tiap tahap \textit{framework} serta membandingkan hasilnya dengan metode Naive Prompting.
-      \item Bab 5 \kesimpulan \\
+            Menyajikan data hasil akurasi antara Qwen, SEALION, dan Sahabat-AI. Bab ini akan menganalisis permasalahan pada tiap tahap \textit{framework} serta membandingkan hasilnya dengan metode Naive Prompting.
+      \item Bab 5 \babLima \\
+            Menyajikan data hasil eksperimen ablasi pada model-model yang digunakan
+      \item Bab 6 \kesimpulan \\
             Merangkum temuan utama mengenai penggunaan model open-weight SLM untuk penalaran logis dan memberikan rekomendasi untuk penelitian selanjutnya di bidang penalaran logis pada bahasa Indonesia.
 \end{itemize}
