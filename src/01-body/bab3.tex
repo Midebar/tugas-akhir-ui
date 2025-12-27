@@ -17,9 +17,9 @@ Mengingat bahwa adanya batasan sumber daya komputasi, maka eksperimen dijalankan
 \subsection{Pemilihan Model}
 Model yang dipilih mewakili tiga tingkatan spesialisasi bahasa untuk menguji hipotesis bahwa pemahaman dalam bahasa lokal membantu proses dekomposisi logika:
 \begin{enumerate}
-    \item \textbf{Qwen2.5-7B-Instruct (Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
-    \item \textbf{SEALION-v3-Llama-8B-Instruct (Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
-    \item \textbf{SahabatAI-v1-Llama-8B-Instruct (Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
+    \item \textbf{Qwen2.5-7B-Instruct (\textit{multilingual foundation model} sebagai Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
+    \item \textbf{SEALION-v3-Llama-8B-Instruct (\textit{language-adaptive pre-trained model} sebagai Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
+    \item \textbf{SahabatAI-v1-Llama-8B-Instruct (\textit{localized pre-trained model} sebagai Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
 \end{enumerate}
 
 \subsection{Parameterisasi Inferensi}
@@ -48,7 +48,7 @@ Parameter utama yang dikontrol adalah:
     \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan SLM dan metode \textit{neuro-symbolic} (\cite{Aristotle25})}
     \label{fig:aristotle_framework}
 \end{figure}
-Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama, sesuai dengan Gambar ~\ref{fig:aristotle_framework}.
+Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama atau tahapan utama, sesuai dengan Gambar ~\ref{fig:aristotle_framework}, yaitu \textit{TRanslation to First Order Logic}, \textit{Decomposition into Conjunctive Normal Form}, \textit{Search Router}, dan \textit{Resolver}. Untuk modul / tahapan \textit{Search Router} dan \textit{Resolver} digabung menjadi satu, yaitu menjadi \textit{Search and Resolve} karena mereka saling bersinergi dalam proses resolusi
 
 \subsection{Translasi Logika (\textit{Logical Translation})}
 Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik SLM. Tujuannya adalah memetakan kalimat Bahasa Indonesia yang implisit menjadi struktur logika formal.

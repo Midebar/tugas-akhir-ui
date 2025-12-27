@@ -49,7 +49,7 @@ Struktur variabel penelitian didefinisikan sebagai berikut:
 
 Penelitian ini menggunakan dataset \textbf{ProntoQA} (\textit{Prompting with Ontologies for QA}) \cite{saparov2023language}. Pemilihan dataset ini didasarkan pada kebutuhan untuk menguji kemampuan SLM dalam deduksi sintetis, terlepas dari pengetahuan dunia nyata dari SLM tersebut. ProntoQA menggunakan ontologi fiktif (misalnya: \textit{"Setiap Wumpus adalah Jompus"}), sehingga model tidak dapat menjawab dengan mengandalkan hafalan dalam \textit{pre-training}.
 
-Proses penerjemahan dilakukan secara otomatis dengan \textit{prompting} dan memeberikan beberapa contoh dalam proses tranlasinya. Penerjemahan dilakukan dengan \textit{open-weight} SLM yaitu \textbf{Gemma-SEA-LION-v3-9B-IT}. Model dipilih karena kemampuan yang baik dalam translasi dari bahasa Inggris ke bahasa Indonesia berdasarkan SEA-HELM \textit{leaderboard} \footnote{\url{https://leaderboard.sea-lion.ai/detailed/ID}}
+Proses penerjemahan dilakukan secara otomatis dengan \textit{prompting} dan memberikan beberapa contoh dalam proses tranlasinya. Penerjemahan dilakukan dengan \textit{open-weight} SLM yaitu \textbf{Gemma-SEA-LION-v3-9B-IT}. Model dipilih karena kemampuan yang baik dalam translasi dari bahasa Inggris ke bahasa Indonesia berdasarkan SEA-HELM \textit{leaderboard} \footnote{\url{https://leaderboard.sea-lion.ai/detailed/ID}}
 
 \begin{itemize}
 	\item \textbf{Konsistensi Kuantor:} Frasa "Every X is Y" diterjemahkan menjadi "Setiap X adalah Y" atau "Semua X adalah Y" untuk menjaga pola \textit{Universal Quantifier} ($\forall$).

@@ -1,56 +1,73 @@
 \documentclass[a4paper, 12pt]{article}
 
-% Required Packages
-\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} % Adjust margins
-\usepackage{tabularx} % For adjustable column widths (X columns)
-\usepackage{float}    % For [H] placement
-\usepackage{multirow} % For multi-row cells if needed
-\usepackage{array}    % Helper for table formatting
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{array}
 
 \begin{document}
 
-% Title for the document (Optional)
 \begin{center}
     \Large \textbf{Log Revisi Dokumen}
 \end{center}
 \vspace{1cm}
 
-% The Table
 \begin{table}[H]
     \centering
     \caption{Daftar Revisi dan Perubahan}
     \label{tab:revisi_log}
     \renewcommand{\arraystretch}{1.5} % Increases row height for readability
-
+    
     % Column setup: 
     % c = center (small width)
     % X = auto-width (wraps long text)
     % X = auto-width (wraps long text)
-    % l = left align (adjust to 'c' if you prefer centered status)
+    % l = left align (adjust to 'c' if prefer centered status)
     \begin{tabularx}{\textwidth}{|c|X|X|l|}
         \hline
-        \textbf{No}                                                                                                   & \centering\textbf{Masukan / Isu Awal} & \centering\textbf{Perubahan / Tindak Lanjut} & \textbf{Hal/Bab} \\
+        \textbf{No}                                                                                                                                                                                                                               & \centering\textbf{Masukan / Isu Awal} & \centering\textbf{Perubahan / Tindak Lanjut} & \textbf{Hal/Bab} \\
         \hline
-
-        % Example Row 1
-        1                                                                                                             &
-        Penjelasan mengenai metodologi dianggap kurang detail, khususnya pada bagian alur data.                       &
-        Menambahkan diagram alir baru dan memperjelas deskripsi langkah-langkah preprocessing data.                   &
-        Bab 3                                                                                                                                                                                                                   \\
+        
+        1                                                                                                                                                                                                                                         & 
+        Ilustrasi tahapan dari input awal hingga hasil akhir                                                                                                                                                                                      & 
+        Menambahkan ilustrasi input dari awal                                                                                                                                                                                                     & 
+        Bagian 3.4                                                                                                                                                                                                                                                                                                                                          \\
         \hline
-
-        % Example Row 2
-        2                                                                                                             &
-        Terdapat kesalahan penulisan (typo) pada istilah asing yang tidak dicetak miring.                             &
-        Semua istilah asing (e.g., \textit{framework}, \textit{backend}) telah diubah menjadi format \textit{italic}. &
-        All                                                                                                                                                                                                                     \\
+        
+        2                                                                                                                                                                                                                                         & 
+        Membutuhkan penjelasan pada framework Aristotle pada 4 modul utama                                                                                                                                                                        & 
+        Memperjelas 4 modul utama / tahapan utama dan penggabungan ke search and resolve                                                                                                                                                          & 
+        Bagian 3.2                                                                                                                                                                                                                                                                                                                                          \\
         \hline
-
-        % Example Row 3
-        3                                                                                                             &
-        Rumus 2.1 tidak konsisten dengan referensi yang dikutip.                                                      &
-        Memperbaiki notasi pada Rumus 2.1 agar sesuai dengan Referensi [5].                                           &
-        Hal. 12                                                                                                                                                                                                                 \\
+        
+        3                                                                                                                                                                                                                                         & 
+        Kurang tepat pada penggunaan istilah "Global", "Regional", dan "Nasional" pada SLM                                                                                                                                                        & 
+        Istilah tersebut diganti dengan lebih akurat pada SLM tersebut, seperti \textit{multilingual foundation model} untuk model Qwen, \textit{language-adaptive pre-trained} untuk SEALION dan \textit{localized pre-trained} untuk SahabatAI. & 
+        Semua instance                                                                                                                                                                                                                                                                                                                                      \\
+        \hline
+        
+        4                                                                                                                                                                                                                                         & 
+        Mengapa Qwen mempunyai hasil buruk                                                                                                                                                                                                        & 
+        Melakukan ablasi pada tiap tahapan untuk mengecek               signifikansi tiap tahapan/modul                                                                                                                                           & 
+        Bagian 5.1 dan 5.2                                                                                                                                                                                                                                                                                                                                  \\
+        \hline
+        5                                                                                                                                                                                                                                         & 
+        Mengapa tidak menggunakan prolog saja                                                                                                                                                                                                     & 
+        Melakukan ablasi setelah tahap FOL untuk melihat apakah prolog lebih baik                                                                                                                                                                 & 
+        Bagian 5.3                                                                                                                                                                                                                                                                                                                                          \\
+        \hline
+        6                                                                                                                                                                                                                                         & 
+        Research question harus eksplisit pada kesimpulan                                                                                                                                                                                         & 
+        Menulis bahwa kesimpulan menjawab secara berurutan pertanyaan rumusan masalah                                                                                                                                                             & 
+        Bagian 6.1 
+        \\   
+        \hline
+        7                                                                                                                                                                                                                                         & 
+        Kesimpulan yang lebih eksplisit                                                                                                                                                                                                           & 
+        Kesimpulan lebih eksplisit khususnya pada poin ketiga dengan tambahan analsisi ablasi                                                                                                                                                     & 
+        Bagian 6.2 
+        \\   
         \hline
     \end{tabularx}
 \end{table}

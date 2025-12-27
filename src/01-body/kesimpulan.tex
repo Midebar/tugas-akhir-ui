@@ -6,7 +6,7 @@ Bab ini merangkum temuan-temuan utama yang diperoleh dari rangkaian eksperimen v
 
 \section{Kesimpulan} \label{sec:kesimpulan}
 
-Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rendah (7B-9B) yang dikuantisasi pada dataset berbahasa Indonesia, penelitian ini menghasilkan tiga kesimpulan utama:
+Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rendah (7B-9B) yang dikuantisasi pada dataset berbahasa Indonesia, penelitian ini menghasilkan tiga kesimpulan utama yang menjawab pertanyaan penelitian / rumusan masalah pada ~\ref{sec:rumusan} sesuai dengan urutannya:
 
 \begin{enumerate} 
 	\item \textbf{Mekanisme Penalaran Logis pada Bahasa Indonesia:}
@@ -21,19 +21,20 @@ Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rend
 	      \end{enumerate}
 	      
 	\item \textbf{Perbandingan Performa Antar Model Open-Weight:} \\
-	      Terdapat divergensi hasil yang signifikan antara model global dan model regional/nasional dalam tugas translasi simbolik ini:
+	      Terdapat perbedaan hasil yang signifikan antara model \textit{multilingual foundation model} dan model \textit{language-adaptive pre-trained model}, serta \textit{localized pre-trained model} dalam tugas \textit{resolution} dalam \textit{framework Aristotle}:
 	      \begin{itemize}
-		      \item \textbf{SEA-LION v3 (Regional)} mencatat performa terbaik dengan akurasi \textbf{81.60\%}. Model ini menunjukkan keseimbangan terbaik antara pemahaman instruksi dalam Bahasa Indonesia dan kepatuhan terhadap format logika formal.
-		      \item \textbf{Sahabat-AI v1 (Nasional)} menunjukkan performa yang stabil (\textbf{61.20\%}), mengungguli model global dalam memahami nuansa semantik lokal, meskipun masih di bawah SEA-LION dalam konsistensi sintaks kompleks.
-		      \item \textbf{Qwen2.5 (Global)}, meskipun dikenal unggul dalam \textit{code generation}, mengalami kegagalan katastropik (\textbf{14.00\%}) pada metode ini. Kegagalan ini disebabkan oleh ketidakmampuan model untuk menjawab sesuai penalaran logis ketika dipaksa mengikuti format ketat, menandakan bahwa kapabilitas \textit{instruction following} tidak selalu berbanding lurus dengan kemampuan penalaran logis dalam konteks bahasa tertentu.
+		      \item \textbf{SEA-LION v3 (\textit{language-adaptive pre-trained model})} mencatat performa terbaik dengan akurasi \textbf{81.60\%}. Model ini menunjukkan keseimbangan terbaik antara pemahaman instruksi dalam Bahasa Indonesia dan kepatuhan terhadap format logika formal.
+		      \item \textbf{Sahabat-AI v1 (\textit{localized pre-trained model})} menunjukkan performa yang stabil (\textbf{61.20\%}), mengungguli model \textit{multilingual foundation model} dalam memahami nuansa semantik lokal, meskipun masih di bawah SEA-LION dalam konsistensi sintaks kompleks.
+		      \item \textbf{Qwen2.5 (\textit{multilingual foundation model})}, meskipun dikenal unggul dalam \textit{code generation}, mengalami kegagalan katastropik (\textbf{14.00\%}) pada metode ini. Kegagalan ini disebabkan oleh ketidakmampuan model untuk menjawab sesuai penalaran logis ketika dipaksa mengikuti format ketat, menandakan bahwa kapabilitas \textit{instruction following} tidak selalu berbanding lurus dengan kemampuan penalaran logis dalam konteks bahasa tertentu.
 	      \end{itemize}
 	\item \textbf{Efektivitas Aristotle vs Naive Prompting:} \\
-	      Penerapan \textit{framework Aristotle} terbukti \textbf{meningkatkan reliabilitas} jika dan hanya jika model memiliki kapabilitas \textit{instruction following} yang kuat dalam bahasa target.
+	      Penerapan \textit{framework Aristotle} terbukti \textbf{meningkatkan reliabilitas} jika model memiliki kapabilitas \textit{instruction following} yang kuat dalam bahasa target.
 	      \begin{itemize}
-		      \item Pada model \textbf{SEA-LION}, penggunaan \textit{framework Aristotle} meningkatkan akurasi dari 76.80\% (\textit{Naive}) menjadi \textbf{81.60\%}. Ini membuktikan bahwa \textit{framework Aristotle} dapat memanfaatkan kemampuan model untuk menghasilkan logika yang lebih tepat ketika diarahkan dengan benar.
-		      \item Sebaliknya, pada model \textbf{Qwen2.5}, performa justru turun drastis dari 81.00\% (\textit{Naive}) menjadi 14.00\%. Hal ini menunjukkan bahwa model yang tidak dapat mematuhi atau terlalu patuh pada format \textit{prompt template} tidak akan menghasilkan penalaran logis yang baik, berbeda dengan \textit{Naive Prompting} yang lebih toleran terhadap kesalahan parsial.
-		      \item \textit{Framework Aristotle} memiliki sifat \textit{brittle}, kesalahan kecil pada satu tahap akan merusak keseluruhan hasil atau \textit{error propagation}. Hal ini bisa dilihat pada penurunan performa Sahabat-AI dari 62.40\% (\textit{Naive}) menjadi 61.20\% ketika menggunakan \textit{framework Aristotle} karena kesalahan pada tahap awal (seperti \textit{translation}) menyebabkan kegagalan pada tahap selanjutnya.
+		      \item Pada model \textbf{SEA-LION}, penggunaan \textit{framework Aristotle} meningkatkan akurasi dari 76.80\% (\textit{Naive(CoT)}) menjadi \textbf{81.60\%}. Ini membuktikan bahwa \textit{framework Aristotle} dapat memanfaatkan kemampuan model untuk menghasilkan logika yang lebih tepat ketika diarahkan dengan benar.
+		      \item Sebaliknya, pada model \textbf{Qwen2.5}, performa justru turun drastis dari 81.00\% (\textit{Naive(CoT)}) menjadi 14.00\% yang padahal jika kita telusuri pada ~\ref{sec:fol_ablation} hasail tersebut tidak jauh berbeda, bahkan dengan prolog pada ~\ref{sec:prolog_ablation} hasil tersebut lebih meningkat dibanding \textit{Naive(CoT)}. Hal ini menunjukkan bahwa model yang tidak dapat mematuhi atau terlalu patuh pada format \textit{prompt template} tidak akan menghasilkan penalaran logis yang baik, berbeda dengan \textit{Naive Prompting} yang lebih toleran terhadap kesalahan parsial.
+		      \item \textit{Framework Aristotle} memiliki sifat \textit{brittle}, kesalahan kecil pada satu tahap akan merusak keseluruhan hasil atau \textit{error propagation}. Hal ini bisa dilihat pada penurunan performa Sahabat-AI dari 62.40\% (\textit{Naive(CoT)}) menjadi 61.20\% ketika menggunakan \textit{framework Aristotle} karena kesalahan pada tahap awal (seperti \textit{translation}) menyebabkan kegagalan pada tahap selanjutnya.
 	      \end{itemize}
+	      Dari hasil analisis, dapat disimpulkan bahwa untuk dataset ProntoQA, dengan menggunakan modul \textit{Translation to FOL} dari \textit{framework Aristotle} dan dilanjutkan dengan bantuan Prolog menghasilkan akurasi yang paling baik, ketimbang \textit{Naive Prompting} saja.
 \end{enumerate}
 
 \section{Saran}
