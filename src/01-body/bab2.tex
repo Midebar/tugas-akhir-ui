@@ -24,7 +24,7 @@ Sintaks FOL dibangun dari komponen-komponen berikut menurut \cite{brachman2004kn
 	      \begin{itemize}
 		      \item Konstanta: Simbol yang merepresentasikan objek spesifik (misalnya, "Alice", "42").
 		      \item Fungsi ($f$($x_1$, $\dots$, $x_n$)): Memetakan objek ke objek lain. Contoh: $AyahDari$($Budi$).
-		      \item Predikat ($P$($x_1$, $\dots$, $x_n$)): Fungsi yang memetakan tuple objek ke nilai kebenaran (True/False). Contoh: $Ayah$($Budi, True$).
+		      \item Predikat ($P$($x_1$, $\dots$, $x_n$)): Fungsi yang memetakan \textit{tuple} objek ke nilai kebenaran (True/False). Contoh: $Ayah$($Budi, True$).
 	      \end{itemize}
 \end{itemize}
 
@@ -86,7 +86,7 @@ Bagian ini membahas teknologi dasar yang memungkinkan implementasi \textit{Logic
 \subsection{Arsitektur Transformer}
 \textit{Large Language Models} (LLM) modern seperti Qwen, Llama, dan GPT dibangun di atas arsitektur \textbf{Transformer} yang diperkenalkan oleh \cite{NIPS2017_3f5ee243}. Inovasi utama arsitektur ini adalah mekanisme \textit{Self-Attention}, yang memungkinkan model untuk memproses hubungan antar kata dalam sebuah kalimat secara paralel tanpa bergantung pada urutan sekuensial seperti pada RNN (\textit{Recurrent Neural Networks}). Hal ini memungkinkan model menangkap ketergantungan jarak jauh (\textit{long-range dependencies}) yang penting untuk memahami konteks logika yang kompleks.
 
-\subsection{Pre-training dan Fine-tuning}
+\subsection{\textit{Pre-training dan Fine-tuning}}
 LLM dilatih melalui dua tahap utama:
 \begin{enumerate}
 	\item \textbf{\textit{Pre-training}:} Model dilatih pada korpus teks yang sangat besar (triliunan token) dengan tujuan memprediksi kata berikutnya (\textit{next-token prediction}) (\cite{NEURIPS2020_1457c0d6}). Pada tahap ini, model mempelajari struktur bahasa, fakta dunia nyata, dan pola penalaran dasar secara implisit.
@@ -104,7 +104,7 @@ Proses penggunaan model yang sudah dilatih untuk menghasilkan teks disebut \text
 	\item \textbf{Kuantisasi (GGUF):} Menjalankan LLM membutuhkan memori (VRAM) yang besar. Untuk mengatasi ini pada perangkat keras terbatas, digunakan teknik kuantisasi, yaitu mengurangi presisi bobot model dari 16-bit (\textit{half precision}) menjadi 4-bit atau 8-bit bilangan bulat (\cite{10.5555/3600270.3602468}).
 \end{itemize}
 
-\subsection{Definisi dan Karakteristik Small Language Models (SLM)}
+\subsection{Definisi dan Karakteristik \textit{Small Language Models} (SLM)}
 Dalam perkembangannya, paradigma model bahasa mulai bergeser dari "semakin besar semakin baik" menjadi efisiensi. \textit{Small Language Models} (SLM) didefinisikan secara longgar dalam literatur sebagai model dengan jumlah parameter berkisar antara beberapa juta hingga batas atas sekitar 7 hingga 10 miliar parameter (\cite{10.1145/3768165, subramanian2025smalllanguagemodelsslms}).
 
 Karakteristik utama SLM meliputi:
@@ -140,4 +140,4 @@ Proses pembuatannya adalah:
 \subsection{Mengisolasi Kemampuan Penalaran}
 Keunggulan utama ProntoQA adalah kemampuannya mengisolasi kemampuan deduksi dari pengetahuan dunia (\textit{world knowledge}).
 Menggunakan istilah fiktif (seperti "Wumpus" atau "Tumpus") mencegah model menjawab benar hanya karena hafal fakta (misalnya "Burung bisa terbang"). Model dipaksa untuk melakukan penalaran ("Jika Wumpus adalah Burung, maka Wumpus bisa terbang") berdasarkan aturan yang diberikan di dalam \textit{prompt}, bukan dari memori pelatihannya.
-Dataset ini juga memungkinkan kontrol terhadap "kedalaman penalaran" (\textit{reasoning hops}), yaitu berapa langkah logika yang diperlukan untuk mencapai kesimpulan (misal: 1-hop, 3-hop, hingga 5-hop).
+Dataset ini juga memungkinkan kontrol terhadap "kedalaman penalaran" (\textit{reasoning hops}), yaitu berapa langkah logika yang diperlukan untuk mencapai kesimpulan (misal: \textit{1-hop}, \textit{3-hop}, hingga \textit{5-hop}).
