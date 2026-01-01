@@ -171,11 +171,11 @@ Untuk memperjelas proses resolusi menggunakan kerangka kerja \textit{framework} 
 Sebelum dataset ProntoQA dijalankan dalam \textit{framework Aristotle}, dilakukan translasi ke bahasa Indonensia karena dataset tersebut masih dalam bahasa Inggris. Dataset ProntoQA terdiri dari konteks / premis, pertanyaan, jawaban, dan penjelasan untuk mendapatkan jawaban tersebut. Jawaban hanya mempunyai dua nilai, yaitu \textit{True / False}, dan jawaban tidak perlu ditranslasikan ke bahasa Indonesia untuk keperluan tahap evaluasi nanti.
 Prosesnya sebagai berikut:
 \begin{itemize}
-    \item \textbf{Premis original:} "Wumpuses are sweet. Every Wumpus is jompus. All jompus are fruity. Max is wumpus."
+    \item \textbf{Premis original:} "\textit{Wumpuses are sweet. Every Wumpus is jompus. All jompus are fruity. Max is wumpus.}"
     \item \textbf{Premis hasil translasi:} "Wumpuses adalah manis. Setiap Wumpus adalah jompus. Semua jompus berbuah. Max adalah wumpus."
-    \item \textbf{Pertanyaan original:} "Is the following statement true or false? Max is fruity."
+    \item \textbf{Pertanyaan original:} "\textit{Is the following statement true or false? Max is fruity.}"
     \item \textbf{Pertanyaan hasil translasi:} "Apakah pernyataan berikut benar atau salah? Max berbuah."
-    \item \textbf{Penjelasan original:} "Max is wumpus. Every wumpus is jompus. Max is jompus. All jompus are fruity. Max is fruity."
+    \item \textbf{Penjelasan original:} "\textit{Max is wumpus. Every wumpus is jompus. Max is jompus. All jompus are fruity. Max is fruity.}"
     \item \textbf{Penjelasan hasil translasi:} "Max adalah wumpus. Setiap wumpus adalah jompus. Max adalah jompus. Semua jompus berbuah. Max berbuah."
 \end{itemize}
 
@@ -230,4 +230,4 @@ Terakhir, modul \textit{Logical Resolver} mencoba membuktikan kebenaran konjektu
           \end{itemize}
           Dari step tersebut, ditemukan kontradiksi, sehingga Jalur B berhasil membuktikan $\neg S$.
 \end{itemize}
-Berdasarkan matriks keputusan, karena Jalur A gagal dan Jalur B berhasil, kesimpulan akhir adalah \textbf{FALSE}. Dengan demikian, model berhasil menyimpulkan bahwa Max berbuah berdasarkan premis yang diberikan yang bertentangan dengan konjektur awal, yaitu "Apakah Max tidak berbuah?"
+Berdasarkan matriks keputusan, karena Jalur A gagal dan Jalur B berhasil, kesimpulan akhir adalah \textbf{\textit{False}}. Dengan demikian, model berhasil menyimpulkan bahwa Max berbuah berdasarkan premis yang diberikan yang bertentangan dengan konjektur awal, yaitu "Apakah Max tidak berbuah?"

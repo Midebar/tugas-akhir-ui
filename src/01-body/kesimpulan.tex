@@ -37,7 +37,7 @@ Berdasarkan hasil evaluasi pada model \textit{open-weight} dengan parameter rend
 	      Dari hasil analisis pada studi ablasi, dapat disimpulkan bahwa untuk dataset ProntoQA, dengan menggunakan modul \textit{Translation to FOL} dari \textit{framework Aristotle} dan dilanjutkan dengan bantuan Prolog menghasilkan akurasi yang paling baik, ketimbang \textit{Naive Prompting} saja.
 	      \begin{itemize}
 		      \item Pada studi ablasi eksperimen resolusi dengan modul / tahap \textit{Translation to FOL} dan \textit{Decomposition to CNF} saja, rata-rata akurasi model untuk kasus ini, yaitu 58.60\%, lebih baik dari rata-rata akurasi model jika dilakukan secara penuh dengan tahap akhir \textit{Search \& Resolve}, yaitu 52.27\%, karena model Qwen tidak terkena \textit{parsability error}.
-		      \item Eksperimen dengan menggunakan modul / tahap \textit{Translation to FOL} dan dilanjutkan dengan \textit{Prolog Converter \& Resolver} menghasilkan rata-rata akurasi terbaik, yaitu 83.07\%, dibandingkan \textit{Translation to FOL} dan resolusi, yaitu 73.53\%, juga lebih baik jika dibandingkan dengan akurasi dari \textit{framework} secara keseluruhan untuk dataset ProntoQA, yaitu 52.27\%.
+		      \item Eksperimen dengan menggunakan modul / tahap \textit{Translation to FOL} dan dilanjutkan dengan \textit{Prolog Converter \& Resolver} menghasilkan rata-rata akurasi terbaik dari model-model yang digunakan, yaitu 83.07\%, dibandingkan \textit{Translation to FOL} lalu resolusi, yaitu 73.53\%, juga lebih baik jika dibandingkan dengan akurasi dari \textit{framework} secara keseluruhan untuk dataset ProntoQA, yaitu 52.27\%.
 	      \end{itemize}
 \end{enumerate}
 
