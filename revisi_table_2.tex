@@ -1,0 +1,46 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{array}
+
+\begin{document}
+
+\begin{center}
+    \Large \textbf{Log Revisi Dokumen}
+\end{center}
+\vspace{1cm}
+
+\begin{table}[H]
+    \centering
+    \caption{Daftar Revisi dan Perubahan}
+    \label{tab:revisi_log}
+    \renewcommand{\arraystretch}{1.5} % Increases row height for readability
+    
+    % Column setup: 
+    % c = center (small width)
+    % X = auto-width (wraps long text)
+    % X = auto-width (wraps long text)
+    % l = left align (adjust to 'c' if prefer centered status)
+    \begin{tabularx}{\textwidth}{|c|X|X|l|}
+        \hline
+        \textbf{No}                                                                                                                                                                                                                               & \centering\textbf{Masukan / Isu Awal} & \centering\textbf{Perubahan / Tindak Lanjut} & \textbf{Hal/Bab} \\
+        \hline
+        
+        1                                                                                                                                                                                                                                         & 
+        Ilustrasi tahapan dari input awal hingga hasil akhir                                                                                                                                                                                      & 
+        Menambahkan ilustrasi input dari awal                                                                                                                                                                                                     & 
+        Bagian 3.4                                                                                                                                                                                                                                                                                                                                          \\
+        \hline
+        
+        2                                                                                                                                                                                                                                         & 
+        Membutuhkan penjelasan pada framework Aristotle pada 4 modul utama                                                                                                                                                                        & 
+        Memperjelas 4 modul utama / tahapan utama dan penggabungan ke search and resolve                                                                                                                                                          & 
+        Bagian 3.2                                                                                                                                                                                                                                                                                                                                          \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

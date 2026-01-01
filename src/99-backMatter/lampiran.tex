@@ -14,6 +14,20 @@
 \textit{Prompt} untuk mendapatkan jawaban untuk ablasi ~\ref{sec:fol_ablation}:
 \lstinputlisting[caption=Template prompt untuk mencari jawaban dari SLM untuk hanya dari tahapan \textit{translation to FOL}, label={lst:fol_prompt}]{assets/texts/translations_only_prompting.txt}
 
+%-----------------------------------------------------------------------------%
+\addappendix{Prolog}
+\begin{flushright}
+    Lampiran 2: Contoh hasil konversi ke Prolog
+\end{flushright}
+\label{appendix:ablation_prompts}
+% -----------------------------------------------------------------------------%
+
+Berikut adalah salah satu hasil konversi dari FOL ke bentuk yang bisa di-\textit{resolve} oleh Prolog:
+\textit{Data point} dengan bentuk FOL:
+\lstinputlisting[caption=\textit{Data point} dari tahapan \textit{translation to FOL}, label={lst:fol_datapoint}]{assets/codes/ProntoQA_1.json}
+\textit{Prolog Form} hasil konversi:
+\lstinputlisting[caption=Hasil konversi dari tahapan \textit{translation to FOL}, label={lst:fol_prolog}]{assets/codes/ProntoQA_1.pl}
+
 % \todo{Silakan hapus lampiran ini ketika Anda mulai menggunakan \f{template}.}
 
 % \f{Template} versi terbaru bisa didapatkan di \url{https://gitlab.com/ichlaffterlalu/latex-skripsi-ui-2017}.

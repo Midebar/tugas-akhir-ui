@@ -19,7 +19,7 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 
 \begin{table}[h]
 	\centering
-	\caption{Hasil Eksperimen}
+	\caption{Hasil Eksperimen tanpa Tahap Akhir \textit{Search \& Resolve} dan Resolusi dengan CoT \textit{Prompting}}
 	% >{\centering\arraybackslash} centers the text inside the X column.
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
@@ -46,7 +46,7 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 
 \begin{table}[h]
 	\centering
-	\caption{Hasil Eksperimen}
+	\caption{Hasil Eksperimen hanya dengan Tahap Pertama \textit{Translation to FOL} dan Resolusi dengan CoT \textit{Prompting}}
 	% >{\centering\arraybackslash} centers the text inside the X column.
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
@@ -58,18 +58,28 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 \end{table}
 
 \section{Eksperimen dengan tahap \textit{Translation to FOL} dan dilanjutkan dengan Prolog}
+\label{sec:prolog_ablation}
 
-Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework Aristotle} dengan tahap akhir dan hanya dengan tahap \textit{Translation to FOL} yang hasil \textit{output} dari tahap ini di-\textit{resolve} dengan bantuan Prolog.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{assets/pics/Ablation_prolog.drawio.png}
+	\captionof{figure}{Kerangka kerja Aristotle hanya dengan tahapan \textit{Translation to FOL} dan dilanjutkan dengan bantuan prolog}
+	\label{fig:prolog_figure}
+\end{figure}
+
+Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework Aristotle} dengan tahap akhir dan hanya dengan tahap \textit{Translation to FOL} yang hasil \textit{output} dari tahap ini di-\textit{resolve} dengan bantuan Prolog. Prolog sendiri pun tidak dapat melakukan resolusi terhadap premis-premis natural dan premis-premis tersebut beragam bentuk kalimatnya, sehingga hanya mengandalkan regex parsing saja tidak cukup.
 
 \begin{table}[h]
 	\centering
-	\caption{Hasil Eksperimen}
+	\caption{Hasil Eksperimen hanya dengan Tahap Pertama \textit{Translation to FOL} dan Resolusi dengan Prolog}
 	% >{\centering\arraybackslash} centers the text inside the X column.
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
-		               & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEA-LION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
+		                      & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEA-LION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
 		\midrule
-		\quad FOL only & 77.40\%                           & 84.60\%                            & 58.60\%                             \\
+		\quad FOL with Prolog & 82.20\%                           & 93.80\%                            & 73.20\%                             \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
+
+Dari ketiga hasil ablasi eksperimen tersebut, dapat disimpulkan bahwa dengan mentranslasikan premis-premis yang ada dari bahasa natural ke bahasa simbolik dalam bentuk FOL dan dilanjutkan dengan \textit{Prolog resolver} mempunyai akurasi yang lebih tinggi untuk dataset ProntoQA ketimbang menggunakan SLM untuk melakukan resolusi, baik pada tahapan \textit{Translation to FOL}, maupun pada tahapan \textit{Decomposition into CNF}, akan tetapi hal ini akan sulit dilakukan pada dataset yang lebih kompleks dari ProntoQA, seperti dataset ProofWriter (\cite{tafjord-etal-2021-proofwriter}) dan dataset LogicNLI (\cite{tian-etal-2021-diagnosing}) karena dataset ProntoQA hanya membutuh jawaban \textit{True} atau \textit{False} saja dan premis-premis tersebut tidak memerlukan tahapan yang kompleks, seperti skolemisasi

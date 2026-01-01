@@ -27,7 +27,7 @@ Untuk mengatasi kesenjangan antara kemampuan linguistik dan logika ini, berbagai
 
 Meskipun metode-metode di atas menunjukkan hasil positif, sebagian besar penelitian dilakukan pada dataset berbahasa Inggris. Studi terhadap kemampuan penalaran SLM pada bahasa lain, termasuk Bahasa Indonesia, masih terbatas. Perbedaan struktur linguistik (seperti ambiguitas subjek dalam Bahasa Indonesia) dan kualitas tokenisasi dapat memengaruhi performa model setelah adaptasi lintas bahasa. Selain itu, penelitian sebelumnya menggunakan \textit{proprietary} LLM (seperti GPT-4), sehingga perbandingan performa \textit{apple-to-apple} pada model \textit{open-weight} dengan sumber daya terbatas atau SLM belum banyak dikaji.
 
-Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai efektivitas \textit{Framework} Aristotle pada dataset berbahasa Indonesia menggunakan open-weight SLM. Penelitian ini menjadi penting untuk mengevaluasi apakah model seperti Sahabat-AI (\textit{localized pre-trained} dengan Bahasa Indonesia) atau SEALION (\textit{language-adaptive pre-trained} dengan bahasa di regional ASEAN) ataupun Qwen (\textit{multilingual foundation model}) dapat mengatasi tantangan penalaran logis.
+Dari gap penelitian yang sudah disebutkan, belum ada kajian mendalam mengenai efektivitas \textit{Framework} Aristotle pada dataset berbahasa Indonesia menggunakan open-weight SLM. Penelitian ini menjadi penting untuk mengevaluasi apakah model seperti Sahabat-AI (\textit{localized pre-trained} dengan Bahasa Indonesia) atau SEA-LION (\textit{language-adaptive pre-trained} dengan bahasa di regional ASEAN) ataupun Qwen (\textit{multilingual foundation model}) dapat mengatasi tantangan penalaran logis.
 
 \section{Rumusan Masalah}
 \label{sec:rumusan}
@@ -57,7 +57,7 @@ Berikut adalah tujuan dari penelitian sesuai dengan latar belakang dan rumusan m
 Penelitian ini dibatasi sebagai berikut:
 \begin{itemize}
       \item \textbf{Dataset:} Fokus pada dataset diterjemahkan ke Bahasa Indonesia, yaitu ProntoQA saja
-      \item \textbf{Model:} Eksperimen menggunakan model open-weight yang dapat dijalankan lokal maupun server, khususnya dengan kuantisasi. Model tersebut antara lain: Qwen2.5-7B-IT-GGUF, SEALIONv3-LLama-8B-IT-GGUF, dan SahabatAIv1-Llama-8B-IT-GGUF
+      \item \textbf{Model:} Eksperimen menggunakan model open-weight yang dapat dijalankan lokal maupun server, khususnya dengan kuantisasi. Model tersebut antara lain: Qwen2.5-7B-IT-GGUF, SEALIONv3-Llama-8B-IT-GGUF, dan SahabatAIv1-Llama-8B-IT-GGUF
       \item \textbf{Evaluasi:} Metrik utama adalah akurasi jawaban akhir terhadap ground truth.
       \item \textbf{Implementasi:} Source code yang tersedia pada repository Aristotle yang merupakan implementasi \textit{framework translation-decompose-search-resolve} (\cite{Aristotle25})
             % \item \textbf{Sumber daya:} Eksperimen disesuaikan dengan kapasitas komputasi dan biaya, sampling dimulai pada 10\% hingga 100\%.
@@ -160,7 +160,7 @@ Sistematika penulisan laporan adalah sebagai berikut:
       \item Bab 3 \babTiga \\
             Mendeskripsikan desain eksperimen, proses adaptasi dataset ProntoQA ke Bahasa Indonesia, konfigurasi model, dan implementasi teknis \textit{framework translation-decompose-search-resolve}.
       \item Bab 4 \babEmpat \\
-            Menyajikan data hasil akurasi antara Qwen, SEALION, dan Sahabat-AI. Bab ini akan menganalisis permasalahan pada tiap tahap \textit{framework} serta membandingkan hasilnya dengan metode Naive Prompting.
+            Menyajikan data hasil akurasi antara Qwen, SEA-LION, dan Sahabat-AI. Bab ini akan menganalisis permasalahan pada tiap tahap \textit{framework} serta membandingkan hasilnya dengan metode Naive Prompting.
       \item Bab 5 \babLima \\
             Menyajikan data hasil eksperimen atau studi ablasi pada model-model yang digunakana serta proses melakukan proses resolusi atau evaluasi per tahap pada \textit{framework}
       \item Bab 6 \kesimpulan \\

@@ -3,14 +3,14 @@
 \label{bab:4}
 %-----------------------------------------------------------------------------%
 
-Bab ini memaparkan desain eksperimen, hasil eksperimen empiris yang dilakukan untuk mengevaluasi kinerja \textit{open-weight} SLM pada tugas penalaran logis berbahasa Indonesia. Analisis dibagi menjadi tiga bagian utama: (1) proses iteratif penyempurnaan \textit{prompt} untuk mengatasi ambiguitas bahasa, (2) hasil evaluasi kuantitatif menggunakan metrik akurasi, dan (3) analisis kualitatif mendalam mengenai penyebab kegagalan dan keberhasilan masing-masing model dalam kerangka kerja \textit{Neuro-Symbolic}.
+Bab ini memaparkan desain eksperimen, hasil eksperimen empiris yang dilakukan untuk mengevaluasi kinerja \textit{open-weight} SLM pada tugas penalaran logis berbahasa Indonesia. Analisis dibagi menjadi tiga bagian utama: (1) proses iteratif penyempurnaan \textit{prompt} untuk mengatasi ambiguitas bahasa, (2) hasil evaluasi kuantitatif menggunakan metrik akurasi, dan (3) analisis kualitatif mendalam mengenai penyebab kegagalan dan keberhasilan masing-masing model dalam \textit{framework Aristotle}.
 
 %-----------------------------------------------------------------------------%
 \section{Desain Eksperimen}
 \label{sec:researchDesign}
 %-----------------------------------------------------------------------------%
 
-Eksperimen dirancang dengan membandingkan performa model dalam dua skenario inferensi:
+Eksperimen dirancang dengan membandingkan performa model dalam dua skenario resolusi:
 
 \begin{enumerate}
 	\item \textbf{Skenario Pertama (\textit{Naive Prompting}):}
@@ -25,13 +25,13 @@ Struktur variabel penelitian didefinisikan sebagai berikut:
 \begin{itemize}
 	\item \textbf{Variabel Bebas (\textit{Independent Variables}):}
 	      \begin{itemize}
-		      \item \textbf{Model:} Tiga kategori model yang mewakili spektrum pemahaman bahasa: Global (Qwen), Regional (SEALION), dan Nasional (SahabatAI).
-		      \item \textbf{Metode Prompting:} \textit{Naive} vs \textit{Aristotle Framework}.
+		      \item \textbf{Model:} Tiga kategori model yang merepresentasikan spektrum pemahaman bahasa: Global (Qwen), Regional (SEALION), dan Nasional (SahabatAI).
+		      \item \textbf{Metode \textit{Prompting}:} \textit{Naive} vs \textit{Aristotle Framework}.
 	      \end{itemize}
 	      
 	\item \textbf{Variabel Terikat (\textit{Dependent Variables}):}
 	      \begin{itemize}
-		      \item \textbf{Akurasi (\textit{Accuracy}):} Ketepatan hasil akhir (Benar/Salah) yang diverifikasi terhadap \textit{ground truth}.
+		      \item \textbf{Akurasi (\textit{Accuracy}):} Ketepatan hasil akhir (\textit{True / False}) yang diverifikasi terhadap \textit{ground truth}.
 		      \item \textbf{Kepatuhan Format (\textit{Parsability}):} Kemampuan model menghasilkan sintaks logika (FOL/CNF) yang valid secara komputasi. Kegagalan menghasilkan format yang benar dianggap sebagai kegagalan penalaran.
 	      \end{itemize}
 	      
@@ -49,7 +49,7 @@ Struktur variabel penelitian didefinisikan sebagai berikut:
 
 Penelitian ini menggunakan dataset \textbf{ProntoQA} (\textit{Prompting with Ontologies for QA}) \cite{saparov2023language}. Pemilihan dataset ini didasarkan pada kebutuhan untuk menguji kemampuan SLM dalam deduksi sintetis, terlepas dari pengetahuan dunia nyata dari SLM tersebut. ProntoQA menggunakan ontologi fiktif (misalnya: \textit{"Setiap Wumpus adalah Jompus"}), sehingga model tidak dapat menjawab dengan mengandalkan hafalan dalam \textit{pre-training}.
 
-Proses penerjemahan dilakukan secara otomatis dengan \textit{prompting} dan memeberikan beberapa contoh dalam proses tranlasinya. Penerjemahan dilakukan dengan \textit{open-weight} SLM yaitu \textbf{Gemma-SEA-LION-v3-9B-IT}. Model dipilih karena kemampuan yang baik dalam translasi dari bahasa Inggris ke bahasa Indonesia berdasarkan SEA-HELM \textit{leaderboard} \footnote{\url{https://leaderboard.sea-lion.ai/detailed/ID}}
+Proses penerjemahan dilakukan secara otomatis dengan \textit{prompting} dan memberikan beberapa contoh dalam proses tranlasinya. Penerjemahan dilakukan dengan \textit{open-weight} SLM yaitu \textbf{Gemma-SEA-LION-v3-9B-IT}. Model dipilih karena kemampuan yang baik dalam translasi dari bahasa Inggris ke bahasa Indonesia berdasarkan SEA-HELM \textit{leaderboard} \footnote{\url{https://leaderboard.sea-lion.ai/detailed/ID}}
 
 \begin{itemize}
 	\item \textbf{Konsistensi Kuantor:} Frasa "Every X is Y" diterjemahkan menjadi "Setiap X adalah Y" atau "Semua X adalah Y" untuk menjaga pola \textit{Universal Quantifier} ($\forall$).
@@ -59,16 +59,16 @@ Proses penerjemahan dilakukan secara otomatis dengan \textit{prompting} dan meme
 
 \section{\textit{Prompt Refining}}
 
-Sebelum melakukan evaluasi skala penuh, dilakukan serangkaian eksperimen pendahuluan untuk menstabilkan performa model dalam menjalankan empat modul utama \textit{framework} Aristotle: \textit{Translation, Decomposition, Search \& Resolve}. Mengingat model yang digunakan adalah model berparameter kecil (7B-9B) yang dikuantisasi, model sangat sensitif terhadap struktur instruksi.
+Sebelum melakukan evaluasi skala penuh, dilakukan serangkaian eksperimen pendahuluan, yaitu \textit{prompt refining} yang memperbaiki \textit{prompt} yang digunakan untuk menstabilkan performa model dalam menjalankan empat modul utama \textit{framework} Aristotle: \textit{Translation, Decomposition, Search, \& Resolve}. Mengingat model yang digunakan adalah model berparameter kecil (7B-9B) yang dikuantisasi, model sangat sensitif terhadap struktur instruksi.
 
 \subsection{\textit{Translation to First Order Logic}}
 \label{subsec:translation_to_fol}
-Pada tahap ini dilakukan prompt untuk penerjemahan kalimat bahasa natural ke dalam \textit{First Order Logic}. Tantangan utama pada tahap ini adalah memetakan kalimat Bahasa Indonesia yang implisit ke dalam struktur logika yang eksplisit.
+Pada tahap ini dilakukan \textit{prompt} untuk penerjemahan kalimat bahasa natural ke dalam \textit{First Order Logic}. Tantangan utama pada tahap ini adalah memetakan kalimat Bahasa Indonesia yang implisit ke dalam struktur logika yang eksplisit.
 
-Berikut adalah prompt template yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada \textit{Aristotle Framework}
-\lstinputlisting[caption=Template prompt hasil translasi langsung dari bahasa Inggris, label={lst:translation_to_fol_v1}]{assets/texts/translation.txt}
-Namun dari prompt template tersebut masih bermasalah karena ada beberapa aturan yang tidak dapat diterjemahkan dengan baik oleh model. 
-Berikut adalah contoh aturan yang tidak dapat diterjemahkan dengan baik oleh model menggunakan prompt template \ref{lst:translation_to_fol_v1}:
+Berikut adalah \textit{prompt template} yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada \textit{Aristotle Framework}
+\lstinputlisting[caption=\textit{Prompt template} hasil translasi langsung dari bahasa Inggris, label={lst:translation_to_fol_v1}]{assets/texts/translation.txt}
+Namun dari \textit{prompt template} tersebut masih bermasalah karena ada beberapa aturan yang tidak dapat diterjemahkan dengan baik oleh model. 
+Berikut adalah contoh aturan yang tidak dapat diterjemahkan dengan baik oleh model menggunakan \textit{prompt template} \ref{lst:translation_to_fol_v1}:
 \begin{itemize}
 	\item Kesalahan dalam proses \textit{translation to FOL}, khususnya pada subjek dan objek:
 	      \begin{itemize}
@@ -77,12 +77,12 @@ Berikut adalah contoh aturan yang tidak dapat diterjemahkan dengan baik oleh mod
 		      \item Seharusnya: "1. $Zumpus$($\$x$, $True$) $>>>$ $Transparan$($\$x$, $True$) 2. $Zumpus$($\$x$, $True$) $>>>$ $Rompus$($\$x$, $True$) 3. $Rompus$($\$x$, $True$) $>>>$ $Tanah$($\$x$, $True$) 4. $Rompus$($\$x$, $True$) $>>>$ $Impus$($\$x$, $True$)"
 		      \item Penjelasan: Model salah mengartikan subjek pada aturan ke-3 dan ke-4, sehingga ketika melakukan search resolve tidak dapat menemukan resolusi yang tepat karena subjek dan objek yang digunakan tidak sesuai.
 	      \end{itemize}
-	\item Tidak melakukan \textit{translation} melainkan seakan-akan melakukan inferensi langsung dalam FOL	:
+	\item Tidak melakukan \textit{translation} melainkan seakan-akan melakukan resolusi langsung dalam FOL	:
 	      \begin{itemize}
 		      \item Premis: "Tumpus adalah merah. Setiap tumpus adalah jompus. Jompus adalah besar"
 		      \item Hasil \textit{translation}: "1. $Tumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
 		      \item Seharusnya: "1. $Tumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 2. $Tumpus$($\$x$, $True$) $>>>$ $Jompus$($\$x$, $True$) 3. $Jompus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
-		      \item Penjelasan: Model tidak menerjemahkan aturan ke dalam FOL, melainkan melakukan inferensi langsung pada aturan tersebut dengan menghilangkan salah satu aturan yang ada.
+		      \item Penjelasan: Model tidak menerjemahkan aturan ke dalam FOL, melainkan melakukan resolusi langsung pada aturan tersebut dengan menghilangkan salah satu aturan yang ada.
 	      \end{itemize}
 	\item Tidak adanya format keseragaman pada hasil \textit{translasi}:
 	      \begin{itemize}
@@ -93,12 +93,12 @@ Berikut adalah contoh aturan yang tidak dapat diterjemahkan dengan baik oleh mod
 	      \end{itemize}
 \end{itemize}
 
-Karena permasalahan tersebut, dilakukan perbaikan pada prompt template tersebut untuk meningkatkan kualitas \textit{translation}. 
-Berikut adalah versi kedua dari prompt template yang telah dimodifikasi.
-\lstinputlisting[caption=Template prompt setelah dimodifikasi dengan tambahan beberapa aturan dan contoh, label={lst:translation_to_fol_v2}]{assets/texts/translation_modified.txt}
-Walaupun sudah diperbaiki, masih ada beberapa kesalahan yang terjadi pada hasil \textit{translasion}, seperti berikut:
+Karena permasalahan tersebut, dilakukan perbaikan pada \textit{prompt template} tersebut untuk meningkatkan kualitas \textit{translation}. 
+Berikut adalah versi kedua dari \textit{prompt template} yang telah dimodifikasi.
+\lstinputlisting[caption=\textit{Prompt template} setelah dimodifikasi dengan tambahan beberapa aturan dan contoh, label={lst:translation_to_fol_v2}]{assets/texts/translation_modified.txt}
+Walaupun sudah diperbaiki, masih ada beberapa kesalahan yang terjadi pada hasil \textit{translation}, seperti berikut:
 \begin{itemize}
-	\item Tidak melakukan \textit{translation} melainkan menyelesaikan langsung dalam bentuk FOL:
+	\item Tidak melakukan \textit{translation to FOL} melainkan menyelesaikan langsung dalam bentuk FOL:
 	      \begin{itemize}
 		      \item Premis: "Tumpus adalah merah. Setiap tumpus adalah jompus. Jompus adalah besar"
 		      \item Hasil \textit{translation}: "2. $Tumpus$($\$x$, $True$) $>>>$ $Merah$($\$x$, $True$) 3. $Tumpus$($\$x$, $True$) $>>>$ $Besar$($\$x$, $True$)"
@@ -106,20 +106,21 @@ Walaupun sudah diperbaiki, masih ada beberapa kesalahan yang terjadi pada hasil 
 		      \item Penjelasan: Model tidak menerjemahkan aturan ke dalam FOL, melainkan langsung menyelesaikan aturan tersebut dengan menghilangkan salah satu aturan yang ada.
 	      \end{itemize}
 \end{itemize}
-Sudah ada perbaikan dalam tahap \textit{translation} dengan penambahan contoh dan deskripsi tugas yang lebih rinci, seperti model mengikuti format dengan benar dan mengurangi kesalahan dalam \textit{translation} subjek dan objek, akan tetapi masih ada kesalahan seperti melakukan silogisme langsung pada tahap \textit{translation}. Hal ini dikarenakan model berparameter rendah tidak memiliki \textit{knowledge} yang cukup dalam mengartikan \textit{term} ambigu yang ada pada aturan logika, yaitu dalam hal ini adalah \textit{term parsing} yang jika diartikan dalam bahasa Indonesia berarti penguraian menurut KBBI, yang padahal arti yang dimaksud dalam konteks ini adalah pemisahan subjek dan objek pada aturan logika.
+Sudah ada perbaikan dalam tahap \textit{translation to FOL} dengan penambahan contoh dan deskripsi tugas yang lebih rinci, seperti model mengikuti format dengan benar dan mengurangi kesalahan dalam \textit{translation} subjek dan objek, akan tetapi masih ada kesalahan seperti melakukan silogisme langsung pada tahap \textit{translation}. Hal ini dikarenakan model berparameter rendah tidak memiliki \textit{knowledge} yang cukup dalam mengartikan \textit{term} ambigu yang ada pada aturan logika, yaitu dalam hal ini adalah \textit{term parsing} yang jika diartikan dalam bahasa Indonesia berarti penguraian menurut KBBI, yang padahal arti yang dimaksud dalam konteks ini adalah pemisahan subjek dan objek pada aturan logika.
 
-Oleh karena itu, dilakukan perbaikan lebih lanjut pada prompt template tersebut. 
-Berikut adalah versi ketiga dari prompt template yang telah diperbaiki.
-\lstinputlisting[caption=Template prompt dengan penggunakan diksi sesuai kamus EBI pada konteks ini, label={lst:translation_to_fol_v3}]{assets/texts/translation_refine.txt}
-\textit{Term parsing} diubah menjadi menerjemahkan aturan logika dengan memisahkan subjek dan objek pada setiap aturan, sehingga model lebih memahami tugas yang diberikan. Format seperti "***Bentuk Ahir***" langsung dimasukkan ke dalam contoh pada template dan juga contoh yang diberikan bervariasi dalam istilah yang digunakan dan banyaknya kalimat dalam premis agar model dapat lebih memahami tugas yang diberikan.
-Dari hasil evaluasi, prompt template versi ketiga ini sudah cukup baik, dalam artian bahwa model dapat mengikuti format dengan benar dan mengurangi kesalahan dalam \textit{translation} subjek dan objek. Oleh karena itu, prompt template versi ketiga ini digunakan dalam eksperimen pada penelitian ini.
+Oleh karena itu, dilakukan perbaikan lebih lanjut pada \textit{prompt template} tersebut. 
+Berikut adalah versi ketiga dari \textit{prompt template} yang telah diperbaiki.
+\lstinputlisting[caption=\textit{Prompt template} dengan penggunakan diksi sesuai kamus EBI pada konteks ini, label={lst:translation_to_fol_v3}]{assets/texts/translation_refine.txt}
+\textit{Term parsing} diubah menjadi menerjemahkan aturan logika dengan memisahkan subjek dan objek pada setiap aturan, sehingga model lebih memahami tugas yang diberikan. Format seperti "***Bentuk Ahir***" langsung dimasukkan ke dalam contoh pada \textit{prompt template} dan juga contoh yang diberikan bervariasi dalam istilah yang digunakan dan banyaknya kalimat dalam premis agar model dapat lebih memahami tugas yang diberikan.
+
+Dari hasil evaluasi, \textit{prompt template} versi ketiga ini sudah cukup baik, dalam artian bahwa model dapat mengikuti format dengan benar dan mengurangi kesalahan dalam \textit{translation} subjek dan objek. Oleh karena itu, \textit{prompt template} versi ketiga ini digunakan dalam eksperimen pada penelitian ini.
 
 \subsection{\textit{Decomposition to Conjunctive Normal Form}}
 Pada tahap ini dilakukan prompt untuk penerjemahan aturan setelah proses \textit{First Order Logic} ke dalam bentuk \textit{Conjunctive Normal Form} dalam proses \textit{decomposition}.
 
-Berikut adalah prompt template yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada \textit{Aristotle Framework}
-\lstinputlisting[caption=Template prompt hasil translasi langsung dari bahasa Inggris, label={lst:decomps_into_cnf_v1}]{assets/texts/and_or_decomposer.txt}
-Ada beberapa masalah yang ditemukan pada hasil \textit{decomposition} menggunakan prompt template tersebut, seperti berikut:
+Berikut adalah \textit{prompt template} yang digunakan yang merupakan hasil dari translasi langsung dari \textit{prompt} yang digunakan pada \textit{Aristotle Framework}
+\lstinputlisting[caption=\textit{Prompt template} hasil translasi langsung dari bahasa Inggris, label={lst:decomps_into_cnf_v1}]{assets/texts/and_or_decomposer.txt}
+Ada beberapa masalah yang ditemukan pada hasil \textit{decomposition} menggunakan \textit{prompt template} tersebut, seperti berikut:
 \begin{itemize}
 	\item Skolemisasi: Pada ProntoQA tidak perlu menggunakan skolemisasi karena tidak ada kuantor eksistensial yang perlu dihilangkan agar tidak membingungkan model.
 	\item Halusinasi pada Fakta dan Konjektur: Model sering kali menambahkan fakta atau konjektur yang tidak ada pada premis, sehingga hasil dari proses \textit{decomposition} menjadi tidak sesuai:
@@ -131,16 +132,16 @@ Ada beberapa masalah yang ditemukan pada hasil \textit{decomposition} menggunaka
 	      \end{itemize}
 \end{itemize}
 
-Berikut adalah versi kedua dari prompt template yang telah diperbaiki. Versi kedua ini mirip seperti template versi ketiga pada tahap ~\ref{lst:translation_to_fol_v3}, yaitu dengan menambahkan contoh yang lebih bervariasi dan deskripsi tugas yang lebih rinci karena keberhasilan model dalam memahamami tugas pada tahap \textit{translation} dapat diaplikasikan juga pada tahap \textit{decomposition}.
-\lstinputlisting[caption=Template prompt dengan tambahan contoh dan diksi sesuai EBI, label={lst:decomps_into_cnf_v2}]{assets/texts/and_or_decomposer_refine.txt}
-Prompt template versi kedua ini sudah memperbaiki masalah yang ada pada versi pertama dengan penambahan contoh yang lebih bervariasi dan penghilangan skolemisasi, serta fakta dan konjektur pada deskripsi tugas karena tidak diperlukan dan hanya membingungkan model.
-Dari hasil evaluasi, prompt template versi kedua ini sudah cukup baik untuk digunakan dalam eksperimen pada penelitian ini.
+Berikut adalah versi kedua dari \textit{prompt template} yang telah diperbaiki. Versi kedua ini mirip seperti \textit{prompt template} versi ketiga pada tahap ~\ref{lst:translation_to_fol_v3}, yaitu dengan menambahkan contoh yang lebih bervariasi dan deskripsi tugas yang lebih rinci karena keberhasilan model dalam memahamami tugas pada tahap \textit{translation} dapat diaplikasikan juga pada tahap \textit{decomposition}.
+\lstinputlisting[caption=\textit{Prompt template} dengan tambahan contoh dan diksi sesuai EBI, label={lst:decomps_into_cnf_v2}]{assets/texts/and_or_decomposer_refine.txt}
+\textit{Prompt template} versi kedua ini sudah memperbaiki masalah yang ada pada versi pertama dengan penambahan contoh yang lebih bervariasi dan penghilangan skolemisasi, serta fakta dan konjektur pada deskripsi tugas karena tidak diperlukan dan hanya membingungkan model.
+Dari hasil evaluasi, \textit{prompt template} versi kedua ini sudah cukup baik untuk digunakan dalam eksperimen pada penelitian ini.
 
 \subsection{\textit{Search Resolve}}
-Pada tahap ini dilakukan prompt untuk mencari resolusi dari aturan setelah proses \textit{decomposition}.
+Pada tahap ini dilakukan \textit{prompt} untuk mencari resolusi dari aturan setelah proses \textit{decomposition}.
 
-Berikut adalah prompt template yang digunakan yang merupakan hasil dari translasi langsung dari prompt yang digunakan pada \textit{Aristotle Framework}
-\lstinputlisting[caption=Template prompt hasil translasi langsung dari bahasa Inggris, label={lst:search_resolve_v1}]{assets/texts/logic_resolver.txt}
+Berikut adalah \textit{prompt template} yang digunakan yang merupakan hasil dari translasi langsung dari \textit{prompt} yang digunakan pada \textit{Aristotle Framework}
+\lstinputlisting[caption=\textit{Prompt template} hasil translasi langsung dari bahasa Inggris, label={lst:search_resolve_v1}]{assets/texts/logic_resolver.txt}
 Dari hasil evaluasi ditemukan pola kesalahan yang sering terjadi, seperti berikut:
 \begin{itemize}
 	\item Model tidak mengenali istilah pelengkap/bertentangan:
@@ -240,13 +241,13 @@ Dari hasil evaluasi ditemukan pola kesalahan yang sering terjadi, seperti beriku
 	      \end{itemize}
 \end{itemize}
 
-Oleh karena itu, dilakukan perbaikan pada prompt template tersebut dengan menghilangkan deskripsi tugas seperti penghilangan operator $\land$ (AND) pada aturan penyelesaian karena operator tersebut tidak diperlukan dalam proses resolusi pada dataset ProntoQA, serta penambahan sebuah contoh resolusi yang saling berkomplemen untuk membantu model dalam mengenali istilah pelengkap/bertentangan.
-Berikut adalah versi kedua dari prompt template yang telah dimodifikasi.
-\lstinputlisting[caption=Template prompt dengan penghilangan perintah operator AND dan tambahan contoh, label={lst:search_resolve_v2}]{assets/texts/logic_resolver_modified.txt}
+Oleh karena itu, dilakukan perbaikan pada \textit{prompt template} tersebut dengan menghilangkan deskripsi tugas seperti penghilangan operator $\land$ (AND) pada aturan penyelesaian karena operator tersebut tidak diperlukan dalam proses resolusi pada dataset ProntoQA, serta penambahan sebuah contoh resolusi yang saling berkomplemen untuk membantu model dalam mengenali istilah pelengkap/bertentangan.
+Berikut adalah versi kedua dari \textit{prompt template} yang telah dimodifikasi.
+\lstinputlisting[caption=\textit{Prompt template} dengan penghilangan perintah operator AND dan tambahan contoh, label={lst:search_resolve_v2}]{assets/texts/logic_resolver_modified.txt}
 Hasil dari \textit{prompt template} versi kedua ini sudah memperbaiki beberapa masalah yang ada pada versi pertama, seperti model dapat mengenali istilah pelengkap/bertentangan dengan baik dan tidak menggunakan operator $\land$ (AND) yang tidak perlu digunakan.
 
 Maka deskripsi tugas yang menjelaskan tentang penggunaan $\neg$ dihilangkan agar tidak membingungkan model. Berikut adalah versi ketiga dari \textit{prompt template} yang telah diperbaiki.
-\lstinputlisting[caption=Template prompt dengan tambahan contoh dan mengganti operator NEG dengan $\bracket{P}{(x, NilaiKebalikan)}$, label={lst:search_resolve_v3}]{assets/texts/logic_resolver_refine.txt}
+\lstinputlisting[caption=\textit{Prompt template} dengan tambahan contoh dan mengganti operator NEG dengan $\bracket{P}{(x, NilaiKebalikan)}$, label={lst:search_resolve_v3}]{assets/texts/logic_resolver_refine.txt}
 Walaupun sudah diperbaiki, masih terdapat beberapa aturan yang tidak dapat diterjemahkan dengan baik oleh model karena model seperti Qwen2.5 7B-Instruct-GGUF yang digunakan memiliki keterbatasan dalam memahami logika yang kompleks atau secara inheren tidak mempunyai \textit{knowledge} dalam melakukan proses resolusi logika. Contoh dari kesalahan tersebut:
 \begin{itemize}
 	\item \textbf{Input:}\\
@@ -295,12 +296,12 @@ Walaupun sudah diperbaiki, masih terdapat beberapa aturan yang tidak dapat diter
 	\item \textbf{Penjelasan:} Model gagal menemukan resolusi karena tidak mengenali bahwa \( \bracket{Zumpus}{(Fae, False)} \) dan \( \bracket{Zumpus}{(Fae, True)} \) adalah istilah yang saling komplemen, tetapi terlalu fokus pada format penulisan output sehingga mengabaikan proses resolusi yang sebenarnya.
 \end{itemize}
 
-Namun, prompt template \ref{lst:search_resolve_v3} dianggap sudah cukup baik untuk digunakan dalam eksperimen.
+Namun, \textit{prompt template} \ref{lst:search_resolve_v3} dianggap sudah cukup baik untuk digunakan dalam eksperimen.
 
 \section{Hasil Eksperimen dan Analisis}
-Bagian ini merupakan hasil akhir dari eksperimen yang telah dilakukan pada penelitian ini. Hasil akhir ini berupa tabel yang menunjukkan persentase keberhasilan dari masing-masing model dalam menjawab pertanyaan berdasarkan dua metode yang digunakan, yaitu \textit{Naive Prompting} dan \textit{Aristotle Framework}. Prompt yang digunakan pada eksperimen ini telah melalui proses \textit{Prompt Refining} yang dijelaskan pada bagian sebelumnya, yaitu versi final dari masing-masing prompt.
+Bagian ini merupakan hasil akhir dari eksperimen yang telah dilakukan pada penelitian ini. Hasil akhir ini berupa tabel yang menunjukkan persentase keberhasilan dari masing-masing model dalam menjawab pertanyaan berdasarkan dua metode yang digunakan, yaitu \textit{Naive Prompting} dan \textit{Aristotle Framework}. \textit{Prompt} yang digunakan pada eksperimen ini telah melalui proses \textit{Prompt Refining} yang dijelaskan pada bagian sebelumnya, yaitu versi final dari masing-masing \textit{prompt}.
 
-\subsection{Naive Prompting}
+\subsection{\textit{Naive Prompting}}
 Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasarkan premis. Eksperimen dilakukan dengan dua variasi: meminta jawaban dulu baru penjelasan (\textit{After Answer}) dan sebaliknya (\textit{Before Answer}) yang menyerupai teknik \textit{Chain-of-Thought}.
 
 \begin{table}[h]
@@ -309,18 +310,18 @@ Pada skenario ini, model diminta menjawab langsung "Benar" atau "Salah" berdasar
 	% >{\centering\arraybackslash} centers the text inside the X column.
 	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
 		\toprule
-		                         & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEALION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
+		                                  & \textbf{Qwen2.5 7B-Instruct-GGUF} & \textbf{SEALION v3-Llama-8B-GGUF} & \textbf{SahabatAI v1-Llama-8B-GGUF} \\
 		\midrule
-		\textbf{Naive Prompting} &                                   &                                   &                                     \\
-		\quad After Answer       & 51.40\%                           & 56.20\%                           & 61.40\%                             \\
-		\quad Before Answer      & 81.00\%                           & 76.80\%                           & 67.80\%                             \\
+		\textbf{\textit{Naive Prompting}} &                                   &                                   &                                     \\
+		\quad After Answer                & 51.40\%                           & 56.20\%                           & 61.40\%                             \\
+		\quad Before Answer               & 81.00\%                           & 76.80\%                           & 67.80\%                             \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
 
 \textbf{Analisis:}
 \begin{enumerate} 
-	\item \textbf{Keunggulan Qwen pada CoT:} Qwen2.5 menunjukkan lonjakan performa tertinggi (81\%) ketika menggunakan metode \textit{Before Answer}. Ini konsisten dengan literatur yang menyatakan bahwa model yang dilatih pada korpus kode/matematika besar (seperti Qwen) memiliki kemampuan \textit{Chain-of-Thought} internal yang kuat (\cite{Wei2022ChainOT}).
+	\item \textbf{Keunggulan Qwen pada CoT:} Qwen2.5 menunjukkan lonjakan performa tertinggi (81\%) ketika menggunakan metode \textit{Before Answer}. Ini konsisten dengan literatur yang menyatakan bahwa model yang dilatih pada korpus kode/matematika besar (seperti Qwen) memiliki kemampuan \textit{Chain-of-Thought} yang kuat (\cite{Wei2022ChainOT}).
 	\item \textbf{Kekuatan Semantik Sahabat-AI:} Pada mode \textit{After Answer} (yang lebih mengandalkan intuisi bahasa langsung), Sahabat-AI unggul (61.4\%). Ini mengindikasikan bahwa model ini memiliki pemahaman Bahasa Indonesia yang lebih natural, sehingga intuisi "tebakan"-nya lebih akurat dibandingkan model global.
 \end{enumerate}
 
@@ -341,12 +342,12 @@ Tabel berikut menunjukkan hasil ketika penalaran dipindahkan dari "otak" model k
 \textbf{Analisis:}
 Ada beberapa temuan menarik dalam eksperimen ini:
 \begin{itemize}
-	\item \textbf{Anomali Qwen (14\%):} Meskipun unggul di Naive Prompting, Qwen gagal total dalam \textit{framework} ini. Analisis log menunjukkan kegagalan ini bukan pada logika, melainkan pada \textbf{kepatuhan format sintaks} (\textit{parsability}). Qwen sering menghasilkan output yang terlalu mengikuti format pada tahap \textit{search \& resolve} tanpa mengandalkan kemampuan penalaran logikanya, sehingga jawaban pada tahap tersebut menjadi tidak valid.
+	\item \textbf{Anomali Qwen (14\%):} Meskipun unggul di \textit{Naive Prompting}, Qwen gagal total dalam \textit{framework} ini. Analisis pada \textit{log} hasil resolusi menunjukkan kegagalan ini bukan pada logika, melainkan pada \textbf{kepatuhan format sintaks} (\textit{parsability}). Qwen sering menghasilkan output yang terlalu mengikuti format pada tahap \textit{search \& resolve} tanpa mengandalkan kemampuan penalaran logikanya, sehingga jawaban pada tahap tersebut menjadi tidak valid.
 	\item \textbf{Dominasi SEA-LION (81.6\%):} SEA-LION v3 menunjukkan performa terbaik. Ini membuktikan hipotesis bahwa model regional yang dilatih dengan instruksi spesifik bahasa lokal (dan mungkin data \textit{multilingual alignment} yang lebih baik) mampu menjadi "Penerjemah Logika" yang lebih patuh pada tahapan-tahapan framework Aristotle pada dataset berbahasa Indonesia.
 	\item \textbf{Stabilitas Sahabat-AI:} Sahabat-AI menunjukkan performa yang seimbang. Meskipun tidak setinggi SEA-LION, akurasinya (61.2\%) sebanding dengan performa \textit{Naive}-nya, menunjukkan konsistensi pemahaman.
 \end{itemize}
 
-Temuan paling signifikan dalam penelitian ini adalah bahwa \textbf{SEA-LION v3 (8B)}, sebuah model regional, mampu mengalahkan model global SoTA (Qwen2.5 7B) dalam tugas yang terstruktur ini. Hal ini menunjukkan bahwa untuk aplikasi yang memerlukan integrasi dengan sistem simbolik (seperti database atau mesin logika) dalam Bahasa Indonesia, model yang melalui proses \textit{Continued Pre-Training} (CPT) pada data regional jauh lebih andal. Model yang cenderung "terlalu kreatif" atau "terlalu cerewet" atau "terlalu patuh pada format", yang justru menjadi masalah jika di implementasikan dalam sebuah pipeline simbolik.
+Temuan paling signifikan dalam penelitian ini adalah bahwa \textbf{SEA-LION v3 (8B)}, sebuah \textit{language-adaptive pre-trained model} yang mmerepresentasikan model regional, mampu mengalahkan \textit{multilingual foundation model State-of-The-Art} (Qwen2.5 7B), yang merepresentasikan model global, dalam tugas yang terstruktur  / sintaksis ini. Hal ini menunjukkan bahwa untuk aplikasi yang memerlukan integrasi dengan sistem simbolik (seperti database atau mesin logika) dalam Bahasa Indonesia, model yang melalui proses \textit{Continued Pre-Training} (CPT) pada data regional jauh lebih andal. Model yang cenderung "terlalu kreatif" atau "terlalu cerewet" atau "terlalu patuh pada format", yang justru menjadi masalah jika di implementasikan dalam sebuah pipeline simbolik.
 
 Hasil eksperimen ini mengonfirmasi kelemahan utama sistem \textit{framework translation-decomposition-search-resolve}, yaitu \textit{error propagation}, jika terjadi kesalahan dalam salah satu tahap, maka tahap selanjutnya pasti salah juga. Dalam metode \textit{Naive}, kesalahan model terdistribusi secara probabilistik. Namun dalam metode Aristotle, kesalahan pada tahap-tahap awal akan menjadi katastropik untuk tahap-tahap selanjutnya. Lalu juga ada beberapa poin penting:
 \begin{itemize}

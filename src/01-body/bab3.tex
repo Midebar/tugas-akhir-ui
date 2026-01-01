@@ -7,6 +7,14 @@ Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan 
 
 Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya adalah mengukur akurasi penalaran logis pada bahasa Indonesia yang diperoleh melalui manipulasi struktur \textit{prompting} \textit{Neuro-Symbolic} dan dampaknya ketika model dijalankan dengan sumber daya terbatas (melalui kuantisasi).
 
+\subsection{Pemilihan Model}
+Model yang dipilih mewakili tiga tingkatan spesialisasi bahasa untuk menguji hipotesis bahwa pemahaman dalam bahasa lokal membantu proses dekomposisi logika:
+\begin{enumerate}
+    \item \textbf{Qwen2.5-7B-Instruct (\textit{multilingual foundation model} sebagai Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
+    \item \textbf{SEALION-v3-Llama-8B-Instruct (\textit{language-adaptive pre-trained model} sebagai Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
+    \item \textbf{SahabatAI-v1-Llama-8B-Instruct (\textit{localized pre-trained model} sebagai Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
+\end{enumerate}
+
 %-----------------------------------------------------------------------------%
 \section{Konfigurasi Model}
 \label{sec:modelConfig}
@@ -14,17 +22,7 @@ Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya ada
 
 Mengingat bahwa adanya batasan sumber daya komputasi, maka eksperimen dijalankan menggunakan kuantisasi pada setiap model yang dijalankan menggunakan \textit{tools open-source}, yaitu \textit{llama.cpp} \footnote{\url{https://github.com/ggml-org/llama.cpp}}.
 
-\subsection{Pemilihan Model}
-Model yang dipilih mewakili tiga tingkatan spesialisasi bahasa untuk menguji hipotesis bahwa pemahaman dalam bahasa lokal membantu proses dekomposisi logika:
-\begin{enumerate}
-    \item \textbf{Qwen2.5-7B-Instruct (Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
-    \item \textbf{SEALION-v3-Llama-8B-Instruct (Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
-    \item \textbf{SahabatAI-v1-Llama-8B-Instruct (Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
-\end{enumerate}
-
-\subsection{Parameterisasi Inferensi}
-
-Setiap model dijalankan dengan pengaturan parameter yang sama / konsisten untuk memastikan hasil eksperimen mencerminkan pengaruh variabel bebas, bukan perbedaan konfigurasi teknis. Strategi deterministik diterapkan untuk menghilangkan unsur \textit{randomness} dalam proses inferensi. 
+Setiap model dijalankan dengan pengaturan konfigurasi / parameter yang sama / konsisten untuk memastikan hasil eksperimen mencerminkan pengaruh variabel bebas, bukan perbedaan konfigurasi teknis. Strategi deterministik diterapkan untuk menghilangkan unsur \textit{randomness} dalam proses inferensi.
 
 \lstinputlisting[language=Python, caption=Konfigurasi parameter deterministik untuk setiap model yang digunakan, label=code:parameter_kwargs]{assets/codes/parameter_kwargs.py}
 
@@ -48,7 +46,7 @@ Parameter utama yang dikontrol adalah:
     \captionof{figure}{Kerangka kerja Aristotle untuk inferensi logika menggunakan SLM dan metode \textit{neuro-symbolic} (\cite{Aristotle25})}
     \label{fig:aristotle_framework}
 \end{figure}
-Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama, sesuai dengan Gambar ~\ref{fig:aristotle_framework}.
+Penelitian ini mengimplementasikan \textit{framework} \textbf{Aristotle} (\cite{Aristotle25}) yang membagi proses inferensi menjadi empat modul utama atau tahapan utama, sesuai dengan Gambar ~\ref{fig:aristotle_framework}, yaitu \textit{Translation to First Order Logic}, \textit{Decomposition into Conjunctive Normal Form}, \textit{Search Router}, dan \textit{Resolver}. Untuk modul / tahapan \textit{Search Router} dan \textit{Resolver} digabung menjadi satu, yaitu menjadi \textit{Search and Resolve} karena mereka saling bersinergi dalam proses resolusi
 
 \subsection{Translasi Logika (\textit{Logical Translation})}
 Ini adalah satu-satunya tahap yang menggunakan "kecerdasan" probabilistik SLM. Tujuannya adalah memetakan kalimat Bahasa Indonesia yang implisit menjadi struktur logika formal.
@@ -101,7 +99,7 @@ Mekanisme injeksi instruksi ke dalam \textit{prompt template} untuk setiap tahap
 
 \lstinputlisting[language=Python, caption=Mekanisme injeksi data poin ke dalam template prompt Aristotle, label=code:prompt_replacement]{assets/codes/prompt_replacement.py}
 
-Potongan kode di atas menunjukkan fungsi \textit{construct\_prompt\_a} yang bertugas membangun \textit{prompt} dinamis untuk masalah logika, dalam hal ini fungsi tersebut digunakan untuk membangun \textit{prompt} untuk tahap \textit{translation}. Fungsi ini membaca \textit{template} dasar yang memuat instruksi sistem dan contoh \textit{few-shot}, lalu mengganti \textit{placeholder}, seperti{{PREMISES}} dan {{CONJECTURE}} dengan data dari dataset ProntoQA yang sedang diuji. Pendekatan injeksi string ini memastikan bahwa struktur instruksi tetap konsisten (statis) sementara konten masalah berubah-ubah, meminimalkan risiko model "lupa" terhadap format output yang diminta saat beralih ke soal baru. Untuk setiap tahap dalam \textit{framework} Aristotle, kode serupa diterapkan dengan penyesuaian pada \textit{template} dan \textit{placeholder} yang relevan, misalnya \textit{template} untuk tahap \textit{decomposition} akan berbeda dengan tahap \textit{translation}, tetapi kode fungsi pembangun \textit{prompt} tetap mengikuti pola yang sama.
+Potongan kode di atas menunjukkan fungsi \textit{construct\_prompt\_a} yang bertugas membangun \textit{prompt} dinamis untuk masalah logika, dalam hal ini fungsi tersebut digunakan untuk membangun \textit{prompt} untuk tahap \textit{translation}. Fungsi ini membaca \textit{template} dasar yang memuat instruksi sistem dan contoh \textit{few-shot}, lalu mengganti \textit{placeholder}, seperti \{\{PREMISES\}\} dan \{\{CONJECTURE\}\} dengan data dari dataset ProntoQA yang sedang diuji. Pendekatan injeksi string ini memastikan bahwa struktur instruksi tetap konsisten (statis) sementara konten masalah berubah-ubah, meminimalkan risiko model "lupa" terhadap format output yang diminta saat beralih ke soal baru. Untuk setiap tahap dalam \textit{framework} Aristotle, kode serupa diterapkan dengan penyesuaian pada \textit{template} dan \textit{placeholder} yang relevan, misalnya \textit{template} untuk tahap \textit{decomposition} akan berbeda dengan tahap \textit{translation}, tetapi kode fungsi pembangun \textit{prompt} tetap mengikuti pola yang sama.
 
 %-----------------------------------------------------------------------------%
 \section{Teknik Evaluasi dan Analisis Data}
@@ -110,7 +108,7 @@ Potongan kode di atas menunjukkan fungsi \textit{construct\_prompt\_a} yang bert
 
 Untuk menjamin objektivitas, evaluasi tidak dilakukan secara manual melainkan menggunakan sistem ekstraksi berbasis pola (\textit{Regular Expression} / Regex).
 
-\subsection{Parsing Bertingkat (Multi-stage Parsing)}
+\subsection{Parsing Bertingkat (\textit{Multi-stage Parsing})}
 Sistem evaluasi dirancang untuk "menangkap" struktur logika dari output teks model. Kegagalan model dalam mematuhi format yang diminta pada tahap apa pun akan langsung dianggap sebagai kesalahan (\textit{failure}), tanpa upaya perbaikan manual. Ini adalah standar ketat yang diterapkan untuk menguji keandalan model sebagai komponen sistem logika.
 
 \begin{itemize}
@@ -122,7 +120,7 @@ Sistem evaluasi dirancang untuk "menangkap" struktur logika dari output teks mod
           Serupa dengan tahap sebelumnya, kode pada \lst~\ref{code:decomposition_regex} bertugas memvalidasi output dari tahap \textit{Decomposer}. Regex ini secara spesifik mencari pola "Aturan dalam CNF". Jika model tidak mengikuti format yang diharapkan, regex ini akan gagal menemukan kecocokan, menandakan kegagalan dekomposisi.
     \item \textbf{Ekstraksi Resolusi:} Mendeteksi klausa baru dan kesimpulan akhir dalam label kecukupan.
           \lstinputlisting[language=Python, caption=Regex untuk memvalidasi langkah Resolusi, label=code:resolve_regex]{assets/codes/search_resolve_regex_grabs.py}
-          \lst~\ref{code:resolve_regex} di atas adalah komponen validasi akhir yang bekerja pada output modul \textit{Resolver}. Regex ini bertugas mengekstraksi dua informasi vital dari logika resolusi SLM: (1) Clause Baru, yaitu kesimpulan antara yang dihasilkan dari penggabungan dua premis, dan (2) Label Cukup, yang menandakan apakah kontradiksi telah ditemukan (\textit{True}) atau belum (\textit{False}). Jika format ini tidak ditemukan, sistem akan menganggap langkah resolusi tersebut gagal atau tidak konklusif.
+          \lst~\ref{code:resolve_regex} di atas adalah komponen validasi akhir yang bekerja pada output modul \textit{Resolver}. Regex ini bertugas mengekstraksi dua informasi vital dari logika resolusi SLM: (1) \textit{Clause Baru}, yaitu kesimpulan antara yang dihasilkan dari penggabungan dua premis, dan (2) Label Cukup, yang menandakan apakah kontradiksi telah ditemukan (\textit{True}) atau belum (\textit{False}). Jika format ini tidak ditemukan, sistem akan menganggap langkah resolusi tersebut gagal atau tidak konklusif.
           
           
 \end{itemize}
@@ -135,19 +133,17 @@ Untuk setiap pertanyaan $S$, sistem menjalankan dua pembuktian paralel. Tabel \r
     \centering
     \caption{Matriks Keputusan untuk Penentuan Label Jawaban (Kesimpulan)}
     \label{tab:decision_matrix}
-    \renewcommand{\arraystretch}{1.5}
-    \begin{tabularx}{\textwidth}{|c|X|X|l|}
+    \begin{tabularx}{\textwidth}{|p{2.0cm}|X|X|X|}
         \hline
-        \textbf{Kondisi}    & \centering\textbf{Jalur A: Buktikan $S$} & \centering\textbf{Jalur B: Buktikan $\neg S$} & \multirow{2}{*}{\textbf{Kesimpulan}} \\
-        \textbf{(Skenario)} & \centering(Cari Kontradiksi di $\neg S$) & \centering(Cari Kontradiksi di $S$)           &                                      \\
+        \textbf{Kondisi (Skenario)} & \textbf{Jalur A: Buktikan $S$ (Cari Kontradiksi di $\neg S$)} & \textbf{Jalur B: Buktikan $\neg S$ (Cari Kontradiksi di $S$)} & \textbf{Kesimpulan}         \\
         \hline
-        1                   & \textbf{Berhasil} (Ada Kontradiksi)      & Gagal                                         & \textbf{TRUE}                        \\
+        \centering{1}               & \textbf{Berhasil} (Ada Kontradiksi)                           & Gagal                                                         & \textbf{TRUE}               \\
         \hline
-        2                   & Gagal                                    & \textbf{Berhasil} (Ada Kontradiksi)           & \textbf{FALSE}                       \\
+        \centering{2}               & Gagal                                                         & \textbf{Berhasil} (Ada Kontradiksi)                           & \textbf{FALSE}              \\
         \hline
-        3                   & Gagal                                    & Gagal                                         & \textbf{UNKNOWN}                     \\
+        \centering{3}               & Gagal                                                         & Gagal                                                         & \textbf{UNKNOWN}            \\
         \hline
-        4                   & \textbf{Berhasil}                        & \textbf{Berhasil}                             & \textbf{SELF-CONTRADICTORY}          \\
+        \centering{4}               & \textbf{Berhasil}                                             & \textbf{Berhasil}                                             & \textbf{SELF-CONTRADICTORY} \\
         \hline
     \end{tabularx}
 \end{table}
@@ -162,7 +158,7 @@ Untuk setiap pertanyaan $S$, sistem menjalankan dua pembuktian paralel. Tabel \r
 \end{itemize}
 
 \section{Ilustrasi Proses Resolusi}
-Untuk memperjelas proses inferensi menggunakan kerangka kerja Aristotle, berikut adalah ilustrasi langkah demi langkah sebagai contoh dari dataset ProntoQA.
+Untuk memperjelas proses resolusi menggunakan kerangka kerja \textit{framework} Aristotle, berikut adalah ilustrasi langkah demi langkah sebagai contoh dari dataset ProntoQA.
 
 \begin{figure}
     \centering
@@ -172,7 +168,7 @@ Untuk memperjelas proses inferensi menggunakan kerangka kerja Aristotle, berikut
 \end{figure}
 
 \subsection{Translasi Dataset ke Bahasa Indonesia}
-Sebelum dataset ProntoQA dijalankan dalam \textit{framework Aristotle}, dilakukan translasi ke bahasa Indonensia karena dataset tersebut masih dalam bahasa Inggris.
+Sebelum dataset ProntoQA dijalankan dalam \textit{framework Aristotle}, dilakukan translasi ke bahasa Indonensia karena dataset tersebut masih dalam bahasa Inggris. Dataset ProntoQA terdiri dari konteks / premis, pertanyaan, jawaban, dan penjelasan untuk mendapatkan jawaban tersebut. Jawaban hanya mempunyai dua nilai, yaitu \textit{True / False}, dan jawaban tidak perlu ditranslasikan ke bahasa Indonesia untuk keperluan tahap evaluasi nanti.
 Prosesnya sebagai berikut:
 \begin{itemize}
     \item \textbf{Premis original:} "Wumpuses are sweet. Every Wumpus is jompus. All jompus are fruity. Max is wumpus."
@@ -208,7 +204,7 @@ Model SLM menerima prompt yang berisi premis dan pertanyaan di atas, dan menghas
 \end{itemize}
 
 \subsection{\textit{Decomposition to CNF}}
-Output FOL dari tahap sebelumnya kemudian diproses untuk konversi ke CNF:
+Output aturan FOL dari tahap sebelumnya kemudian diproses untuk konversi ke CNF.
 \begin{itemize}
     \item \textbf{Aturan dalam CNF:}
           \begin{enumerate}
