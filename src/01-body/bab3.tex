@@ -7,18 +7,17 @@ Bab ini menguraikan rancangan operasional yang digunakan untuk menjawab rumusan 
 
 Pendekatan penelitian ini bersifat kuantitatif-eksperimental. Fokus utamanya adalah mengukur akurasi penalaran logis pada bahasa Indonesia yang diperoleh melalui manipulasi struktur \textit{prompting} \textit{Neuro-Symbolic} dan dampaknya ketika model dijalankan dengan sumber daya terbatas (melalui kuantisasi).
 
-\subsection{Pemilihan Model}
+%-----------------------------------------------------------------------------%
+\section{Konfigurasi Model}
+\label{sec:modelConfig}
+%-----------------------------------------------------------------------------%
+
 Model yang dipilih mewakili tiga tingkatan spesialisasi bahasa untuk menguji hipotesis bahwa pemahaman dalam bahasa lokal membantu proses dekomposisi logika:
 \begin{enumerate}
     \item \textbf{Qwen2.5-7B-Instruct (\textit{multilingual foundation model} sebagai Representasi Global):} Model ini dipilih karena performanya yang unggul dalam benchmark logika matematika global, menjadi titik ukur batas atas kemampuan model \textit{open-weight} saat ini.
     \item \textbf{SEALION-v3-Llama-8B-Instruct (\textit{language-adaptive pre-trained model} sebagai Representasi Regional):} Model yang telah melalui \textit{continued pre-training} dengan data bahasa dari negara-negara di Asia Tenggara, diharapkan memiliki pemahaman semantik yang lebih baik terhadap struktur kalimat regional.
     \item \textbf{SahabatAI-v1-Llama-8B-Instruct (\textit{localized pre-trained model} sebagai Representasi Nasional):} Model yang dikhususkan untuk Bahasa Indonesia, juga sudah melalui \textit{continued pre-training}, digunakan untuk melihat apakah spesialisasi bahasa yang mendalam dapat menyelesaikan penalaran lebih baik dalam tugas logika.
 \end{enumerate}
-
-%-----------------------------------------------------------------------------%
-\section{Konfigurasi Model}
-\label{sec:modelConfig}
-%-----------------------------------------------------------------------------%
 
 Mengingat bahwa adanya batasan sumber daya komputasi, maka eksperimen dijalankan menggunakan kuantisasi pada setiap model yang dijalankan menggunakan \textit{tools open-source}, yaitu \textit{llama.cpp} \footnote{\url{https://github.com/ggml-org/llama.cpp}}.
 
@@ -30,8 +29,8 @@ Parameter utama yang dikontrol adalah:
 
 \begin{itemize}
     \item \textbf{\textit{Temperature}:} Ditetapkan ke 0.0 sehingga model hanya memilih token dengan probabilitas tertinggi tanpa penambahan noise acak (\textit{greedy decoding}). Hal ini memastikan setiap prompt menghasilkan output yang identik.
-    \item \textbf{\textit{Max Tokens}:} Dibatasi sesuai dengan panjang output yang wajar untuk setiap tahap dalam pipeline, mencegah generasi yang berlebihan. Adapun token yang dibutuhkan untuk setiap tahap inferensi dalam \textit{framework} antara lain: proses translasi ke FOL memerlukan output setidaknya 400 token, proses dekomposisi setidaknya memerlukan output 700 token, dan proses pencarian bukti setidaknya memerlukan 1000 token., sehingga \textbf{\textit{max tokens}} yang di set untuk semua proses adalah 2500 untuk mengatasi \textit{overhead} atau halusinasi jika model tidak secara \textit{strict} mengikuti format.
-    \item \textbf{\textit{n\_ctx}:} Ukuran konteks diatur untuk menentukan berapa banyak token sebelumnya yang dapat dipertimbangkan model saat menghasilkan respons. Nilai yang lebih besar memungkinkan model memahami konteks yang lebih panjang, namun meningkatkan penggunaan memori. \textbf{\textit{n\_ctx}} di set ke 0, sehingga ukuran konteks akan sesuai dengan kemampuan model masing-masing.
+    \item \textbf{\textit{Max Tokens}:} Dibatasi sesuai dengan panjang output yang wajar untuk setiap tahap dalam pipeline, mencegah generasi yang berlebihan. Adapun token yang dibutuhkan untuk setiap tahap inferensi dalam \textit{framework} antara lain: proses translasi ke FOL memerlukan output setidaknya 400 token, proses dekomposisi setidaknya memerlukan output 700 token, dan proses pencarian bukti setidaknya memerlukan 1000 token., sehingga \textbf{\textit{max tokens}} yang di-\textit{set} untuk semua proses adalah 2500 untuk mengatasi \textit{overhead} atau halusinasi jika model tidak secara \textit{strict} mengikuti format.
+    \item \textbf{\textit{n\_ctx}:} Ukuran konteks diatur untuk menentukan berapa banyak token sebelumnya yang dapat dipertimbangkan model saat menghasilkan respons. Nilai yang lebih besar memungkinkan model memahami konteks yang lebih panjang, namun meningkatkan penggunaan memori. \textbf{\textit{n\_ctx}} di-\textit{set} ke 0, sehingga ukuran konteks akan sesuai dengan kemampuan model masing-masing.
     \item \textbf{\textit{n\_gpu\_layers}:} Menentukan jumlah layer model yang dijalankan di GPU untuk akselerasi. Nilai yang lebih tinggi mempercepat inferensi tetapi memerlukan VRAM yang lebih besar. Nilai -1 berarti semua komputasi dilakukan di GPU.
 \end{itemize}
 

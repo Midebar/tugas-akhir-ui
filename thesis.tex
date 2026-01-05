@@ -56,6 +56,15 @@
 	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
 }
 
+%
+% Halaman Penggunaan AI
+%
+\strcompare{Kampus Merdeka}{\type}{} {
+	\addtocontents{toc}{\protect\addvspace{-1em}}
+	\addChapter{Halaman Pernyataan Penggunaan Kecerdasan Artifisial}
+	\include{src/00-frontMatter/pernyataanAI}
+	\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
+}
 
 %
 % Halaman Orisinalitas
@@ -230,10 +239,10 @@
 % Di aturan Tugas Akhir UI tahun 2017, tidak ada ketentuan khusus mengenai Glossary
 % Jika tidak digunakan, commment kode ini.
 %
-\addCustomListPage{
-	\printglossaries
-	\clearchapter
-}{\glossaryname}
+% \addCustomListPage{
+% 	\printglossaries
+% 	\clearchapter
+% }{\glossaryname}
 
 
 %

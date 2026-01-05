@@ -1,0 +1,52 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{array}
+
+\begin{document}
+
+\begin{center}
+    \Large \textbf{Log Revisi Dokumen}
+\end{center}
+\vspace{1cm}
+
+\begin{table}[H]
+    \centering
+    \caption{Daftar Revisi dan Perubahan}
+    \label{tab:revisi_log}
+    \renewcommand{\arraystretch}{1.5} % Increases row height for readability
+    
+    % Column setup: 
+    % c = center (small width)
+    % X = auto-width (wraps long text)
+    % X = auto-width (wraps long text)
+    % l = left align (adjust to 'c' if prefer centered status)
+    \begin{tabularx}{\textwidth}{|c|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+        \hline
+        \textbf{No}                                                                                     & \textbf{Masukan / Isu Awal} & \textbf{Perubahan / Tindak Lanjut} & \textbf{Hal/Bab} \\
+        \hline
+        
+        1                                                                                               & 
+        Tanggal di halaman pengesahan dan tanggal lainnya dibuat seragam saja, disetujui  per 4 Januari & 
+        Tanggal siap sidang dan lulus disamakan pada settings.tex                                       & 
+        Halaman pengesahan dan halaman lainnya                                                                                                                                                \\
+        \hline
+        
+        2                                                                                               & 
+        Pernyataan penggunaan AI sebagai satu halaman tersendiri                                        & 
+        Menulis halaman pernyataan penggunaan AI terpisah dari katra pengantar                          & 
+        Sebelum Halaman Orisinalitas                                                                                                                                                          \\
+        \hline
+        
+        3                                                                                               & 
+        Typo penulisan dan sintaks                                                                      & 
+        Membetulkan typo                                                                                & 
+        All                                                                                                                                                                                   \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

@@ -3,7 +3,9 @@
 \label{bab:5}
 %-----------------------------------------------------------------------------%
 
+Bab ini menyajikan studi ablasi terhadap kerangka kerja Aristotle untuk menilai pengaruh masing-masing modul / tahap terhadap akurasi resolusi jawaban pada dataset ProntoQA. Studi ini bertujuan menjawab: (1) sejauh mana penggantian modul resolusi oleh \textit{Chain-of-Thought} (CoT) memengaruhi performa model SLM, (2) seberapa efektif \textit{translation} premis ke FOL bila dilanjutkan oleh resolver simbolik (Prolog), dan (3) batasan pendekatan simbolik pada dataset yang lebih kompleks.
 %-----------------------------------------------------------------------------%
+
 \section{Eksperimen tanpa tahap / modul \textit{Search and Resolve}}
 \label{sec:fol_and_cnf_ablation}
 %-----------------------------------------------------------------------------%
@@ -15,7 +17,7 @@
 	\label{fig:fol_and_cnf_figure}
 \end{figure}
 
-Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework Aristotle} dengan tahap akhir dan tanpa tahap akhir \textit{Search and Resolve}, khususnya pada model Qwen yang diduga mengalami penurunan akurasi pada tahap akhir. Eksperimen ini dilakukan dengan menggantikan modul \textit{Search and Resolve} dengan \textit{Chain-of-Thought} (CoT) \textit{prompting} untuk mengeveluasi \textit{output} dari tahap sebelumnya
+Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework Aristotle} dengan tahap akhir dan tanpa tahap akhir \textit{Search and Resolve}, khususnya pada model Qwen yang diduga mengalami penurunan akurasi pada tahap akhir. Eksperimen ini dilakukan dengan menggantikan modul \textit{Search and Resolve} dengan \textit{Chain-of-Thought} (CoT) \textit{prompting} untuk mengeveluasi \textit{output} dari tahap sebelumnya.
 
 \begin{table}[h]
 	\centering
@@ -29,6 +31,8 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 		\bottomrule
 	\end{tabularx}
 \end{table}
+
+Pada eksperimen ini seluruh proses resolusi akhir (yang semula dilakukan oleh modul \textit{Search and Resolve}) digantikan oleh resolusi berbasis prompting CoT. Hasil menunjukkan penurunan akurasi yang cukup signifikan untuk ketiga model, terutama pada Qwen2.5 yang memperoleh 56.80\%. Hal tersebut membuktikan bahwa model Qwen2.5 mengalami \textit{parsability error} pada tahap \textit{Search and Resolve}.
 
 %-----------------------------------------------------------------------------%
 \section{Eksperimen tanpa tahap / modul \textit{Search and Resolve} dan \textit{Decomposition to CNF}}
@@ -57,6 +61,8 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 	\end{tabularx}
 \end{table}
 
+Dengan hanya melakukan \textit{Translation to FOL} lalu mengevaluasi hasil terjemahan menggunakan CoT, ketiga model menunjukkan peningkatan dibandingkan eksperimen yang melibatkan CNF. SEA-LION dan Qwen memperlihatkan performa yang jauh lebih baik (84.60\% dan 77.40\% masing-masing), sementara SahabatAI tetap lebih rendah (58.60\%).
+
 \section{Eksperimen dengan tahap \textit{Translation to FOL} dan dilanjutkan dengan Prolog}
 \label{sec:prolog_ablation}
 
@@ -67,7 +73,7 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 	\label{fig:prolog_figure}
 \end{figure}
 
-Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework Aristotle} dengan tahap akhir dan hanya dengan tahap \textit{Translation to FOL} yang hasil \textit{output} dari tahap ini di-\textit{resolve} dengan bantuan Prolog. Prolog sendiri pun tidak dapat melakukan resolusi terhadap premis-premis natural dan premis-premis tersebut beragam bentuk kalimatnya, sehingga hanya mengandalkan regex parsing saja tidak cukup.
+Eksperimen ini bertujuan membandingkan kinerja \textit{framework Aristotle} dengan pendekatan yang hanya melakukan \textit{Translation to FOL}, dimana keluaran translasi tersebut kemudian diresolusikan menggunakan Prolog. Perlu dicatat bahwa Prolog tidak dapat langsung meresolusikan premis berbahasa alami dan pemrosesan yang hanya bergantung pada parsing berbasis regex tidaklah memadai karena premis-premis tersebut memiliki ragam bentuk kalimat.
 
 \begin{table}[h]
 	\centering
@@ -82,4 +88,23 @@ Eksperimen ini dilakukan untuk melihat perbandingan performa \textit{framework A
 	\end{tabularx}
 \end{table}
 
-Dari ketiga hasil ablasi eksperimen tersebut, dapat disimpulkan bahwa dengan mentranslasikan premis-premis yang ada dari bahasa natural ke bahasa simbolik dalam bentuk FOL dan dilanjutkan dengan \textit{Prolog resolver} mempunyai akurasi yang lebih tinggi untuk dataset ProntoQA ketimbang menggunakan SLM untuk melakukan resolusi, baik pada tahapan \textit{Translation to FOL}, maupun pada tahapan \textit{Decomposition into CNF}, akan tetapi hal ini akan sulit dilakukan pada dataset yang lebih kompleks dari ProntoQA, seperti dataset ProofWriter (\cite{tafjord-etal-2021-proofwriter}) dan dataset LogicNLI (\cite{tian-etal-2021-diagnosing}) karena dataset ProntoQA hanya membutuh jawaban \textit{True} atau \textit{False} saja dan premis-premis tersebut tidak memerlukan tahapan yang kompleks, seperti skolemisasi
+Kombinasi translasi ke FOL diikuti oleh resolver Prolog menghasilkan akurasi tertinggi secara keseluruhan, terutama untuk SEA-LION (93.80\%) dan Qwen (82.20\%). Ini menunjukkan bahwa ketika translasi ke FOL cukup akurat, resolver simbolik (Prolog) memberikan resolusi inferensi yang lebih deterministik dan stabil dibandingkan resolusi berbasis SLM via CoT.
+
+\section{Hasil Studi Ablasi}
+
+Bagian ini merangkum temuan utama dari ketiga konfigurasi eksperimen (FOL+CNF+CoT, FOL+CoT, dan FOL+Prolog). Tujuannya adalah menarik pelajaran praktis bagi desain sistem penalaran berbasis bahasa natural dan melihat \textit{trade-off} antara fleksibilitas SLM dan keandalan resolver simbolik.
+
+\begin{table}[h]
+	\centering
+	\caption{Rata-rata akurasi dari ketiga model}
+	% >{\centering\arraybackslash} centers the text inside the X column.
+	\begin{tabularx}{\textwidth}{l >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+		\toprule
+		                        & \textbf{Framework Aristotle} & \textbf{FOL and CNF only} & \textbf{FOL only} & \textbf{FOL with Prolog} \\
+		\midrule
+		\quad Rata-rata Akurasi & 52.27\%                      & 58.60\%                   & 73.53\%           & 83.07\%                  \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+Dari ketiga hasil ablasi eksperimen tersebut, dapat disimpulkan bahwa dengan mentranslasikan premis-premis yang ada dari bahasa natural ke bahasa simbolik dalam bentuk FOL dan dilanjutkan dengan \textit{Prolog resolver} mempunyai akurasi yang lebih tinggi untuk dataset ProntoQA ketimbang menggunakan SLM untuk melakukan resolusi, baik pada tahapan \textit{Translation to FOL}, maupun pada tahapan \textit{Decomposition into CNF}, akan tetapi hal ini akan sulit dilakukan pada dataset yang lebih kompleks dari ProntoQA, seperti dataset ProofWriter (\cite{tafjord-etal-2021-proofwriter}) dan dataset LogicNLI (\cite{tian-etal-2021-diagnosing}) karena dataset ProntoQA hanya membutuh jawaban \textit{True} atau \textit{False} saja dan premis-premis tersebut tidak memerlukan tahapan yang kompleks.

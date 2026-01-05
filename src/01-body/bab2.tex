@@ -110,7 +110,7 @@ Dalam perkembangannya, paradigma model bahasa mulai bergeser dari "semakin besar
 Karakteristik utama SLM meliputi:
 \begin{itemize}
 	\item \textbf{Efisiensi Parameter:} SLM mencapai performa kompetitif dengan jumlah parameter yang jauh lebih sedikit (10-100x lebih kecil dari LLM), memungkinkan inferensi yang lebih cepat dan penggunaan memori yang lebih rendah.
-	\item \textbf{(\textit{Edge Deployability}):} Karena ukurannya yang ringan, SLM dapat dijalankan secara lokal pada perangkat konsumen standar, seperti laptop, bahkan ponsel, tanpa memerlukan kluster GPU \textit{data center}. Hal ini memberikan keuntungan dalam privasi data dan kedaulatan informasi (\cite{belcak2025smalllanguagemodelsfuture}).
+	\item \textbf{\textit{Edge Deployability}:} Karena ukurannya yang ringan, SLM dapat dijalankan secara lokal pada perangkat konsumen standar, seperti laptop, bahkan ponsel, tanpa memerlukan kluster GPU \textit{data center}. Hal ini memberikan keuntungan dalam privasi data dan kedaulatan informasi (\cite{belcak2025smalllanguagemodelsfuture}).
 	\item \textbf{Teknik Kompresi:} Performa tinggi SLM sering kali dicapai melalui teknik \textit{Knowledge Distillation} (belajar dari model guru yang lebih besar) dan pelatihan pada dataset berkualitas sangat tinggi atau \textit{textbook quality}, serta penggunaan teknik (\textit{pruning}) (\cite{10.1145/3768165}).
 \end{itemize}
 Model seperti Microsoft Phi-3, Mistral 7B, dan Gemma 2B adalah contoh representatif dari kelas model ini yang menunjukkan kemampuan penalaran yang menarik meskipun berukuran kecil ("Tiny but Mighty")\footnote{\url{https://news.microsoft.com/source/features/ai/the-phi-3-small-language-models-with-big-potential/}}
@@ -133,7 +133,7 @@ ProntoQA berbeda dari dataset tanya-jawab umum karena sifatnya yang generatif da
 Proses pembuatannya adalah:
 \begin{enumerate}
 	\item Sistem membuat graf ontologi fiktif (misal: $\bracket{Wumpus}{\text{Deskripsi: Merah}} \rightarrow \bracket{Jompus}{\text{Deskripsi: Transparan}}$. $\bracket{Jompus}{\text{Deskripsi: Transparan}} \rightarrow Tumpus$.)
-	\item Sistem membuat \textit{proof} dari ontologi tersebut (misal: $\bracket{Wumpus}{Max}$. $\bracket{\forall x}{\bracket{Wumpus}{x}} \rightarrow \bracket{Merah}{x}$. $\bracket{\forall x}{\bracket{Wumpus}{x}} \rightarrow \bracket{Jompus}{x}$.)
+	\item Sistem membuat \textit{proof} dari ontologi tersebut (misal: $\bracket{Wumpus}{Max}$. $\bracket{\forall x}{\bracket{Wumpus}{x} \rightarrow \bracket{Merah}{x}}$. $\bracket{\forall x}{\bracket{Wumpus}{x} \rightarrow \bracket{Jompus}{x}}$.)
 	\item Simbol-simbol logika diganti dengan kata-kata fiktif atau nyata untuk membentuk kalimat bahasa alami (misal: Max adalah wumpus. Setiap wumpus adalah merah. Wumpuses adalah jompus. Jompuses bersifat transparan. Semua jompus adalah Tumpus.)
 \end{enumerate}
 
