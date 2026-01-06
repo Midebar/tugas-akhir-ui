@@ -111,9 +111,9 @@
 		% Lembar Pengesahan Tugas Akhir dari LaTeX
 		\strcompare{Doktor}{\jenjang}
 		{\include{src/00-frontMatter/pengesahanSidangS3}}
-		{\include{src/00-frontMatter/pengesahanSidang}}
+		%{\include{src/00-frontMatter/pengesahanSidang}}
 		% Lembar Pengesahan dari PDF lain (misal: generated oleh SISIDANG [Fasilkom])
-		%\putpdf{assets/pdfs/pengesahanSidang.pdf}
+		\putpdf{assets/pdfs/pengesahanSidang}
 		\ifodd\thechapterpagecount\forceclearchapter\thispagestyle{onlypage}\fi
 	}}
 
